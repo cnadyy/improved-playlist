@@ -6,8 +6,7 @@ function getUsername() {
 }
 
 function getUsernameJSON() {
-    return fetch('me', { method: 'GET' })
-    .then(response);
+    return fetch('me', { method: 'GET' });
 }
 
 export {getUsername as default, getUsernameJSON};
