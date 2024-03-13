@@ -4,11 +4,11 @@ import { useSearchParams } from 'next/navigation'
 import CLIENT_ID from '../secrets';
 import { useEffect, useState } from 'react';
 
-function getToken(code: string, setAccessToken: any) {
+function getToken(code: string): Promise<any> {
 
   // stored in the previous step
   let codeVerifier = window.localStorage.getItem('code_verifier');
-  if (!codeVerifier) return
+  if (!codeVerifier) throw new Error("Code verifier not set");
 
   const payload = {
     method: 'POST',
@@ -24,14 +24,12 @@ function getToken(code: string, setAccessToken: any) {
     }),
   }
 
-  fetch('https://accounts.spotify.com/api/token', payload)
+  return fetch('https://accounts.spotify.com/api/token', payload)
     .then(body => body.json())
     .then(response => {
       if (!response.error) {
-        console.log(response)
-        setAccessToken(response.access_token);
         localStorage.setItem('access_token', response.access_token)
-      }
+      } else throw new Error("Failed to authenticate")
     });
 }
 
@@ -40,13 +38,15 @@ export default function Redirect() {
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
   
-  const [accessToken, setAccessToken] = useState("Not loaded");
+  const [noError, setError] = useState(true);
   
   useEffect(() => {
     if (code) {
-      getToken(code, setAccessToken);
-    }
-  }, []);
+      getToken(code)
+      .then(() => window.location.href = "/")
+      .catch(() => setError(true));
+    } else setError(true);
+  });
  
-  return <>Code: {accessToken}</>
+  return <>{noError ? <p>Authenticated! Loading....</p> : <p> Failed. Please try again</p>}</>
 }

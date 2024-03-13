@@ -1,6 +1,8 @@
 // user authenticated network requests
 
-const accessToken = localStorage.getItem('access_token');
+// will always be defined. This surpresses
+// build step error "window is not defined"
+if (typeof window != "undefined") var accessToken = localStorage.getItem('access_token');
 const APIURL = "https://api.spotify.com/v1/";
 
 function webAPIfetch(resource: string, options: RequestInit) {

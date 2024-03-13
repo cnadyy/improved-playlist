@@ -1,23 +1,20 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import getUsername from '@api/getUsername';
+import getUserData from '@api/getUserData';
+import { useSearchParams } from 'next/navigation';
 
-const getDisplayName = (setDisplayName: any) => {
-    const accessToken = window.localStorage.getItem('access_token');
-    if (!accessToken) return;
-    getUsername().then(response => {
-        console.log(response);
-        setDisplayName(response.display_name);
-    });
+function getDisplayName(setDisplayName: Function) {
+    getUserData()
+        .then(res => setDisplayName(res.display_name));
 }
 
 export default function Profile() {
-    const [displayName, setDisplayName] = useState('Not signed in!')
+    const [displayName, setDisplayName] = useState("loading...");
     
     useEffect(() => {
         getDisplayName(setDisplayName)
-    })
+    }, []);
     
     return <><a>{displayName}</a></>
 }
