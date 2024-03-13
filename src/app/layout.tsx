@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
+  // TODO: If token not found, follow authentication flow
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>
