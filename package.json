@@ -2,6 +2,9 @@
   "name": "improved-playlist",
   "version": "0.1.0",
   "private": true,
+  "browserslist": [
+    "supports es6"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
