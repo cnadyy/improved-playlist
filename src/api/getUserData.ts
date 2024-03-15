@@ -1,8 +1,8 @@
 import fetch from '@api/fetch';
 
-function getUserData() {
-    return fetch('me', { method: 'GET' })
-    .then(response => response.json());
+async function getUserData() {
+    const response = await fetch('me', {method: 'GET'});
+    return await response.json();
 }
 
 export default getUserData;

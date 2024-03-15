@@ -29,6 +29,7 @@ function getToken(code: string): Promise<any> {
     .then(response => {
       if (!response.error) {
         localStorage.setItem('access_token', response.access_token)
+        localStorage.setItem('refresh_token', response.refresh_token)
       } else throw new Error("Failed to authenticate")
     });
 }
