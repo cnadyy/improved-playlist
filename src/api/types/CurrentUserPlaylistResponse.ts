@@ -1,3 +1,0 @@
-type CurrentUserPlaylistResponse = {
-    items: Playlist[]
-}

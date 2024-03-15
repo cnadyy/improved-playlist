@@ -1,4 +1,12 @@
-type Playlist = {
-    name: string,
-    id: string,
+interface Playlist {
+    description: string | undefined;
+    href: string;
+    id: string
+    name: string;
+    public: boolean;
+    tracks: {
+        href: string;
+        total: number;
+    };
+    uri: string;
 }

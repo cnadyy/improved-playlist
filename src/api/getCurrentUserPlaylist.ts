@@ -1,22 +1,30 @@
+/*
+Exports the UserPlaylistExplorer
+ - use .getPlaylists to get a promise containing an array of Playlist
+ - use nextPage and hasNextPage to expand the list
+*/
+
 import fetch from '@api/fetch';
-class PlaylistExplorer {
+
+class UserPlaylistExplorer {
+    private pages: Promise<UserPlaylist>[];
+
     constructor() {
-        this.request = getCurrentUserPlaylist();
-        this.playlists = this.#addPlaylists(request);
+        this.pages = [getCurrentUserPlaylist()];
     }
-    getNextPlaylist() {
-        return this.player;
+
+    getPlaylists(): Promise<Playlist[]> {
+        return Promise
+            .all(this.pages)
+            .then(pages => pages.flatMap(
+                page => page.items
+            ));
     }
-    #addPlaylists() {
-        // add playlists from active request
-    }
+
+    nextPage
 }
-async function getCurrentUserPlaylist(): Promise<CurrentUserPlaylistResponse> {
-    const response = await fetch('me/playlists', {method: 'GET'});
-    if (response.status != 200) {
-        return Promise.reject("Invalid status code")
-    }
-    return await response.json();
+async function getCurrentUserPlaylist(): Promise<UserPlaylist> {
+    return await fetch('me/playlists', {method: 'GET'});
 }
 
 export default getCurrentUserPlaylist;

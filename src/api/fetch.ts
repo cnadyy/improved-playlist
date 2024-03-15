@@ -9,7 +9,6 @@ const APIURL = "https://api.spotify.com/v1/";
 
 
 async function refreshAccessToken() {
-
     const refreshToken = localStorage.getItem('refresh_token');
     if (!refreshToken) return
     const url = "https://accounts.spotify.com/api/token";
@@ -41,21 +40,28 @@ async function webAPIFetch(resource: string, options: RequestInit): Promise<Resp
     });
 }
 
-async function webAPIFetchWithRefresh(resource: string, options: RequestInit): Promise<Response> {
+async function webAPIFetchWithRefresh(resource: string, options?: RequestInit): Promise<any> {
     return fetch(APIURL + resource, {
         headers: {
             Authorization: "Bearer " + accessToken
         },
         ...options
-    }).then(res => res.json())
-        .then(async res => {
-        if (res.error && res.error.message == "The access token expired") {
-            await refreshAccessToken();
-            return await webAPIFetch(resource, options);
+    }).then(res => {
+        if (res.status != 401 && res.status != 200) {
+            return Promise.reject(`Unable to ensure the output is JSON with the status code ${res.status}`)
         } else {
-            return res;
+            return res
         }
-    });
+    })
+        .then(res => res.json())
+        .then(async res => {
+            if (res.error && res.error.message == "The access token expired") {
+                await refreshAccessToken();
+                return await webAPIFetchWithRefresh(resource, options);
+            } else {
+                return res;
+            }
+        });
 }
 
-export default webAPIFetch;
+export default webAPIFetchWithRefresh;
