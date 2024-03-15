@@ -64,4 +64,4 @@ async function webAPIFetchWithRefresh(resource: string, options?: RequestInit): 
         });
 }
 
-export default webAPIFetchWithRefresh;
+export default webAPIFetch;
