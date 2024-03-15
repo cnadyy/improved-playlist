@@ -17,7 +17,6 @@ export default function RootLayout({children, unauthenticated}: { children: Reac
 
   // non guarded pages
   if (["/redirect"].filter(s => s == pathname).length) exception = true;
-  console.log("layout is rendering")
 
   return (
     <html lang="en">

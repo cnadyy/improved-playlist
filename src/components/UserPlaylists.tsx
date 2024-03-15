@@ -1,27 +1,39 @@
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
-import getCurrentUserPlaylist from "@api/getCurrentUserPlaylist";
+// TODO: Rewrite using reducer
 
-function UserPlaylists({ onAdd }: { onAdd: (playlist: Playlist) => void }) {
+import {useEffect, useState} from "react";
+import PlaylistExplorer from "@api/UserPlaylistExplorer";
 
-    function fetchPlaylists(setPlaylists: Dispatch<SetStateAction<Playlist[]>>) {
-        getCurrentUserPlaylist().then(response => {
-            console.log(response)
-            setPlaylists(response.items)
-        })
-    }
-
+function AuthUserPlaylists() {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [controller, setController] = useState<PlaylistExplorer | null>(null);
+    const [hasNextPage, setNextPage] = useState<boolean>(false);
+
     useEffect(() => {
-        fetchPlaylists(setPlaylists)
+        setController(new PlaylistExplorer());
     }, []);
 
-    return <ul>
-        {
-            playlists.map((playlist) => {
-                return <li key={playlist.id}><button onClick={() => onAdd(playlist)}>+</button> {playlist.name}</li>
-            })
+    useEffect(() => {
+        if (controller) {
+            controller.getPlaylists()
+                .then(setPlaylists);
+            controller.hasNextPage()
+                .then(setNextPage);
         }
+    }, [controller]);
+
+    // this is what happens if you try and manage state yourself....
+    // controller will exist as hasNextPage can only be true if the controller is set
+    // must bind as the onClick higher order function causes the method to lose context (wtf js)
+    // then must manually invoke an update of the playlist content 
+    const nextPage = () => (controller!.nextPage.bind(controller))().then(() => controller!.getPlaylists().then(setPlaylists));
+
+    return <ul>
+        {playlists.map((playlist) => <li key={playlist.id}>{playlist.name}</li>)}
+        {hasNextPage ? (
+            // TODO: extract component to have a loading state depedant on nextPage promise
+            <button onClick={nextPage}>load more</button>
+        ) : null}
     </ul>
 }
 
-export default UserPlaylists
+export default AuthUserPlaylists

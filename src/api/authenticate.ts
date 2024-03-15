@@ -23,7 +23,11 @@ const generateAuthorisationURL = (codeChallenge: string, codeVerifier: string): 
   const clientId = CLIENT_ID;
   const redirectUri = 'http://localhost:3000/redirect';
 
-  const scope = 'user-read-private user-read-email user-modify-playback-state';
+  const scope = [
+    ["user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"],
+    ["playlist-read-private", "playlist-read-collaborative"],
+    ["user-library-read"],
+  ].flat().join(" ");
   const authUrl = new URL("https://accounts.spotify.com/authorize")
 
   // generated in the previous step

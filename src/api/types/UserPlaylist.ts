@@ -1,6 +1,6 @@
 interface UserPlaylist {
     next: string | null;
     previous: string | null;
-    total: int;
+    total: number;
     items: Playlist[];
 }

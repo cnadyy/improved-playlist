@@ -33,11 +33,12 @@ export default function Profile() {
 	return (
 		<>
 			<a>{displayName}</a>
-			<UserPlaylists onAdd={playlist => playPlaylist(playlist)} />
-			<a style={{ color: "blue" }} onClick={playTrack}>
+			<a style={{ color: "blue", cursor: "pointer" }} onClick={playTrack}>
 				{" "}
 				play the celesete
 			</a>
+            <h3>User playlists</h3>
+            <UserPlaylists/>
 		</>
 	);
 }

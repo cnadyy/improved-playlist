@@ -31,13 +31,13 @@ async function refreshAccessToken() {
     localStorage.setItem('refresh_token', response.refresh_token);
 }
 
-async function webAPIFetch(resource: string, options: RequestInit): Promise<Response> {
+async function webAPIFetch(resource: string, options: RequestInit): Promise<any> {
     return fetch(APIURL + resource, {
         headers: {
             Authorization: "Bearer " + accessToken
         },
         ...options
-    });
+    }).then(res => res.json());
 }
 
 async function webAPIFetchWithRefresh(resource: string, options?: RequestInit): Promise<any> {
