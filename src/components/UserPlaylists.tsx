@@ -23,9 +23,9 @@ function AuthUserPlaylists() {
 
     // this is what happens if you try and manage state yourself....
     // controller will exist as hasNextPage can only be true if the controller is set
-    // must bind as the onClick higher order function causes the method to lose context (wtf js)
-    // then must manually invoke an update of the playlist content 
-    const nextPage = () => (controller!.nextPage.bind(controller))().then(() => controller!.getPlaylists().then(setPlaylists));
+    // and must manually invoke an update of the playlist content 
+    const nextPage = () => controller!.nextPage()
+        .then(() => controller!.getPlaylists().then(setPlaylists));
 
     return <ul>
         {playlists.map((playlist) => <li key={playlist.id}>{playlist.name}</li>)}
