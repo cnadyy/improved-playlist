@@ -25,9 +25,8 @@ function FolderExporer({
               return (
                 <li key={subfolder.id}>
                   <a onClick={() => onDropdownClick(item.itemID as number)}>
-                    {openIcon}
-                  </a>{" "}
-                  📁 {subfolder.name}
+                    {openIcon} 📁 {subfolder.name}
+                  </a>
                   {subitems}
                 </li>
               );

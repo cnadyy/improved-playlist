@@ -7,6 +7,9 @@ import UserPlaylists from "@/components/UserPlaylists";
 import startResumePlayback from "@api/startResumePlayback";
 import FolderExporer from "@/components/FolderExplorer";
 import Folder, { SubitemKind } from "@/api/types/Folder";
+import getAvailableDevices from "@/api/getAvailableDevices";
+import PlayerSelector from "@/components/PlayerSelector";
+import Device from "@/api/types/Device";
 
 function getDisplayName(setDisplayName: any) {
   getUserData().then((res) => setDisplayName(res.display_name));
@@ -14,21 +17,30 @@ function getDisplayName(setDisplayName: any) {
 
 export default function Profile() {
   const [displayName, setDisplayName] = useState("loading...");
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [currentPlayer, setCurrentPlayer] = useState<number>(0);
 
   useEffect(() => {
     getDisplayName(setDisplayName);
+    getAvailableDevices().then((res) => setDevices(res.devices));
   }, []);
 
   function playTrack() {
-    queueTrack(encodeURIComponent("spotify:track:7irQdnDBovK2AVSBilasDZ")).then(
+    queueTrack(
+      encodeURIComponent("spotify:track:7irQdnDBovK2AVSBilasDZ"),
+      devices[currentPlayer].id,
+    ).then(
       (r) =>
         // FIXME: Handle error
         r,
     );
   }
 
-  function playPlaylist(playlist: Playlist) {
-    startResumePlayback(playlist.uri);
+  function playPlaylist() {
+    startResumePlayback({
+      uris: ["spotify:track:7irQdnDBovK2AVSBilasDZ"],
+      deviceID: devices[currentPlayer].id,
+    });
   }
 
   const [folders, setFolders] = useState<Folder[]>([
@@ -89,7 +101,7 @@ export default function Profile() {
   return (
     <>
       <a>{displayName}</a>
-      <a style={{ color: "blue", cursor: "pointer" }} onClick={playTrack}>
+      <a style={{ color: "blue", cursor: "pointer" }} onClick={playPlaylist}>
         {" "}
         play the celesete
       </a>
@@ -101,6 +113,11 @@ export default function Profile() {
       />
       <h3>User playlists</h3>
       <UserPlaylists />
+      <PlayerSelector
+        devices={devices}
+        currentPlayer={currentPlayer}
+        setCurrentPlayer={setCurrentPlayer}
+      />
     </>
   );
 }
