@@ -1,4 +1,5 @@
 // user authenticated network requests
+// TODO: Handle "No active device found" 404 errors seperately, explaining remote control.
 
 // will always be defined. This surpresses
 // build step error "window is not defined"
