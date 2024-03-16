@@ -1,4 +1,4 @@
-import webAPIFetchWithRefresh from "@api/fetch";
+import { webAPIFetch } from "@api/fetch";
 
 async function startResumePlayback({
   contextURI,
@@ -21,7 +21,7 @@ async function startResumePlayback({
     body["uris"] = uris;
   }
 
-  return webAPIFetchWithRefresh(
+  return webAPIFetch(
     `me/player/play${deviceID ? `?device_id=${deviceID}` : ``}`,
     {
       method: "PUT",
