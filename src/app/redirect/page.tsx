@@ -39,15 +39,15 @@ export default function Redirect() {
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
   
-  const [noError, setError] = useState(true);
+  const [noError, setNoError] = useState(true);
   
   useEffect(() => {
     if (code) {
       getToken(code)
       .then(() => window.location.href = "/")
-      .catch(() => setError(true));
-    } else setError(true);
-  });
+      .catch(() => setNoError(false));
+    } else setNoError(false);
+  }, []);
  
   return <>{noError ? <p>Authenticated! Loading....</p> : <p> Failed. Please try again</p>}</>
 }
