@@ -1,12 +1,11 @@
 // user authenticated network requests
 // TODO: Handle "No active device found" 404 errors seperately, explaining remote control.
 
-// will always be defined. This surpresses
-// build step error "window is not defined"
 import CLIENT_ID from "@/app/secrets";
 
-if (typeof window != "undefined")
-  var accessToken = localStorage.getItem("access_token");
+// will always be defined. This surpresses
+// build step error "window is not defined"
+let accessToken = localStorage.getItem("access_token");
 const APIURL = "https://api.spotify.com/v1/";
 
 async function refreshAccessToken() {
@@ -54,7 +53,7 @@ async function webAPIFetch(
     if (res.status != 401) {
       return res;
     }
-    let response = await res.clone().json();
+    const response = await res.clone().json();
     if (
       response.error &&
       (response.error.message == "The access token expired" ||

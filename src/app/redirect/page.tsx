@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 function getToken(code: string): Promise<any> {
   // stored in the previous step
-  let codeVerifier = window.localStorage.getItem("code_verifier");
+  const codeVerifier = window.localStorage.getItem("code_verifier");
   if (!codeVerifier) throw new Error("Code verifier not set");
 
   const payload = {
@@ -45,7 +45,7 @@ export default function Redirect() {
         .then(() => (window.location.href = "/"))
         .catch(() => setNoError(false));
     } else setNoError(false);
-  }, []);
+  }, [code]);
 
   return (
     <>

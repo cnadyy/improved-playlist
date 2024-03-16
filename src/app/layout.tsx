@@ -22,7 +22,7 @@ function RootLayout({
   // check if authenticated
   useEffect(() => {
     if (window.localStorage.getItem("access_token")) setToken(true);
-  });
+  }, []);
 
   // non guarded pages
   if (["/redirect", "/"].filter((s) => s == pathname).length) exception = true;

@@ -56,9 +56,11 @@ const generateAuthorisationURL = (
   return authUrl.toString();
 };
 
-export default async function () {
+async function redirectToAuth() {
   const codeVerifier = generateRandomString(72);
   const hashed = await sha256(codeVerifier);
   const codeChallenge = base64encode(hashed);
   window.location.href = generateAuthorisationURL(codeChallenge, codeVerifier);
 }
+
+export default redirectToAuth;
