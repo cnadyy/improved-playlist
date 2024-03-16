@@ -28,7 +28,7 @@ function RootLayout({
   if (["/redirect", "/"].filter((s) => s == pathname).length) exception = true;
 
   return (
-    <html lang="en">
+    <html lang="en" style={{scrollBehavior: "smooth"}}>
       <body className={inter.className}>
         <AuthenticatedContext.Provider value={isTokenSet}>
           {isTokenSet || exception ? children : unauthenticated}
