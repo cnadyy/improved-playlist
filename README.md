@@ -15,8 +15,8 @@
 #### Searching screen
 
 - Button on Edit screen opens new screen to:
-    - Search for public playlists to add
-    - Show user playlists
+  - Search for public playlists to add
+  - Show user playlists
 
 ### Playback screen
 
@@ -37,4 +37,3 @@
 
 - Triggers the token flow automatically
 - `/redirect`
-

@@ -5,40 +5,41 @@ import getUserData from "@api/getUserData";
 import { useSearchParams } from "next/navigation";
 import queueTrack from "@api/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
-import {start} from "node:repl";
+import { start } from "node:repl";
 import startResumePlayback from "@api/startResumePlayback";
 
 function getDisplayName(setDisplayName: Function) {
-	getUserData().then((res) => setDisplayName(res.display_name));
+  getUserData().then((res) => setDisplayName(res.display_name));
 }
 
 export default function Profile() {
-	const [displayName, setDisplayName] = useState("loading...");
+  const [displayName, setDisplayName] = useState("loading...");
 
-	useEffect(() => {
-		getDisplayName(setDisplayName);
-	}, []);
+  useEffect(() => {
+    getDisplayName(setDisplayName);
+  }, []);
 
-	function playTrack() {
-		queueTrack(encodeURIComponent("spotify:track:7irQdnDBovK2AVSBilasDZ")).then(r =>
-			// FIXME: Handle error
-			r
-		);
-	}
+  function playTrack() {
+    queueTrack(encodeURIComponent("spotify:track:7irQdnDBovK2AVSBilasDZ")).then(
+      (r) =>
+        // FIXME: Handle error
+        r,
+    );
+  }
 
-	function playPlaylist(playlist: Playlist) {
-		startResumePlayback(playlist.uri)
-	}
+  function playPlaylist(playlist: Playlist) {
+    startResumePlayback(playlist.uri);
+  }
 
-	return (
-		<>
-			<a>{displayName}</a>
-			<a style={{ color: "blue", cursor: "pointer" }} onClick={playTrack}>
-				{" "}
-				play the celesete
-			</a>
-            <h3>User playlists</h3>
-            <UserPlaylists/>
-		</>
-	);
+  return (
+    <>
+      <a>{displayName}</a>
+      <a style={{ color: "blue", cursor: "pointer" }} onClick={playTrack}>
+        {" "}
+        play the celesete
+      </a>
+      <h3>User playlists</h3>
+      <UserPlaylists />
+    </>
+  );
 }
