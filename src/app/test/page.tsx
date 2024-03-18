@@ -6,12 +6,13 @@ import queueTrack from "@api/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
 import startResumePlayback from "@api/startResumePlayback";
 import FolderExporer from "@/components/FolderExplorer";
-import Folder, { SubitemKind } from "@/api/types/Folder";
+import Folder from "@/api/types/Folder";
 import getAvailableDevices from "@/api/getAvailableDevices";
 import PlayerSelector from "@/components/PlayerSelector";
 import Device from "@/api/types/Device";
+import subfolders from "@mock/subfolders.json";
 
-function getDisplayName(setDisplayName: any) {
+function getDisplayName(setDisplayName: (display: string) => void) {
   getUserData().then((res) => setDisplayName(res.display_name));
 }
 
@@ -43,54 +44,7 @@ export default function Profile() {
     });
   }
 
-  const [folders, setFolders] = useState<Folder[]>([
-    {
-      name: "Hi there",
-      id: "Hi there",
-      items: [
-        {
-          kind: SubitemKind.Folder,
-          itemID: 1,
-        },
-        {
-          kind: SubitemKind.Folder,
-          itemID: 3,
-        },
-      ],
-      color: "red",
-      open: true,
-    },
-    {
-      name: "Hi there 2",
-      id: "Hi there 2",
-      items: [
-        {
-          kind: SubitemKind.Folder,
-          itemID: 2,
-        },
-        {
-          kind: SubitemKind.SpotifyURI,
-          itemID: "This is a test",
-        },
-      ],
-      color: "blue",
-      open: true,
-    },
-    {
-      name: "Hi there 3",
-      id: "Hi there 2",
-      items: [],
-      color: "blue",
-      open: true,
-    },
-    {
-      name: "Ok thene",
-      id: "Hi there 2",
-      items: [],
-      color: "blue",
-      open: true,
-    },
-  ]);
+  const [folders, setFolders] = useState<Folder[]>(subfolders);
 
   function updateFolder(itemID: number) {
     const newFolders = { ...folders };

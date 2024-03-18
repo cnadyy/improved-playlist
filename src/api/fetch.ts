@@ -41,7 +41,7 @@ async function webAPIFetch(
   resource: string,
   options?: RequestInit,
   retry: boolean = true,
-): Promise<any> {
+): Promise<Response> {
   if (!accessToken || accessToken == "undefined") {
     return Promise.reject(`You must sign in...`);
   }
@@ -74,6 +74,7 @@ async function webAPIFetch(
         localStorage.removeItem("refresh_token");
         // Redirect so the use can sign in again.
         window.location.href = "/";
+        return Promise.reject("Need to resign in");
       }
     } else {
       return res;
