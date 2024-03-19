@@ -1,48 +1,48 @@
 [
   {
-    "name": "Hi there",
-    "id": "Hi there",
+    "name": "This is folder 1",
+    "id": "xxx-xxx",
     "items": [
       {
         "kind": 2,
-        "itemID": 1
-      },
-      {
-        "kind": 2,
-        "itemID": 3
-      }
-    ],
-    "color": "red",
-    "open": true
-  },
-  {
-    "name": "Hi there 2",
-    "id": "Hi there 2",
-    "items": [
-      {
-        "kind": 2,
-        "itemID": 2
+        "itemID": "yyyy-yyyy"
       },
       {
         "kind": 1,
-        "itemID": "This is a test"
+        "itemID": "spotify:playlist:37i9dQZEVXcT03oDE1LA8U"
       }
     ],
-    "color": "blue",
+    "color": "#ddc38e",
     "open": true
   },
   {
-    "name": "Hi there 3",
-    "id": "Hi there 2",
-    "items": [],
-    "color": "blue",
+    "name": "This playlist is cool",
+    "id": "yyyy-yyyy",
+    "items": [
+      {
+        "kind": 2,
+        "itemID": "zzzz-zzzz"
+      },
+      {
+        "kind": 2,
+        "itemID": "aaaa-aaaa"
+      }
+    ],
+    "color": "#686546",
     "open": true
   },
   {
-    "name": "Ok thene",
-    "id": "Hi there 2",
+    "name": "Really nice playlist?",
+    "id": "zzzz-zzzz",
     "items": [],
-    "color": "blue",
+    "color": "#c44891",
+    "open": true
+  },
+  {
+    "name": "I'm kinda empty",
+    "id": "aaaa-aaaa",
+    "items": [],
+    "color": "#b501e1",
     "open": true
   }
 ]

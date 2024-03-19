@@ -2,6 +2,7 @@ import { CSSProperties, useEffect } from "react";
 import HideScrollBar from "@css/HideScrollBar";
 import Folder, { SubitemKind } from "@/api/types/Folder";
 import "@css/folderIconStyle.css";
+import Subitem from "./Subitem";
 
 const folderIconStyle: CSSProperties = {
   width: "13rem",
@@ -32,12 +33,11 @@ export default function FolderComponent({ data }: { data: Folder }) {
       />
       <h2 style={textStyle}>{data.name}</h2>
       <p style={textStyle}>
-        {data.id} |
-        {data.items
-          .filter((subitem) => subitem.kind == SubitemKind.SpotifyURI)
-          .map((subitem) => subitem.itemID)
-          .join(" ")}
+        ID of folder: {data.id}
       </p>
+      <ul>
+        {data.items.map(i => <Subitem id={i.itemID} kind={i.kind} key={i.itemID}/>)}
+      </ul>
     </div>
   );
 }

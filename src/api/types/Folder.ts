@@ -10,7 +10,7 @@ interface Folder {
 
 interface Subitem {
   kind: SubitemKind;
-  itemID: number | SpotifyURI;
+  itemID: string | SpotifyURI;
 }
 
 enum SubitemKind {

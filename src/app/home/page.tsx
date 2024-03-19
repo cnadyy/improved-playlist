@@ -3,7 +3,7 @@
 import FolderComponent from "@/components/FolderComponent";
 import Folder from "@/api/types/Folder";
 import { CSSProperties, useEffect, useState } from "react";
-import folders from "@mock/folders.json";
+import folders from "@mock/subfolders.json";
 import HideScrollBar from "@/css/HideScrollBar";
 import { handleClientScriptLoad } from "next/script";
 
