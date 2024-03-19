@@ -5,7 +5,6 @@ interface Folder {
   name: string;
   // covers will be a fixed colour for now
   color: string;
-  open: boolean;
 }
 
 interface Subitem {

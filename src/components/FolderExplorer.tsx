@@ -3,20 +3,34 @@ import {
   faAngleDown,
   faAngleRight,
   faFolder,
+  faMusic,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
 function FolderExporer({
   folders,
   rootId,
-  onDropdownClick,
 }: {
   folders: Folder[];
   rootId: number;
-  onDropdownClick: (itemID: number) => void;
 }) {
+  const [openedFolders, setOpenedFolders] = useState<string[]>([]);
+
+  function toggleFolder(id: string) {
+    const newOpenedFolders = [...openedFolders];
+    const indexOf = openedFolders.indexOf(id);
+    if (indexOf == -1) {
+      newOpenedFolders.push(id);
+    } else {
+      newOpenedFolders.splice(indexOf, 1);
+    }
+
+    setOpenedFolders(newOpenedFolders);
+  }
+
   function drawFolder(folder: Folder) {
     return (
       <>
@@ -25,9 +39,10 @@ function FolderExporer({
             if (item.kind == SubitemKind.Folder) {
               // Basically guarentee this, hope there is a way
               // for this to make sense in typescript
-              const subfolder = folders[item.itemID as number];
-              const subitems = subfolder.open && drawFolder(subfolder);
-              const openIcon = subfolder.open ? (
+              const subfolder = folders.filter((f) => f.id == item.itemID)[0];
+              const isSubfolderOpen = openedFolders.includes(item.itemID);
+              const subitems = isSubfolderOpen && drawFolder(subfolder);
+              const openIcon = isSubfolderOpen ? (
                 <FontAwesomeIcon
                   style={{ paddingRight: 10 }}
                   color="gray"
@@ -42,7 +57,7 @@ function FolderExporer({
               );
               return (
                 <li key={subfolder.id}>
-                  <a onClick={() => onDropdownClick(item.itemID as number)}>
+                  <a onClick={() => toggleFolder(item.itemID)}>
                     {openIcon}
                     <FontAwesomeIcon icon={faFolder} color="gray" />{" "}
                     {subfolder.name}
@@ -51,7 +66,16 @@ function FolderExporer({
                 </li>
               );
             } else {
-              return <li key={item.kind}>{item.itemID}</li>;
+              return (
+                <li key={item.kind}>
+                  <FontAwesomeIcon
+                    style={{ paddingRight: 4 }}
+                    icon={faMusic}
+                    color="gray"
+                  />{" "}
+                  {item.itemID}
+                </li>
+              );
             }
           })}
         </ul>

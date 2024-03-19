@@ -12,8 +12,7 @@
         "itemID": "spotify:playlist:37i9dQZEVXcT03oDE1LA8U"
       }
     ],
-    "color": "#ddc38e",
-    "open": true
+    "color": "#ddc38e"
   },
   {
     "name": "This playlist is cool",
@@ -28,21 +27,18 @@
         "itemID": "aaaa-aaaa"
       }
     ],
-    "color": "#686546",
-    "open": true
+    "color": "#686546"
   },
   {
     "name": "Really nice playlist?",
     "id": "zzzz-zzzz",
     "items": [],
-    "color": "#c44891",
-    "open": true
+    "color": "#c44891"
   },
   {
     "name": "I'm kinda empty",
     "id": "aaaa-aaaa",
     "items": [],
-    "color": "#b501e1",
-    "open": true
+    "color": "#b501e1"
   }
 ]

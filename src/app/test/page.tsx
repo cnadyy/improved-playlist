@@ -46,12 +46,6 @@ export default function Profile() {
 
   const [folders, setFolders] = useState<Folder[]>(subfolders);
 
-  function updateFolder(itemID: number) {
-    const newFolders = { ...folders };
-    newFolders[itemID].open = !newFolders[itemID].open;
-    setFolders(newFolders);
-  }
-
   function updateDevices() {
     getAvailableDevices().then((res) => setDevices(res.devices));
   }
@@ -64,11 +58,7 @@ export default function Profile() {
         play the celesete
       </a>
       <h3>Folder explorer</h3>
-      <FolderExporer
-        onDropdownClick={updateFolder}
-        folders={folders}
-        rootId={0}
-      />
+      <FolderExporer folders={folders} rootId={0} />
       <h3>User playlists</h3>
       <UserPlaylists />
       <PlayerSelector
