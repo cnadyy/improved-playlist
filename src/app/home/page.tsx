@@ -26,12 +26,12 @@ export default function Folders() {
   useEffect(() => {
     // retrigger browser scrolling to correct spot after content has loaded
     if (!dataLoadedBefore && folderList.length != 0) {
-      let hash = location.hash;
+      const hash = location.hash;
       window.location.hash = "";
       window.location.hash = hash;
       setDataLoadedBefore(true);
     }
-  }, [folderList])
+  }, [folderList]);
 
   // trigger hash change animation
   useEffect(() => {
@@ -68,7 +68,11 @@ export default function Folders() {
       `}</style>
       <ul style={folderListStyle}>
         {folderList.map((folder) => (
-          <li id={"a" + folder.id} key={folder.id} style={{ listStyle: "none", scrollMarginTop: "100px", }}>
+          <li
+            id={"a" + folder.id}
+            key={folder.id}
+            style={{ listStyle: "none", scrollMarginTop: "100px" }}
+          >
             <FolderComponent data={folder} />
           </li>
         ))}

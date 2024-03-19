@@ -26,10 +26,13 @@ const textStyle: CSSProperties = {
 export default function FolderComponent({ data }: { data: Folder }) {
   return (
     <div style={folderStyle}>
-      <div className={"folderIcon"} style={{ backgroundColor: data.color, ...folderIconStyle }} />
+      <div
+        className={"folderIcon"}
+        style={{ backgroundColor: data.color, ...folderIconStyle }}
+      />
       <h2 style={textStyle}>{data.name}</h2>
       <p style={textStyle}>
-        {data.id} | 
+        {data.id} |
         {data.items
           .filter((subitem) => subitem.kind == SubitemKind.SpotifyURI)
           .map((subitem) => subitem.itemID)

@@ -52,6 +52,10 @@ export default function Profile() {
     setFolders(newFolders);
   }
 
+  function updateDevices() {
+    getAvailableDevices().then((res) => setDevices(res.devices));
+  }
+
   return (
     <>
       <a>{displayName}</a>
@@ -71,6 +75,7 @@ export default function Profile() {
         devices={devices}
         currentPlayer={currentPlayer}
         setCurrentPlayer={setCurrentPlayer}
+        updateDevices={updateDevices}
       />
     </>
   );

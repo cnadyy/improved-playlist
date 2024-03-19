@@ -1,45 +1,78 @@
 import Device from "@/api/types/Device";
 import { useState } from "react";
 import { css } from "@emotion/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRefresh } from "@fortawesome/free-solid-svg-icons";
 
 function PlayerSelector({
   devices,
   currentPlayer,
   setCurrentPlayer,
+  updateDevices,
 }: {
   devices: Device[];
   currentPlayer: number;
   setCurrentPlayer: (device: number) => void;
+  updateDevices: () => void;
 }) {
   const [show, setShow] = useState(false);
 
   const currentDevice = devices[currentPlayer];
   return (
     <div
-      onClick={() => setShow(!show)}
       css={css`
         position: relative;
         display: inline-block;
-        width: 200px;
       `}
     >
       <div
         css={css`
-          padding: 0.625rem;
-          border: solid 0.5px;
-          border-radius: ${show ? "4px 4px 0px 0px" : "4px"};
-          border-color: ${show ? "darkgray" : "gray"};
-          background-color: ${show ? "lightgray" : "white"};
-          &:hover {
-            background-color: #bbbbbb;
-          }
+          display: flex;
+          align-items: center;
         `}
       >
-        <div>
-          {currentDevice ? devices[currentPlayer].name : "No devices found"}
+        <div style={{ width: 200 }}>
+          <div
+            onClick={() => setShow(!show)}
+            css={css`
+              padding: 0.625rem;
+              border: solid 0.5px;
+              border-radius: ${show && devices.length > 1
+                ? "4px 0px 0px 0px"
+                : "4px 0px 0px 4px"};
+              border-color: ${show ? "darkgray" : "gray"};
+              background-color: ${show ? "lightgray" : "white"};
+              &:hover {
+                background-color: #bbbbbb;
+              }
+            `}
+          >
+            <div>
+              {currentDevice ? devices[currentPlayer].name : "No devices found"}
+              <div style={{ color: "gray", fontSize: 12 }}>
+                {currentDevice
+                  ? devices[currentPlayer].type
+                  : "No devices found"}
+              </div>
+            </div>
+          </div>
         </div>
-        <div style={{ color: "gray", fontSize: 12 }}>
-          {currentDevice ? devices[currentPlayer].type : "No devices found"}
+        <div>
+          <FontAwesomeIcon
+            icon={faRefresh}
+            onClick={() => updateDevices()}
+            size="lg"
+            css={css`
+              padding: 1.06rem;
+              border: solid 0.5px;
+              border-radius: 0px 4px 4px 0px;
+              border-left-width: 0px;
+              border-color: gray;
+              &:hover {
+                background-color: #bbbbbb;
+              }
+            `}
+          />
         </div>
       </div>
       {show ? (
@@ -63,6 +96,7 @@ function PlayerSelector({
                 <div
                   key={dev.id}
                   onClick={() => {
+                    setShow(!show);
                     setCurrentPlayer(i);
                   }}
                   css={css`

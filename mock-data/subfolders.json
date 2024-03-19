@@ -1,0 +1,48 @@
+[
+  {
+    "name": "Hi there",
+    "id": "Hi there",
+    "items": [
+      {
+        "kind": 2,
+        "itemID": 1
+      },
+      {
+        "kind": 2,
+        "itemID": 3
+      }
+    ],
+    "color": "red",
+    "open": true
+  },
+  {
+    "name": "Hi there 2",
+    "id": "Hi there 2",
+    "items": [
+      {
+        "kind": 2,
+        "itemID": 2
+      },
+      {
+        "kind": 1,
+        "itemID": "This is a test"
+      }
+    ],
+    "color": "blue",
+    "open": true
+  },
+  {
+    "name": "Hi there 3",
+    "id": "Hi there 2",
+    "items": [],
+    "color": "blue",
+    "open": true
+  },
+  {
+    "name": "Ok thene",
+    "id": "Hi there 2",
+    "items": [],
+    "color": "blue",
+    "open": true
+  }
+]
