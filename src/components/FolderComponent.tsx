@@ -2,6 +2,7 @@ import { CSSProperties, useEffect } from "react";
 import HideScrollBar from "@css/HideScrollBar";
 import Folder, { SubitemKind } from "@/api/types/Folder";
 import "@css/folderIconStyle.css";
+import "@css/floatingContents.css";
 import Subitem from "./Subitem";
 
 const folderIconStyle: CSSProperties = {
@@ -15,6 +16,7 @@ const folderStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column",
   width: "13rem",
+  height: "100%",
 };
 
 const textStyle: CSSProperties = {
@@ -24,20 +26,22 @@ const textStyle: CSSProperties = {
   ...HideScrollBar,
 };
 
-export default function FolderComponent({ data }: { data: Folder }) {
+function FolderComponent({ data }: { data: Folder }) {
   return (
-    <div style={folderStyle}>
+    <div style={folderStyle} className={"folderComponent"}>
       <div
         className={"folderIcon"}
         style={{ backgroundColor: data.color, ...folderIconStyle }}
       />
-      <h2 style={textStyle}>{data.name}</h2>
       <p style={textStyle}>
         ID of folder: {data.id}
       </p>
-      <ul>
+      <h2 style={textStyle}>{data.name}</h2>
+      <ul className={"contentsList"}>
         {data.items.map(i => <Subitem id={i.itemID} kind={i.kind} key={i.itemID}/>)}
       </ul>
     </div>
   );
 }
+
+export {FolderComponent as default, folderStyle, folderIconStyle}

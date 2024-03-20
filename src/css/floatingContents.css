@@ -1,0 +1,9 @@
+.contentsList {
+    position: absolute;
+    background-color: white;
+    visibility: hidden;
+}
+
+.folderComponent:hover .contentsList {
+    visibility: visible;
+}

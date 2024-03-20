@@ -6,6 +6,8 @@ import { CSSProperties, useEffect, useState } from "react";
 import folders from "@mock/subfolders.json";
 import HideScrollBar from "@/css/HideScrollBar";
 import { handleClientScriptLoad } from "next/script";
+import NewFolder from "@/components/NewFolderComponent";
+import getFolderList from "@/api/getFolderList";
 
 const folderListStyle: CSSProperties = {
   display: "flex",
@@ -20,7 +22,7 @@ export default function Folders() {
   const [dataLoadedBefore, setDataLoadedBefore] = useState<boolean>(false);
 
   useEffect(() => {
-    setFolderList(folders);
+    setFolderList(getFolderList());
   }, []);
 
   useEffect(() => {
@@ -76,11 +78,8 @@ export default function Folders() {
             <FolderComponent data={folder} />
           </li>
         ))}
+        <NewFolder/>
       </ul>
-      <h1>This should contain:</h1>
-      <ol>
-        <li>An add folder button</li>
-      </ol>
     </div>
-  );
+  )
 }
