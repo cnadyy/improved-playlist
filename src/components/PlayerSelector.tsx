@@ -2,7 +2,7 @@ import Device from "@/api/types/Device";
 import { useState } from "react";
 import { css } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretUp, faRefresh, faSquareCaretDown, faSquareCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 function PlayerSelector({
   devices,
@@ -37,6 +37,9 @@ function PlayerSelector({
             css={css`
               padding: 0.625rem;
               border: solid 0.5px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
               border-radius: ${show && devices.length > 1
                 ? "4px 0px 0px 0px"
                 : "4px 0px 0px 4px"};
@@ -55,6 +58,7 @@ function PlayerSelector({
                   : "No devices found"}
               </div>
             </div>
+            <FontAwesomeIcon icon={show ? faSquareCaretUp : faSquareCaretDown} size="xl" />
           </div>
         </div>
         <div>

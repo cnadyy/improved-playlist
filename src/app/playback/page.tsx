@@ -1,6 +1,20 @@
-export default function page() {
+"use client";
+
+import FolderDetailsComponent from "@/components/FolderDetails";
+import { useSearchParams } from "next/navigation";
+import testData from "@mock/subfolders.json";
+
+export default function Page() {
+  const searchParams = useSearchParams();
+
+  const folderID = searchParams.get("id");
+
+  const folder = testData[0];
+
   return (
     <div>
+      <FolderDetailsComponent folder={folder} />
+      <a>{folderID}</a>
       <h1>This should contain:</h1>
       <ol>
         <li>Query parameter id to identify an existing folder</li>
