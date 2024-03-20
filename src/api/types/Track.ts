@@ -1,0 +1,3 @@
+interface Track {
+  uri: string;
+}

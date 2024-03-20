@@ -4,10 +4,10 @@ import { SubitemKind } from "@/api/types/Folder";
 import React, { CSSProperties, useEffect, useState } from "react";
 
 const subItemStyles: CSSProperties = {
-    
+
 }
 
-export default function Subitem({ id, kind }: { id: string, kind: SubitemKind}): React.ReactNode {
+export default function Subitem({ id, kind }: { id: string, kind: SubitemKind }): React.ReactNode {
     const [itemName, setItemName] = useState<null | string>(null);
     const handleOnClick = () => {
         location.hash = "";

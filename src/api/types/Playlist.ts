@@ -7,6 +7,11 @@ interface Playlist {
   tracks: {
     href: string;
     total: number;
+    items: TrackItem[];
   };
   uri: string;
+}
+
+interface TrackItem {
+  track: Track;
 }

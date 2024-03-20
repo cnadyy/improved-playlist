@@ -2,6 +2,7 @@ import Folder from "@/api/types/Folder";
 import { css } from "@emotion/react";
 import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
 import { CSSProperties } from "react";
 
 const folderIconStyle: CSSProperties = {
@@ -20,10 +21,12 @@ const button = css`
 `;
 
 export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
+  const router = useRouter();
   return (
     <div
       css={css`
         display: flex;
+        justify-content: center;
         align-items: center;
       `}
     >
@@ -60,7 +63,12 @@ export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
           `}
         >
           <FontAwesomeIcon css={button} icon={faPlayCircle} size="2xl" />
-          <FontAwesomeIcon css={button} icon={faPencil} size="2xl" />
+          <FontAwesomeIcon
+            onClick={() => router.push("/edit?" + folder.id)}
+            css={button}
+            icon={faPencil}
+            size="2xl"
+          />
         </div>
       </div>
     </div>
