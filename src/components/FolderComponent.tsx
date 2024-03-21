@@ -33,15 +33,15 @@ function FolderComponent({ data }: { data: Folder }) {
         className={"folderIcon"}
         style={{ backgroundColor: data.color, ...folderIconStyle }}
       />
-      <p style={textStyle}>
-        ID of folder: {data.id}
-      </p>
+      <p style={textStyle}>ID of folder: {data.id}</p>
       <h2 style={textStyle}>{data.name}</h2>
       <ul className={"contentsList"}>
-        {data.items.map(i => <Subitem id={i.itemID} kind={i.kind} key={i.itemID}/>)}
+        {data.items.map((i) => (
+          <Subitem id={i.itemID} kind={i.kind} key={i.itemID} />
+        ))}
       </ul>
     </div>
   );
 }
 
-export {FolderComponent as default, folderStyle, folderIconStyle}
+export { FolderComponent as default, folderStyle, folderIconStyle };

@@ -78,8 +78,8 @@ export default function Folders() {
             <FolderComponent data={folder} />
           </li>
         ))}
-        <NewFolder/>
+        <NewFolder />
       </ul>
     </div>
-  )
+  );
 }
