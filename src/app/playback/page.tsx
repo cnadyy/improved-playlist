@@ -2,14 +2,20 @@
 
 import FolderDetailsComponent from "@/components/FolderDetails";
 import { useSearchParams } from "next/navigation";
-import testData from "@mock/subfolders.json";
+import getFolderList, { useFolderList } from "@/api/getFolderList";
+import { useEffect, useState } from "react";
+import Folder from "@/api/types/Folder";
 
 export default function Page() {
   const searchParams = useSearchParams();
+  const folders = useFolderList();
 
   const folderID = searchParams.get("id");
+  const folder = folders.find((folder) => folder.id == folderID);
 
-  const folder = testData[0];
+  if (!folder) {
+    return <div>This folder does not exist</div>;
+  }
 
   return (
     <div>

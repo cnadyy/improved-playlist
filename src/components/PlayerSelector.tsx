@@ -33,9 +33,6 @@ function PlayerSelector({
         css={css`
           display: flex;
           align-items: center;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
         `}
       >
         <div style={{ width: 200 }}>
@@ -57,7 +54,13 @@ function PlayerSelector({
               }
             `}
           >
-            <div>
+            <div
+              css={css`
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+              `}
+            >
               {currentDevice ? devices[currentPlayer].name : "No devices found"}
               <div style={{ color: "gray", fontSize: 12 }}>
                 {currentDevice

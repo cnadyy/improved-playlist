@@ -1,4 +1,6 @@
+import { useFolderList } from "@/api/getFolderList";
 import Folder from "@/api/types/Folder";
+import playFolder from "@/app/utils/Player";
 import { css } from "@emotion/react";
 import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,6 +24,7 @@ const button = css`
 
 export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
   const router = useRouter();
+  const folders = useFolderList();
   return (
     <div
       css={css`
@@ -62,7 +65,12 @@ export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
             margin-bottom: 1rem;
           `}
         >
-          <FontAwesomeIcon css={button} icon={faPlayCircle} size="2xl" />
+          <FontAwesomeIcon
+            css={button}
+            icon={faPlayCircle}
+            size="2xl"
+            onClick={() => playFolder(folder.id, folders)}
+          />
           <FontAwesomeIcon
             onClick={() => router.push("/edit?" + folder.id)}
             css={button}
