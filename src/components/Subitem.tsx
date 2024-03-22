@@ -13,11 +13,6 @@ export default function Subitem({
   kind: SubitemKind;
 }): React.ReactNode {
   const [itemName, setItemName] = useState<null | string>(null);
-  const handleOnClick = () => {
-    location.hash = "";
-    console.log(location.hash);
-    location.hash = "a" + id;
-  };
 
   useEffect(() => {
     console.log(id);
@@ -29,7 +24,7 @@ export default function Subitem({
   return (
     <>
       {itemName ? (
-        <li style={subItemStyles} onClick={handleOnClick}>
+        <li style={subItemStyles}>
           {itemName}
         </li>
       ) : null}
