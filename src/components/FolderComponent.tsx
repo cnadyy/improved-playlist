@@ -1,13 +1,13 @@
-import { CSSProperties } from "react";
-import HideScrollBar from "@css/HideScrollBar";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import Folder from "@/api/types/Folder";
 import "@css/folderIconStyle.css";
 import "@css/floatingContents.css";
 import Subitem from "./Subitem";
+import { redirect } from "next/dist/server/api-utils";
 
 const folderIconStyle: CSSProperties = {
-  width: "13rem",
-  height: "13rem",
+  width: "100%",
+  aspectRatio: "1/1",
   filter: "saturate(0.4)",
   transition: "0.5s",
 };
@@ -17,25 +17,48 @@ const folderStyle: CSSProperties = {
   flexDirection: "column",
   width: "13rem",
   height: "100%",
+  minWidth: "200px",
 };
 
 const textStyle: CSSProperties = {
-  maxHeight: "calc(6em + 1.2rem)",
-  margin: "1.2rem 0 0",
-  overflow: "scroll",
-  ...HideScrollBar,
+  margin: "1rem 0 0",
+  overflow: "hidden",
+  fontSize: "1.3rem",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: 2,
 };
 
+const rightToolTip: CSSProperties = {
+  backgroundColor: "red",
+}
+
+const leftToolTip: CSSProperties = {
+  backgroundColor: "green",
+}
+
 function FolderComponent({ data }: { data: Folder }) {
+  const folderRef = useRef<null | HTMLDivElement>(null);
+  const clientWidth = document.documentElement.clientWidth;
+  const [posRight, setPostRight] = useState(0);
+
+  useEffect(() => {
+    if (folderRef.current) {
+      const rightMeasure = folderRef.current.getBoundingClientRect().right;
+      if (rightMeasure != posRight) setPostRight(rightMeasure);
+    }
+  });
+
+  const useRightTooltip = (clientWidth - (190) > posRight);
+
   return (
-    <div style={folderStyle} className={"folderComponent"}>
+    <div style={folderStyle} className={"folderComponent"} ref={folderRef}>
       <div
         className={"folderIcon"}
         style={{ backgroundColor: data.color, ...folderIconStyle }}
       />
-      <p style={textStyle}>ID of folder: {data.id}</p>
       <h2 style={textStyle}>{data.name}</h2>
-      <ul className={"contentsList"}>
+      <ul style={useRightTooltip ? rightToolTip : leftToolTip} className={"contentsList"}>
         {data.items.map((i) => (
           <Subitem id={i.itemID} kind={i.kind} key={i.itemID} />
         ))}

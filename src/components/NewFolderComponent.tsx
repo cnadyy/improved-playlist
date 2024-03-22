@@ -1,10 +1,10 @@
 import { faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 import newFolder from "@/api/newFolder";
 
-export default function NewFolder() {
+export default function NewFolder({ style }: { style: CSSProperties }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const handleOnClick = () => {
@@ -16,7 +16,12 @@ export default function NewFolder() {
   };
 
   return (
-    <div onClick={handleOnClick}>
+    <div onClick={handleOnClick} style={{
+      borderRadius: "20px",
+      padding: "0 2rem",
+      backgroundColor: "#ffd76b87",
+      ...style
+    }}>
       {isLoading ? (
         <FontAwesomeIcon
           icon={faSpinner}
@@ -27,7 +32,10 @@ export default function NewFolder() {
       ) : (
         <FontAwesomeIcon
           icon={faPlus}
-          style={{ color: "#fcba03", height: "100%" }}
+          style={{
+            color: "#fcba03", 
+            height: "100%",
+          }}
         />
       )}
     </div>
