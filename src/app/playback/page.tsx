@@ -4,6 +4,7 @@ import FolderDetailsComponent from "@/components/FolderDetails";
 import { useSearchParams } from "next/navigation";
 import { useFolderList } from "@/api/getFolderList";
 import FolderExplorer from "@/components/FolderExplorer";
+import { css } from "@emotion/react";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -12,15 +13,26 @@ export default function Page() {
   const folderID = searchParams.get("id");
   const folder = folders.find((folder) => folder.id == folderID);
 
-  if (!folder) {
+  if (!folder || !folderID) {
     return <div>This folder does not exist</div>;
   }
 
   return (
     <div>
-      <FolderDetailsComponent folder={folder} />
-      <FolderExplorer folders={folders} rootId={folderID} />
-      <a>{folderID}</a>
+      <div
+        css={css`
+          margin: 2rem;
+        `}
+      >
+        <FolderDetailsComponent folder={folder} />
+      </div>
+      <div
+        css={css`
+          margin: 2rem;
+        `}
+      >
+        <FolderExplorer folders={folders} rootId={folderID} />
+      </div>
       <h1>This should contain:</h1>
       <ol>
         <li>Query parameter id to identify an existing folder</li>

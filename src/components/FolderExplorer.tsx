@@ -74,20 +74,22 @@ function FolderExporer({
                     }}
                     css={css`
                       margin-bottom: 0.15rem;
+                      cursor: pointer;
                     `}
                   />{" "}
                   <div
                     css={css`
                       margin-left: 0.625rem;
+                      padding: 0.25rem;
+                      border: solid 0.5px #ffffff;
+                      &:hover {
+                        background-color: #dddddd;
+                        border-color: #444444;
+                        border-radius: 4px;
+                      }
                     `}
                   >
-                    <a
-                      css={css`
-                        // font-size: ${isSubFolder ? "16px" : "20px"};
-                      `}
-                    >
-                      {name}
-                    </a>
+                    {name}
                   </div>
                   <div
                     css={css`
