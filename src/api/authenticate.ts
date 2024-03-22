@@ -49,7 +49,7 @@ const generateAuthorisationURL = (
     scope,
     code_challenge_method: "S256",
     code_challenge: codeChallenge,
-    redirect_uri: redirectUri,
+     redirect_uri: redirectUri,
   };
 
   authUrl.search = new URLSearchParams(params).toString();

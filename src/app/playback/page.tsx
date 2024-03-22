@@ -2,9 +2,8 @@
 
 import FolderDetailsComponent from "@/components/FolderDetails";
 import { useSearchParams } from "next/navigation";
-import getFolderList, { useFolderList } from "@/api/getFolderList";
-import { useEffect, useState } from "react";
-import Folder from "@/api/types/Folder";
+import { useFolderList } from "@/api/getFolderList";
+import FolderExplorer from "@/components/FolderExplorer";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -20,6 +19,7 @@ export default function Page() {
   return (
     <div>
       <FolderDetailsComponent folder={folder} />
+      <FolderExplorer folders={folders} rootId={folderID} />
       <a>{folderID}</a>
       <h1>This should contain:</h1>
       <ol>

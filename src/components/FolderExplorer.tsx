@@ -1,10 +1,6 @@
 import Folder, { SubitemKind } from "@/api/types/Folder";
-import {
-  faAngleDown,
-  faAngleRight,
-  faFolder,
-  faMusic,
-} from "@fortawesome/free-solid-svg-icons";
+import { css } from "@emotion/react";
+import { faFolder, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
@@ -15,7 +11,7 @@ function FolderExporer({
   rootId,
 }: {
   folders: Folder[];
-  rootId: number;
+  rootId: string;
 }) {
   const [openedFolders, setOpenedFolders] = useState<string[]>([]);
 
@@ -31,59 +27,121 @@ function FolderExporer({
     setOpenedFolders(newOpenedFolders);
   }
 
-  function drawFolder(folder: Folder) {
+  function drawFolder(folder: Folder, isSubFolder: boolean) {
     return (
       <>
-        <ul style={{ listStyleType: "none" }}>
+        <div>
           {folder.items.map((item) => {
-            if (item.kind == SubitemKind.Folder) {
-              // Basically guarentee this, hope there is a way
-              // for this to make sense in typescript
-              const subfolder = folders.filter((f) => f.id == item.itemID)[0];
-              const isSubfolderOpen = openedFolders.includes(item.itemID);
-              const subitems = isSubfolderOpen && drawFolder(subfolder);
-              const openIcon = isSubfolderOpen ? (
-                <FontAwesomeIcon
-                  style={{ paddingRight: 10 }}
-                  color="gray"
-                  icon={faAngleDown}
-                />
-              ) : (
-                <FontAwesomeIcon
-                  style={{ paddingLeft: 2, paddingRight: 12 }}
-                  color="gray"
-                  icon={faAngleRight}
-                />
-              );
-              return (
-                <li key={subfolder.id}>
-                  <a onClick={() => toggleFolder(item.itemID)}>
-                    {openIcon}
-                    <FontAwesomeIcon icon={faFolder} color="gray" />{" "}
-                    {subfolder.name}
-                  </a>
-                  {subitems}
-                </li>
-              );
-            } else {
-              return (
-                <li key={item.kind}>
+            const isPlaylist = item.kind == SubitemKind.SpotifyURI;
+            const name = isPlaylist
+              ? item.itemID
+              : folders.filter((f) => f.id == item.itemID)[0].name;
+
+            const id = isPlaylist
+              ? item.itemID
+              : folders.filter((f) => f.id == item.itemID)[0].id;
+
+            const icon = isPlaylist ? faMusic : faFolder;
+
+            const isSubfolderOpen =
+              item.kind != SubitemKind.SpotifyURI &&
+              openedFolders.includes(item.itemID);
+
+            const subitems =
+              isSubfolderOpen &&
+              drawFolder(folders.filter((f) => f.id == item.itemID)[0], true);
+
+            return (
+              <div key={id}>
+                <div
+                  css={css`
+                    display: grid;
+                    align-items: center;
+                    grid-template-rows: min-content auto;
+                    grid-template-columns: min-content auto;
+                    margin-left: 0.75rem;
+                    margin-top: 0.15rem;
+                    font-size: ${isSubFolder ? "0.9em" : "1.2rem"};
+                  `}
+                >
                   <FontAwesomeIcon
-                    style={{ paddingRight: 4 }}
-                    icon={faMusic}
+                    icon={icon}
                     color="gray"
+                    size={isSubFolder ? "lg" : "2x"}
+                    onClick={() => {
+                      console.log("ters: " + id);
+                      if (!isPlaylist) toggleFolder(id);
+                    }}
+                    css={css`
+                      margin-bottom: 0.15rem;
+                    `}
                   />{" "}
-                  {item.itemID}
-                </li>
-              );
-            }
+                  <div
+                    css={css`
+                      margin-left: 0.625rem;
+                    `}
+                  >
+                    <a
+                      css={css`
+                        // font-size: ${isSubFolder ? "16px" : "20px"};
+                      `}
+                    >
+                      {name}
+                    </a>
+                  </div>
+                  <div
+                    css={css`
+                      display: flex;
+                      justify-content: center;
+                      height: 100%;
+                      width: 100%;
+                      cursor: pointer;
+                      &:hover div {
+                        border: solid 2px;
+                        border-color: black;
+                        border-top-width: 0px;
+                        border-bottom-width: 0px;
+                      }
+                    `}
+                    onClick={() => {
+                      if (!isPlaylist) toggleFolder(id);
+                    }}
+                  >
+                    <div
+                      css={css`
+                        // background-color: black;
+                        height: 100%;
+                        border: solid 1px;
+                        border-color: gray;
+                        border-top-width: 0px;
+                        border-bottom-width: 0px;
+                        border-radius: 10px;
+                      `}
+                    ></div>
+                  </div>
+                  <div>{subitems}</div>
+                </div>
+              </div>
+            );
+            // } else {
+            //   return (
+            //     <div key={item.kind}>
+            //       <FontAwesomeIcon
+            //         style={{ paddingRight: 4 }}
+            //         icon={faMusic}
+            //         color="gray"
+            //       />{" "}
+            //       {item.itemID}
+            //     </div>
+            //   );
+            // }
           })}
-        </ul>
+        </div>
       </>
     );
   }
 
-  return drawFolder(folders[rootId]);
+  return drawFolder(folders.filter((folder) => folder.id == rootId)[0], false);
 }
 
 export default FolderExporer;

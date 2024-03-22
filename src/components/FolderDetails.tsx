@@ -29,7 +29,7 @@ export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
     <div
       css={css`
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
       `}
     >
