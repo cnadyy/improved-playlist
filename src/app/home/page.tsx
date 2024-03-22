@@ -14,7 +14,6 @@ const folderListStyle: CSSProperties = {
   gap: "1rem",
   flexWrap: "wrap",
   padding: "0",
-  justifyContent: "space-between",
 };
 
 const bannerStyle: CSSProperties = {
@@ -82,7 +81,9 @@ export default function Folders() {
         }
       `}</style>
       <ul style={folderListStyle}>
-        {folderList.map((folder) => (
+        {folderList
+          .filter(folder => folder.isPinned)
+          .map(folder => (
           <li
             id={"a" + folder.id}
             key={folder.id}

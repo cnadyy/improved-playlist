@@ -5,6 +5,7 @@ interface Folder {
   name: string;
   // covers will be a fixed colour for now
   color: string;
+  isPinned: boolean;
 }
 
 interface Subitem {
