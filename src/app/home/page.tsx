@@ -13,6 +13,15 @@ const folderListStyle: CSSProperties = {
   display: "flex",
   gap: "1rem",
   flexWrap: "wrap",
+  padding: "0",
+  justifyContent: "space-between",
+};
+
+const bannerStyle: CSSProperties = {
+  height: "3rem",
+  width: "100%",
+  display: "flex",
+  justifyContent: "space-between",
 };
 
 export default function Folders() {
@@ -46,7 +55,11 @@ export default function Folders() {
   }, []);
 
   return (
-    <div>
+    <div style={{ padding: "0 2rem" }}>
+      <div style={bannerStyle}>
+        <p>Improved spotify playlists</p>
+        <NewFolder />
+      </div>
       <style>{`
         @keyframes fadeRed {
           0%, 100%   {color: unset;}
@@ -78,7 +91,6 @@ export default function Folders() {
             <FolderComponent data={folder} />
           </li>
         ))}
-        <NewFolder />
       </ul>
     </div>
   );

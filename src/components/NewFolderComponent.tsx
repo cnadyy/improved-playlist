@@ -1,6 +1,5 @@
 import { faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { folderIconStyle, folderStyle } from "./FolderComponent";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import newFolder from "@/api/newFolder";
@@ -17,19 +16,18 @@ export default function NewFolder() {
   };
 
   return (
-    <div style={folderStyle} onClick={handleOnClick}>
+    <div onClick={handleOnClick}>
       {isLoading ? (
-        // @ts-ignore
         <FontAwesomeIcon
           icon={faSpinner}
+          // @ts-expect-error flip=true is valid but not typed
           flip
-          style={{ color: "#fcba03", ...folderIconStyle }}
+          style={{ color: "#fcba03", height: "100%" }}
         />
       ) : (
         <FontAwesomeIcon
           icon={faPlus}
-          className={"folderIcon"}
-          style={{ color: "#fcba03", ...folderIconStyle }}
+          style={{ color: "#fcba03", height: "100%" }}
         />
       )}
     </div>

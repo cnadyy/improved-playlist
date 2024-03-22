@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 const HideScrollBar: CSSProperties = {
   msOverflowStyle: "none",
   scrollbarWidth: "none",
-  // @ts-ignore
+  // @ts-expect-error psudeo elements arent typed
   "&::WebkitScrollbar": { display: "none" },
 };
 

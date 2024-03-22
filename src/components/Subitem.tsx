@@ -24,7 +24,7 @@ export default function Subitem({
     if (kind == SubitemKind.SpotifyURI)
       getPlaylist(id).then((obj) => setItemName(obj.name));
     else getFolder(id).then((obj) => setItemName(obj.name));
-  }, []);
+  }, [id, kind]);
 
   return (
     <>

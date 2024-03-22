@@ -1,6 +1,6 @@
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties } from "react";
 import HideScrollBar from "@css/HideScrollBar";
-import Folder, { SubitemKind } from "@/api/types/Folder";
+import Folder from "@/api/types/Folder";
 import "@css/folderIconStyle.css";
 import "@css/floatingContents.css";
 import Subitem from "./Subitem";
