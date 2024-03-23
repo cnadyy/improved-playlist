@@ -104,7 +104,7 @@ export default function Profile() {
         play the playlist
       </a>
       <h3>Folder explorer</h3>
-      <FolderExporer folders={folders} rootId={0} />
+      <FolderExporer folders={folders} rootId={"xxx-xxx"} />
       <h3>User playlists</h3>
       <UserPlaylists />
       <PlayerSelector
