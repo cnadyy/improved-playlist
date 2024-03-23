@@ -31,7 +31,7 @@ function FolderExporer({
     return (
       <>
         <div>
-          {folder.items.map((item) => {
+          {folder.items.map((item, i) => {
             const isPlaylist = item.kind == SubitemKind.SpotifyURI;
             const name = isPlaylist
               ? item.itemID
@@ -79,6 +79,9 @@ function FolderExporer({
                   />{" "}
                   <div
                     css={css`
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
                       margin-left: 0.625rem;
                       padding: 0.25rem;
                       border: solid 0.5px #ffffff;
@@ -89,7 +92,8 @@ function FolderExporer({
                       }
                     `}
                   >
-                    {name}
+                    <div>{name}</div>
+                    <div>Options</div>
                   </div>
                   <div
                     css={css`

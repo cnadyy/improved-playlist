@@ -45,19 +45,23 @@ export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
         <h1
           css={css`
             font-weight: 600;
+            margin: 2rem 0rem;
+            font-size: 4rem;
           `}
         >
           {folder.name}
         </h1>
-        <h3
+        {/**
+          <h3
           css={css`
             padding: 0.25rem;
             color: gray;
             font-weight: normal;
-          `}
-        >
-          This is a cool folder description :)
-        </h3>
+            `}
+            >
+            This is a cool folder description :)
+            </h3>
+        **/}
         <div
           css={css`
             margin-left: 0.5rem;
