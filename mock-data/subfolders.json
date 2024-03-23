@@ -8,6 +8,10 @@
         "itemID": "yyyy-yyyy"
       },
       {
+        "kind": 2,
+        "itemID": "yyyy-yyyy"
+      },
+      {
         "kind": 1,
         "itemID": "spotify:playlist:37i9dQZEVXcT03oDE1LA8U"
       }
@@ -34,7 +38,12 @@
   {
     "name": "Really nice playlist?",
     "id": "zzzz-zzzz",
-    "items": [],
+    "items": [
+      {
+        "kind": 2,
+        "itemID": "aaaa-aaaa"
+      }
+    ],
     "color": "#c44891",
     "isPinned": true
   },

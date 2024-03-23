@@ -1,6 +1,11 @@
 import Folder, { SubitemKind } from "@/api/types/Folder";
 import { css } from "@emotion/react";
-import { faFolder, faMusic } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faFolder,
+  faMusic,
+  faToggleOn,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
@@ -13,25 +18,36 @@ function FolderExporer({
   folders: Folder[];
   rootId: string;
 }) {
-  const [openedFolders, setOpenedFolders] = useState<string[]>([]);
+  // NOTE: This uses the position from the element to the root
+  // Hence, when swapping elements we must take to make sure
+  // it matches up in these sets.
+  //
+  // We could also use this technique for storing unique keys
+  // (probably adding an index at the end or something...)
+  // However, again take care when swapping elements.
+  const [openedFolders, setOpenedFolders] = useState<Set<string>>(
+    () => new Set(),
+  );
 
-  function toggleFolder(id: string) {
-    const newOpenedFolders = [...openedFolders];
-    const indexOf = openedFolders.indexOf(id);
-    if (indexOf == -1) {
-      newOpenedFolders.push(id);
+  function toggleFolder(trail: string) {
+    const newOpenedFolders = new Set(openedFolders);
+    if (!openedFolders.has(trail)) {
+      newOpenedFolders.add(trail);
     } else {
-      newOpenedFolders.splice(indexOf, 1);
+      newOpenedFolders.delete(trail);
     }
+
+    console.log(openedFolders);
 
     setOpenedFolders(newOpenedFolders);
   }
 
-  function drawFolder(folder: Folder, isSubFolder: boolean) {
+  function drawFolder(folder: Folder, isSubFolder: boolean, trail: number[]) {
     return (
       <>
         <div>
           {folder.items.map((item, i) => {
+            trail.push(i);
             const isPlaylist = item.kind == SubitemKind.SpotifyURI;
             const name = isPlaylist
               ? item.itemID
@@ -45,11 +61,22 @@ function FolderExporer({
 
             const isSubfolderOpen =
               item.kind != SubitemKind.SpotifyURI &&
-              openedFolders.includes(item.itemID);
+              openedFolders.has(trail.toString());
 
             const subitems =
               isSubfolderOpen &&
-              drawFolder(folders.filter((f) => f.id == item.itemID)[0], true);
+              drawFolder(
+                folders.filter((f) => f.id == item.itemID)[0],
+                true,
+                trail,
+              );
+
+            const currItemTrail = [...trail];
+            const toggleClick = () => {
+              if (!isPlaylist) toggleFolder(currItemTrail.toString());
+            };
+
+            trail.pop();
 
             return (
               <div key={id}>
@@ -68,10 +95,7 @@ function FolderExporer({
                     icon={icon}
                     color="gray"
                     size={isSubFolder ? "lg" : "2x"}
-                    onClick={() => {
-                      console.log("ters: " + id);
-                      if (!isPlaylist) toggleFolder(id);
-                    }}
+                    onClick={toggleClick}
                     css={css`
                       margin-bottom: 0.15rem;
                       cursor: pointer;
@@ -93,7 +117,13 @@ function FolderExporer({
                     `}
                   >
                     <div>{name}</div>
-                    <div>Options</div>
+                    <div
+                      css={css`
+                        font-size: 1rem;
+                      `}
+                    >
+                      <FontAwesomeIcon icon={faToggleOn} />
+                    </div>
                   </div>
                   <div
                     css={css`
@@ -109,9 +139,7 @@ function FolderExporer({
                         border-bottom-width: 0px;
                       }
                     `}
-                    onClick={() => {
-                      if (!isPlaylist) toggleFolder(id);
-                    }}
+                    onClick={toggleClick}
                   >
                     <div
                       css={css`
@@ -147,7 +175,11 @@ function FolderExporer({
     );
   }
 
-  return drawFolder(folders.filter((folder) => folder.id == rootId)[0], false);
+  return drawFolder(
+    folders.filter((folder) => folder.id == rootId)[0],
+    false,
+    [],
+  );
 }
 
 export default FolderExporer;
