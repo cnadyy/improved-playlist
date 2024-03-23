@@ -1,7 +1,15 @@
 .contentsList {
-    position: absolute;
-    background-color: white;
+    background-color: #c1d6f7;
     visibility: hidden;
+    z-index: 1;
+    width: 300px;
+    border-radius: 10px;
+    pointer-events: none;
+    padding: 10px 10px;
+}
+
+.contentsList p, .contentsList h4 {
+    margin: 3px;
 }
 
 .folderComponent:hover .contentsList {

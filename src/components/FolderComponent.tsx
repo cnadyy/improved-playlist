@@ -18,6 +18,7 @@ const folderStyle: CSSProperties = {
   width: "13rem",
   height: "100%",
   minWidth: "200px",
+  position: "relative",
 };
 
 const textStyle: CSSProperties = {
@@ -30,11 +31,15 @@ const textStyle: CSSProperties = {
 };
 
 const rightToolTip: CSSProperties = {
-  backgroundColor: "red",
+  position: "absolute",
+  left: "105%",
+  top: "5%",
 }
 
 const leftToolTip: CSSProperties = {
-  backgroundColor: "green",
+  position: "absolute",
+  right: "105%",
+  top: "5%",
 }
 
 function FolderComponent({ data }: { data: Folder }) {
@@ -49,7 +54,7 @@ function FolderComponent({ data }: { data: Folder }) {
     }
   });
 
-  const useRightTooltip = (clientWidth - (190) > posRight);
+  const useRightTooltip = (clientWidth - (330) > posRight);
 
   return (
     <div style={folderStyle} className={"folderComponent"} ref={folderRef}>
@@ -58,11 +63,15 @@ function FolderComponent({ data }: { data: Folder }) {
         style={{ backgroundColor: data.color, ...folderIconStyle }}
       />
       <h2 style={textStyle}>{data.name}</h2>
-      <ul style={useRightTooltip ? rightToolTip : leftToolTip} className={"contentsList"}>
-        {data.items.map((i) => (
-          <Subitem id={i.itemID} kind={i.kind} key={i.itemID} />
-        ))}
-      </ul>
+      <div style={useRightTooltip ? rightToolTip : leftToolTip} className={"contentsList"}>
+        <h4>{data.name}</h4>
+        <p>Item count: {data.items.length}</p>
+        <ul>
+          {data.items.map((i) => (
+            <Subitem id={i.itemID} kind={i.kind} key={i.itemID} />
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
