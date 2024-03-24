@@ -1,10 +1,10 @@
 "use client";
 
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import { usePathname } from "next/navigation";
 import React, { createContext, useEffect, useState } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({ subsets: ["latin"] });
 
 const AuthenticatedContext = createContext(false);
 
@@ -29,7 +29,7 @@ function RootLayout({
 
   return (
     <html lang="en" style={{ scrollBehavior: "smooth" }}>
-      <body className={inter.className} style={{ margin: 0}}>
+      <body className={outfit.className} style={{ margin: 0}}>
         <AuthenticatedContext.Provider value={isTokenSet}>
           {isTokenSet || exception ? children : unauthenticated}
         </AuthenticatedContext.Provider>
