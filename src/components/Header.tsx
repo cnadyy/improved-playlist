@@ -11,10 +11,11 @@ const bannerStyle: CSSProperties = {
   rowGap: "1rem",
   padding: "0 2rem",
   boxSizing: "border-box",
+  alignItems: "center",
 };
 
 const bannerItemStyle: CSSProperties = {
-  height: "3rem",
+  height: "2rem",
   boxSizing: "border-box",
 };
 
@@ -30,7 +31,7 @@ export default function Header({ children, searchEntry, setSearchEntry, styling 
     return (
         <header style={{ padding: "1rem 0", ...styling }}>
             <div style={bannerStyle}>
-                <Link href="/home" style={{all: "unset"}}><p style={{textWrap: "nowrap", cursor: "pointer"}}>Improved spotify playlists</p></Link>
+                <Link href="/home" style={{all: "unset"}}><div style={{ display: "flex", alignItems: "center", ...bannerItemStyle}}><p style={{textWrap: "nowrap", cursor: "pointer", margin: "0"}}>Improved spotify playlists</p></div></Link>
                 {
                     (typeof searchEntry != "undefined" && typeof setSearchEntry != "undefined") ? 
                         <SearchBar entry={searchEntry} setEntry={setSearchEntry} style={{flex: 1, ...bannerItemStyle}} /> :
