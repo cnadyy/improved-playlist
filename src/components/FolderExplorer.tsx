@@ -1,13 +1,23 @@
 import Folder, { SubitemKind } from "@/api/types/Folder";
 import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import {
-  faEdit,
   faFolder,
   faMusic,
   faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+
+const Grid = styled.div<{ subfolder?: boolean }>`
+  display: grid;
+  align-items: center;
+  grid-template-rows: min-content auto;
+  grid-template-columns: min-content auto;
+  margin-left: 0.75rem;
+  margin-top: 0.15rem;
+  font-size: ${(props) => (props.subfolder ? "0.9em" : "1.2rem")};
+`;
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -21,13 +31,11 @@ function FolderExporer({
   // NOTE: This uses the position from the element to the root
   // Hence, when swapping elements we must take to make sure
   // it matches up in these sets.
-  //
-  // We could also use this technique for storing unique keys
-  // (probably adding an index at the end or something...)
-  // However, again take care when swapping elements.
   const [openedFolders, setOpenedFolders] = useState<Set<string>>(
     () => new Set(),
   );
+  const uniqueIDs = new Map<string, string>();
+  const repeated = new Map<string, number>();
 
   function toggleFolder(trail: string) {
     const newOpenedFolders = new Set(openedFolders);
@@ -37,9 +45,21 @@ function FolderExporer({
       newOpenedFolders.delete(trail);
     }
 
-    console.log(openedFolders);
-
     setOpenedFolders(newOpenedFolders);
+  }
+
+  function generateIDs(trail: string, id: string): string {
+    const value = uniqueIDs.get(trail);
+    if (value) {
+      return value;
+    } else {
+      let repeat = repeated.get(id);
+      if (!repeat) {
+        repeat = 0;
+      }
+      repeated.set(id, repeat + 1);
+      return id + "-" + repeat;
+    }
   }
 
   function drawFolder(folder: Folder, isSubFolder: boolean, trail: number[]) {
@@ -49,20 +69,20 @@ function FolderExporer({
           {folder.items.map((item, i) => {
             trail.push(i);
             const isPlaylist = item.kind == SubitemKind.SpotifyURI;
-            const name = isPlaylist
-              ? item.itemID
-              : folders.filter((f) => f.id == item.itemID)[0].name;
 
             const id = isPlaylist
               ? item.itemID
               : folders.filter((f) => f.id == item.itemID)[0].id;
+            const uniqueID = generateIDs(trail.toString(), id);
 
+            const name = isPlaylist
+              ? item.itemID
+              : folders.filter((f) => f.id == item.itemID)[0].name;
             const icon = isPlaylist ? faMusic : faFolder;
 
             const isSubfolderOpen =
               item.kind != SubitemKind.SpotifyURI &&
               openedFolders.has(trail.toString());
-
             const subitems =
               isSubfolderOpen &&
               drawFolder(
@@ -72,30 +92,20 @@ function FolderExporer({
               );
 
             const currItemTrail = [...trail];
-            const toggleClick = () => {
+            const onToggleOpen = () => {
               if (!isPlaylist) toggleFolder(currItemTrail.toString());
             };
 
             trail.pop();
 
             return (
-              <div key={id}>
-                <div
-                  css={css`
-                    display: grid;
-                    align-items: center;
-                    grid-template-rows: min-content auto;
-                    grid-template-columns: min-content auto;
-                    margin-left: 0.75rem;
-                    margin-top: 0.15rem;
-                    font-size: ${isSubFolder ? "0.9em" : "1.2rem"};
-                  `}
-                >
+              <div key={uniqueID}>
+                <Grid subfolder={isSubFolder}>
                   <FontAwesomeIcon
                     icon={icon}
                     color="gray"
                     size={isSubFolder ? "lg" : "2x"}
-                    onClick={toggleClick}
+                    onClick={onToggleOpen}
                     css={css`
                       margin-bottom: 0.15rem;
                       cursor: pointer;
@@ -111,7 +121,7 @@ function FolderExporer({
                       border: solid 0.5px #ffffff;
                       &:hover {
                         background-color: #dddddd;
-                        border-color: #444444;
+                        border-color: #dddddd;
                         border-radius: 4px;
                       }
                     `}
@@ -139,7 +149,7 @@ function FolderExporer({
                         border-bottom-width: 0px;
                       }
                     `}
-                    onClick={toggleClick}
+                    onClick={onToggleOpen}
                   >
                     <div
                       css={css`
@@ -154,7 +164,7 @@ function FolderExporer({
                     ></div>
                   </div>
                   <div>{subitems}</div>
-                </div>
+                </Grid>
               </div>
             );
             // } else {
