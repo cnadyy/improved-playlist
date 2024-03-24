@@ -65,9 +65,13 @@ const RightIcons = styled.div`
 function FolderExporer({
   folders,
   rootId,
+  disabledFolders,
+  setDisabledFolders,
 }: {
   folders: Folder[];
   rootId: string;
+  disabledFolders: Set<string>;
+  setDisabledFolders: (folders: Set<string>) => void;
 }) {
   // NOTE: This uses the position from the element to the root
   // Hence, when swapping elements we must take to make sure
@@ -78,7 +82,7 @@ function FolderExporer({
   const uniqueIDs = new Map<string, string>();
   const repeated = new Map<string, number>();
 
-  function toggleFolder(trail: string) {
+  function toggleOpenFolder(trail: string) {
     const newOpenedFolders = new Set(openedFolders);
     if (!openedFolders.has(trail)) {
       newOpenedFolders.add(trail);
@@ -87,6 +91,19 @@ function FolderExporer({
     }
 
     setOpenedFolders(newOpenedFolders);
+  }
+
+  function toggleDisableFolder(trail: string) {
+    const newDisabledFolders = new Set(disabledFolders);
+    if (!disabledFolders.has(trail)) {
+      newDisabledFolders.add(trail);
+    } else {
+      newDisabledFolders.delete(trail);
+    }
+
+    console.log(newDisabledFolders);
+
+    setDisabledFolders(newDisabledFolders);
   }
 
   function generateIDs(trail: string, id: string): string {
@@ -133,20 +150,30 @@ function FolderExporer({
               );
 
             const currItemTrail = [...trail];
-            const onToggleOpen = () => {
-              if (!isPlaylist) toggleFolder(currItemTrail.toString());
+            const onOpenClick = () => {
+              if (!isPlaylist) toggleOpenFolder(currItemTrail.toString());
             };
+            const onDisableClick = () => {
+              toggleDisableFolder(currItemTrail.toString());
+            };
+
+            const isDisabled = disabledFolders.has(trail.toString());
 
             trail.pop();
 
             return (
               <div key={uniqueID}>
-                <Grid subfolder={isSubFolder}>
+                <Grid
+                  subfolder={isSubFolder}
+                  css={css`
+                    text-decoration: ${isDisabled ? "line-through" : "none"};
+                  `}
+                >
                   <FontAwesomeIcon
                     icon={icon}
                     color="gray"
                     size={isSubFolder ? "lg" : "2x"}
-                    onClick={onToggleOpen}
+                    onClick={onOpenClick}
                     css={css`
                       margin-bottom: 0.15rem;
                       cursor: pointer;
@@ -155,10 +182,13 @@ function FolderExporer({
                   <Label>
                     <div>{name}</div>
                     <RightIcons>
-                      <FontAwesomeIcon icon={faToggleOn} />
+                      <FontAwesomeIcon
+                        icon={faToggleOn}
+                        onClick={onDisableClick}
+                      />
                     </RightIcons>
                   </Label>
-                  <BarHolder onClick={onToggleOpen}>
+                  <BarHolder onClick={onOpenClick}>
                     <Bar />
                   </BarHolder>
                   <div>{subitems}</div>

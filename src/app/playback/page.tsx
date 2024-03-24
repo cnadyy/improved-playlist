@@ -5,10 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { useFolderList } from "@/api/getFolderList";
 import FolderExplorer from "@/components/FolderExplorer";
 import { css } from "@emotion/react";
+import { useState } from "react";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const folders = useFolderList();
+
+  const [disabledFolders, setDisabledFolders] = useState<Set<string>>(
+    () => new Set(),
+  );
 
   const folderID = searchParams.get("id");
   const folder = folders.find((folder) => folder.id == folderID);
@@ -24,14 +29,22 @@ export default function Page() {
           margin: 2rem;
         `}
       >
-        <FolderDetailsComponent folder={folder} />
+        <FolderDetailsComponent
+          folder={folder}
+          disabledFolders={disabledFolders}
+        />
       </div>
       <div
         css={css`
           margin: 2rem;
         `}
       >
-        <FolderExplorer folders={folders} rootId={folderID} />
+        <FolderExplorer
+          folders={folders}
+          rootId={folderID}
+          disabledFolders={disabledFolders}
+          setDisabledFolders={setDisabledFolders}
+        />
       </div>
       <h1>This should contain:</h1>
       <ol>

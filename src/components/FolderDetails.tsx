@@ -22,7 +22,13 @@ const button = css`
   }
 `;
 
-export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
+export default function FolderDetailsComponent({
+  folder,
+  disabledFolders,
+}: {
+  folder: Folder;
+  disabledFolders: Set<string>;
+}) {
   const router = useRouter();
   const folders = useFolderList();
   return (
@@ -73,7 +79,7 @@ export default function FolderDetailsComponent({ folder }: { folder: Folder }) {
             css={button}
             icon={faPlayCircle}
             size="2xl"
-            onClick={() => playFolder(folder.id, folders)}
+            onClick={() => playFolder(folder.id, folders, disabledFolders)}
           />
           <FontAwesomeIcon
             onClick={() => router.push("/edit?" + folder.id)}
