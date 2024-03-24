@@ -28,26 +28,47 @@ export default function Folders() {
     setFolderList(getFolderList());
   }, []);
 
+  const nameMatch = (folder: Folder, query: string) => folder.name.toLowerCase().includes(query.toLowerCase());
+
+  const filteredFolders = folderList
+    .filter(folder =>
+      folder.isPinned && 
+      (
+        searchEntry ? 
+          nameMatch(folder, searchEntry) :
+          true
+      )
+    );
+
   return (
     <>
       <Header searchEntry={searchEntry} setSearchEntry={setSearchEntry} styling={{ backgroundColor: "white"}}>
         <NewFolder/>
       </Header>
       <div style={{ padding: "0 2rem" }}>
-        <ul style={folderListStyle}>
-          {folderList
-            .filter(folder => folder.isPinned)
-            .map(folder => (
-            <li
-              key={folder.id}
-              style={{ listStyle: "none" }}
-            >
-              <Link href={"/playback?id=" + folder.id} style={{all: "unset"}}>
-                <FolderComponent data={folder} />
-              </Link>
-            </li>
-          ))}
-        </ul>
+        { filteredFolders.length ?
+          <ul style={folderListStyle}>
+            {
+              filteredFolders.map(folder => (
+              <li
+                key={folder.id}
+                style={{ listStyle: "none" }}
+              >
+                <Link href={"/playback?id=" + folder.id} style={{all: "unset"}}>
+                  <FolderComponent data={folder} />
+                </Link>
+              </li>
+            ))}
+          </ul> :
+          <h1 
+            style={{
+              backgroundImage: "linear-gradient(indigo, green)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}>
+              No folders found! Try creating the folder you seek
+            </h1>
+        }
       </div>
     </>
   );
