@@ -2,47 +2,28 @@ import getPlaylist from "@/api/getPlaylist";
 import startResumePlayback from "@/api/startResumePlayback";
 import Folder, { SubitemKind } from "@/api/types/Folder";
 
-function getPlaylistFolders(folderID: string, folders: Folder[]): string[] {
-  return folders
-    .filter((folder) => folder.id == folderID)[0]
-    .items.flatMap((item) => {
-      if (item.kind == SubitemKind.Folder) {
-        return getPlaylistFolders(item.itemID, folders);
-      } else {
-        return item.itemID;
-      }
-    });
-}
-
-function getPlaylistFoldersWithDisabled(
+function getPlaylistFolders(
   folderID: string,
   folders: Folder[],
-  disabled: Set<string>,
   trail: number[],
+  disabled: Set<string>,
 ): string[] {
   return folders
     .filter((folder) => folder.id == folderID)[0]
     .items.filter((_, i) => {
-      trail.push(i);
-      if (disabled.has(trail.toString())) {
-        trail.pop();
-        return false;
-      } else {
-        trail.pop();
-        return true;
-      }
+      return !disabled.has([...trail, i].toString());
     })
     .flatMap((item, i) => {
       if (item.kind == SubitemKind.Folder) {
         trail.push(i);
-        const subfolders = getPlaylistFoldersWithDisabled(
+        const subfolder = getPlaylistFolders(
           item.itemID,
           folders,
-          disabled,
           trail,
+          disabled,
         );
         trail.pop();
-        return subfolders;
+        return subfolder;
       } else {
         return item.itemID;
       }
@@ -55,12 +36,7 @@ async function playFolder(
   disabled: Set<string>,
   deviceID?: string,
 ) {
-  const playlists = getPlaylistFoldersWithDisabled(
-    folderID,
-    folders,
-    disabled,
-    [],
-  );
+  const playlists = getPlaylistFolders(folderID, folders, [], disabled);
   Promise.all(
     playlists.flatMap(async (playlistURI) =>
       getPlaylist(playlistURI).then((obj) => {
