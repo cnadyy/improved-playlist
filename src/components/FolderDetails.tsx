@@ -39,6 +39,7 @@ const FolderName = styled.h1`
     left: 0;
     top: 0;
     visibility: hidden;
+    pointer-events: none;
   },
   &:hover::after {
     visibility: visible;
