@@ -19,6 +19,47 @@ const Grid = styled.div<{ subfolder?: boolean }>`
   font-size: ${(props) => (props.subfolder ? "0.9em" : "1.2rem")};
 `;
 
+const Label = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 0.625rem;
+  padding: 0.25rem;
+  border: solid 0.5px #ffffff;
+  &:hover {
+    background-color: #dddddd;
+    border-color: #dddddd;
+    border-radius: 4px;
+  }
+`;
+
+const BarHolder = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  &:hover div {
+    border: solid 2px;
+    border-color: black;
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+  }
+`;
+
+const Bar = styled.div`
+  height: 100%;
+  border: solid 1px;
+  border-color: gray;
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  border-radius: 10px;
+`;
+
+const RightIcons = styled.div`
+  font-size: 1rem;
+`;
+
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
 function FolderExporer({
@@ -111,74 +152,19 @@ function FolderExporer({
                       cursor: pointer;
                     `}
                   />{" "}
-                  <div
-                    css={css`
-                      display: flex;
-                      justify-content: space-between;
-                      align-items: center;
-                      margin-left: 0.625rem;
-                      padding: 0.25rem;
-                      border: solid 0.5px #ffffff;
-                      &:hover {
-                        background-color: #dddddd;
-                        border-color: #dddddd;
-                        border-radius: 4px;
-                      }
-                    `}
-                  >
+                  <Label>
                     <div>{name}</div>
-                    <div
-                      css={css`
-                        font-size: 1rem;
-                      `}
-                    >
+                    <RightIcons>
                       <FontAwesomeIcon icon={faToggleOn} />
-                    </div>
-                  </div>
-                  <div
-                    css={css`
-                      display: flex;
-                      justify-content: center;
-                      height: 100%;
-                      width: 100%;
-                      cursor: pointer;
-                      &:hover div {
-                        border: solid 2px;
-                        border-color: black;
-                        border-top-width: 0px;
-                        border-bottom-width: 0px;
-                      }
-                    `}
-                    onClick={onToggleOpen}
-                  >
-                    <div
-                      css={css`
-                        // background-color: black;
-                        height: 100%;
-                        border: solid 1px;
-                        border-color: gray;
-                        border-top-width: 0px;
-                        border-bottom-width: 0px;
-                        border-radius: 10px;
-                      `}
-                    ></div>
-                  </div>
+                    </RightIcons>
+                  </Label>
+                  <BarHolder onClick={onToggleOpen}>
+                    <Bar />
+                  </BarHolder>
                   <div>{subitems}</div>
                 </Grid>
               </div>
             );
-            // } else {
-            //   return (
-            //     <div key={item.kind}>
-            //       <FontAwesomeIcon
-            //         style={{ paddingRight: 4 }}
-            //         icon={faMusic}
-            //         color="gray"
-            //       />{" "}
-            //       {item.itemID}
-            //     </div>
-            //   );
-            // }
           })}
         </div>
       </>
