@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
   faFolder,
+  faFolderOpen,
   faMusic,
   faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
@@ -136,11 +137,17 @@ function FolderExporer({
             const name = isPlaylist
               ? item.itemID
               : folders.filter((f) => f.id == item.itemID)[0].name;
-            const icon = isPlaylist ? faMusic : faFolder;
 
             const isSubfolderOpen =
               item.kind != SubitemKind.SpotifyURI &&
               openedFolders.has(trail.toString());
+
+            const icon = isPlaylist
+              ? faMusic
+              : isSubfolderOpen
+                ? faFolderOpen
+                : faFolder;
+
             const subitems =
               isSubfolderOpen &&
               drawFolder(
