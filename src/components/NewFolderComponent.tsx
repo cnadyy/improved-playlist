@@ -10,7 +10,7 @@ export default function NewFolder({ style }: { style: CSSProperties }) {
   const handleOnClick = () => {
     setIsLoading(true);
     setTimeout(
-      () => newFolder().then((id) => router.push("/edit?id=" + id)),
+      () => newFolder(true).then((id) => router.push("/playback?id=" + id)),
       1000,
     );
   };
