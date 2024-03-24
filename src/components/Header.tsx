@@ -18,6 +18,14 @@ const bannerItemStyle: CSSProperties = {
   boxSizing: "border-box",
 };
 
+/**
+ * 
+ * @param children anything you like
+ * @param searchEntry used to control the search bar component
+ * @param setSearchEntry used in tandam with searchEntry
+ * @param styling can be used to overwrite background colour on specific pages
+ * @returns <header> component with standard navigation and children
+ */
 export default function Header({ children, searchEntry, setSearchEntry, styling = { backgroundColor: "#6272a4" } }: { styling?: CSSProperties, children?: React.ReactNode, searchEntry?: string, setSearchEntry?: Dispatch<SetStateAction<string>> }): React.ReactNode {
     return (
         <header style={{ padding: "1rem 0", ...styling }}>
