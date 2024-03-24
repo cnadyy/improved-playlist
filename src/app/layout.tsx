@@ -29,7 +29,7 @@ function RootLayout({
 
   return (
     <html lang="en" style={{ scrollBehavior: "smooth" }}>
-      <body className={inter.className}>
+      <body className={inter.className} style={{ margin: 0}}>
         <AuthenticatedContext.Provider value={isTokenSet}>
           {isTokenSet || exception ? children : unauthenticated}
         </AuthenticatedContext.Provider>

@@ -10,28 +10,14 @@ import NewFolder from "@/components/NewFolderComponent";
 import getFolderList from "@/api/getFolderList";
 import SearchBar from "@/components/SearchBar";
 import Link from "next/link";
+import Header from "@/components/Header";
 
 const folderListStyle: CSSProperties = {
   display: "flex",
   gap: "1rem",
   flexWrap: "wrap",
   padding: "0",
-};
-
-const bannerStyle: CSSProperties = {
-  width: "100%",
-  display: "flex",
-  justifyContent: "space-between",
-  flexWrap: "wrap",
-  columnGap: "4rem",
-  rowGap: "1rem",
-  padding: "0 2rem",
-  boxSizing: "border-box",
-};
-
-const bannerItemStyle: CSSProperties = {
-  height: "3rem",
-  boxSizing: "border-box",
+  margin: "0",
 };
 
 export default function Folders() {
@@ -44,11 +30,9 @@ export default function Folders() {
 
   return (
     <>
-      <div style={bannerStyle}>
-        <p style={{textWrap: "nowrap"}}>Improved spotify playlists</p>
-        <SearchBar entry={searchEntry} setEntry={setSearchEntry} style={{flex: 1, ...bannerItemStyle}} />
-        <NewFolder style={bannerItemStyle} />
-      </div>
+      <Header searchEntry={searchEntry} setSearchEntry={setSearchEntry} styling={{ backgroundColor: "white"}}>
+        <NewFolder/>
+      </Header>
       <div style={{ padding: "0 2rem" }}>
         <ul style={folderListStyle}>
           {folderList

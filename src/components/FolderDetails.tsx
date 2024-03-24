@@ -26,7 +26,7 @@ const button = css`
 
 const FolderName = styled.h1`
   font-weight: 600;
-  margin: 2rem 0rem;
+  margin: 0rem;
   font-size: 4rem;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -68,8 +68,7 @@ export default function FolderDetailsComponent({
       />
       <div
         css={css`
-          padding: 1rem;
-          position: relative;
+        padding: 0 1rem;
         `}
       >
         <div style={{position: "relative"}}><FolderName content={folder.name}>{folder.name}</FolderName></div>

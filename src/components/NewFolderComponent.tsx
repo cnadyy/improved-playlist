@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { CSSProperties, useState } from "react";
 import newFolder from "@/api/newFolder";
 
-export default function NewFolder({ style }: { style: CSSProperties }) {
+export default function NewFolder({ style = {} }: { style?: CSSProperties }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const handleOnClick = () => {
@@ -20,6 +20,7 @@ export default function NewFolder({ style }: { style: CSSProperties }) {
       borderRadius: "20px",
       padding: "0 2rem",
       backgroundColor: "#ffd76b87",
+      cursor: "pointer",
       ...style
     }}>
       {isLoading ? (

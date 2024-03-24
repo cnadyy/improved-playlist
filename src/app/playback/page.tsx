@@ -6,6 +6,7 @@ import { useFolderList } from "@/api/getFolderList";
 import FolderExplorer from "@/components/FolderExplorer";
 import { css } from "@emotion/react";
 import { useState } from "react";
+import Header from "@/components/Header";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -23,39 +24,42 @@ export default function Page() {
   }
 
   return (
-    <div>
-      <div
-        css={css`
-          margin: 2rem;
-        `}
-      >
-        <FolderDetailsComponent
-          folder={folder}
-          disabledFolders={disabledFolders}
-        />
-      </div>
-      <div
-        css={css`
-          margin: 2rem;
-        `}
-      >
-        <FolderExplorer
-          folders={folders}
-          rootId={folderID}
-          disabledFolders={disabledFolders}
-          setDisabledFolders={setDisabledFolders}
-        />
-      </div>
-      <h1>This should contain:</h1>
-      <ol>
-        <li>Query parameter id to identify an existing folder</li>
-        <li>Ability to toggle playlists for playback within the folder</li>
-        <li>Display playlist information including some songs</li>
-        <li>A link to the edit screen for this playlist</li>
-        <li>The ability to add the enabled playlists to the queue</li>
-        <li>Currently playing information</li>
-        <li>Skip song and skip playlist buttons</li>
-      </ol>
-    </div>
+    <> 
+      <Header/>
+      <main style={{ margin: "2rem 0"}}>
+        <div
+          css={css`
+            margin: 0 2rem;
+          `}
+        >
+          <FolderDetailsComponent
+            folder={folder}
+            disabledFolders={disabledFolders}
+          />
+        </div>
+        <div
+          css={css`
+            margin: 2rem;
+          `}
+        >
+          <FolderExplorer
+            folders={folders}
+            rootId={folderID}
+            disabledFolders={disabledFolders}
+            setDisabledFolders={setDisabledFolders}
+          />
+        </div>
+        <h1>This should contain:</h1>
+        <ol>
+          <li>Query parameter id to identify an existing folder</li>
+          <li>Ability to toggle playlists for playback within the folder</li>
+          <li>Display playlist information including some songs</li>
+          <li>A link to the edit screen for this playlist</li>
+          <li>The ability to add the enabled playlists to the queue</li>
+          <li>Currently playing information</li>
+          <li>Skip song and skip playlist buttons</li>
+        </ol>
+      </main>
+    </>
   );
 }
