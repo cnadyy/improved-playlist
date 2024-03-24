@@ -2,14 +2,16 @@ import { useFolderList } from "@/api/getFolderList";
 import Folder from "@/api/types/Folder";
 import playFolder from "@/app/utils/Player";
 import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
+import { relative } from "path";
 import { CSSProperties } from "react";
 
 const folderIconStyle: CSSProperties = {
-  width: "13rem",
-  height: "13rem",
+  minWidth: "13rem",
+  minHeight: "13rem",
   filter: "saturate(0.4)",
   transition: "0.5s",
 };
@@ -19,6 +21,27 @@ const button = css`
   transition: color 0.15s ease;
   &:hover {
     color: #666666;
+  }
+`;
+
+const FolderName = styled.h1`
+  font-weight: 600;
+  margin: 2rem 0rem;
+  font-size: 4rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  &::after {
+    content: "${props => props.content}";
+    background-color: white;
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+  },
+  &:hover::after {
+    visibility: visible;
   }
 `;
 
@@ -46,17 +69,10 @@ export default function FolderDetailsComponent({
       <div
         css={css`
           padding: 1rem;
+          position: relative;
         `}
       >
-        <h1
-          css={css`
-            font-weight: 600;
-            margin: 2rem 0rem;
-            font-size: 4rem;
-          `}
-        >
-          {folder.name}
-        </h1>
+        <div style={{position: "relative"}}><FolderName content={folder.name}>{folder.name}</FolderName></div>
         {/**
           <h3
           css={css`

@@ -9,6 +9,7 @@ import { handleClientScriptLoad } from "next/script";
 import NewFolder from "@/components/NewFolderComponent";
 import getFolderList from "@/api/getFolderList";
 import SearchBar from "@/components/SearchBar";
+import Link from "next/link";
 
 const folderListStyle: CSSProperties = {
   display: "flex",
@@ -57,7 +58,9 @@ export default function Folders() {
               key={folder.id}
               style={{ listStyle: "none" }}
             >
-              <FolderComponent data={folder} />
+              <Link href={"/playback?id=" + folder.id} style={{all: "unset"}}>
+                <FolderComponent data={folder} />
+              </Link>
             </li>
           ))}
         </ul>
