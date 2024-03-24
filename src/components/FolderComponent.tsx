@@ -66,7 +66,7 @@ function FolderComponent({ data }: { data: Folder }) {
       <div style={useRightTooltip ? rightToolTip : leftToolTip} className={"contentsList"}>
         <h4>{data.name}</h4>
         <p>Item count: {data.items.length}</p>
-        <ul>
+        <ul style={{padding: "0"}}>
           {data.items.map((i) => (
             <Subitem id={i.itemID} kind={i.kind} key={i.itemID} />
           ))}

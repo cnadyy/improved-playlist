@@ -1,9 +1,16 @@
 import getFolder from "@/api/getFolder";
 import getPlaylist from "@/api/getPlaylist";
 import { SubitemKind } from "@/api/types/Folder";
+import { faFolder, faMusic } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { CSSProperties, useEffect, useState } from "react";
 
-const subItemStyles: CSSProperties = {};
+const subItemStyles: CSSProperties = {
+  listStyle: "none",
+  display: "flex",
+  gap: "10px",
+  paddingLeft: "10px",
+};
 
 export default function Subitem({
   id,
@@ -25,7 +32,7 @@ export default function Subitem({
     <>
       {itemName ? (
         <li style={subItemStyles}>
-          {itemName}
+          <FontAwesomeIcon icon={(kind == SubitemKind.SpotifyURI) ? faMusic : faFolder}/>{itemName}
         </li>
       ) : null}
     </>
