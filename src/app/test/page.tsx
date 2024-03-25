@@ -5,14 +5,12 @@ import getUserData from "@api/getUserData";
 import queueTrack from "@api/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
 import startResumePlayback from "@api/startResumePlayback";
-import FolderExporer from "@/components/FolderExplorer";
 import Folder, { SubitemKind } from "@/api/types/Folder";
 import getAvailableDevices from "@/api/getAvailableDevices";
 import PlayerSelector from "@/components/PlayerSelector";
 import Device from "@/api/types/Device";
 import subfolders from "@mock/subfolders.json";
 import getPlaylist from "@/api/getPlaylist";
-import Subitem from "@/components/Subitem";
 import mock from "@mock/subfolders.json";
 
 function getDisplayName(setDisplayName: (display: string) => void) {

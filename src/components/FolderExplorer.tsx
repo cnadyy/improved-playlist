@@ -2,6 +2,8 @@ import Folder, { SubitemKind } from "@/api/types/Folder";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
+  faBookmark,
+  faEllipsis,
   faFolder,
   faFolderOpen,
   faMusic,
@@ -32,6 +34,9 @@ const Label = styled.div`
     border-color: #dddddd;
     border-radius: 4px;
   }
+  &:hover .labelHover {
+    display: block;
+  }
 `;
 
 const BarHolder = styled.div`
@@ -59,6 +64,14 @@ const Bar = styled.div`
 
 const RightIcons = styled.div`
   font-size: 1rem;
+  display: none;
+`;
+
+const DisableButton = styled.div`
+  font-size: 0.75rem;
+  font-weight: 300;
+  margin-left: 1rem;
+  display: none;
 `;
 
 // This only renders subitems,
@@ -121,7 +134,12 @@ function FolderExporer({
     }
   }
 
-  function drawFolder(folder: Folder, isSubFolder: boolean, trail: number[]) {
+  function drawFolder(
+    folder: Folder,
+    isRoot: boolean,
+    isParentDisabled: boolean,
+    trail: number[],
+  ) {
     return (
       <>
         <div>
@@ -148,11 +166,15 @@ function FolderExporer({
                 ? faFolderOpen
                 : faFolder;
 
+            const isLocallyDisabled = disabledFolders.has(trail.toString());
+            const isDisabled = isParentDisabled || isLocallyDisabled;
+
             const subitems =
               isSubfolderOpen &&
               drawFolder(
                 folders.filter((f) => f.id == item.itemID)[0],
-                true,
+                false,
+                isDisabled,
                 trail,
               );
 
@@ -164,22 +186,15 @@ function FolderExporer({
               toggleDisableFolder(currItemTrail.toString());
             };
 
-            const isDisabled = disabledFolders.has(trail.toString());
-
             trail.pop();
 
             return (
               <div key={uniqueID}>
-                <Grid
-                  subfolder={isSubFolder}
-                  css={css`
-                    text-decoration: ${isDisabled ? "line-through" : "none"};
-                  `}
-                >
+                <Grid subfolder={!isRoot}>
                   <FontAwesomeIcon
                     icon={icon}
                     color="gray"
-                    size={isSubFolder ? "lg" : "2x"}
+                    size={!isRoot ? "lg" : "2x"}
                     onClick={onOpenClick}
                     css={css`
                       margin-bottom: 0.15rem;
@@ -187,11 +202,40 @@ function FolderExporer({
                     `}
                   />{" "}
                   <Label>
-                    <div>{name}</div>
-                    <RightIcons>
-                      <FontAwesomeIcon
-                        icon={faToggleOn}
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <a
+                        css={css`
+                          text-decoration: ${isDisabled
+                            ? "line-through"
+                            : "none"};
+                        `}
+                      >
+                        {name}
+                      </a>
+                      <DisableButton
+                        className="labelHover"
+                        css={css`
+                          cursor: pointer;
+                          user-select: none;
+                        `}
                         onClick={onDisableClick}
+                      >
+                        Click to {isLocallyDisabled ? "enable" : "disable"}
+                      </DisableButton>
+                    </div>
+
+                    <RightIcons className="labelHover">
+                      <FontAwesomeIcon
+                        css={css`
+                          margin: 0 0.5rem;
+                        `}
+                        icon={faBookmark}
+                      />
+                      <FontAwesomeIcon
+                        css={css`
+                          margin: 0 0.5rem;
+                        `}
+                        icon={faEllipsis}
                       />
                     </RightIcons>
                   </Label>
@@ -210,6 +254,7 @@ function FolderExporer({
 
   return drawFolder(
     folders.filter((folder) => folder.id == rootId)[0],
+    true,
     false,
     [],
   );
