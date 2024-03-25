@@ -2,7 +2,7 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import Folder from "@/api/types/Folder";
 import "@css/folderIconStyle.css";
 import "@css/floatingContents.css";
-import Subitem from "./Subitem";
+import ItemName from "./Subitem";
 import { redirect } from "next/dist/server/api-utils";
 
 const folderIconStyle: CSSProperties = {
@@ -68,7 +68,7 @@ function FolderComponent({ data }: { data: Folder }) {
         <p>Item count: {data.items.length}</p>
         <ul style={{padding: "0"}}>
           {data.items.map((i) => (
-            <Subitem id={i.itemID} kind={i.kind} key={i.itemID} />
+            <ItemName id={i.itemID} kind={i.kind} key={i.itemID} />
           ))}
         </ul>
       </div>

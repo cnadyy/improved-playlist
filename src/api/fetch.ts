@@ -86,7 +86,14 @@ async function webAPIFetchWithJSON(
   resource: string,
   options?: RequestInit,
 ): Promise<any> {
-  return webAPIFetch(resource, options, true).then((res) => res.json());
+  return webAPIFetch(resource, options, true).then(async (res) => {
+    const json = await res.json();
+    if (json.error) {
+      return Promise.reject(json);
+    } else {
+      return json;
+    }
+  });
 }
 
 export { webAPIFetchWithJSON as default, webAPIFetch };

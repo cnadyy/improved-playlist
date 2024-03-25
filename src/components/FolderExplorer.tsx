@@ -7,10 +7,10 @@ import {
   faFolder,
   faFolderOpen,
   faMusic,
-  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import ItemName from "@/components/ItemName";
 
 const Grid = styled.div<{ subfolder?: boolean }>`
   display: grid;
@@ -152,10 +152,6 @@ function FolderExporer({
               : folders.filter((f) => f.id == item.itemID)[0].id;
             const uniqueID = generateIDs(trail.toString(), id);
 
-            const name = isPlaylist
-              ? item.itemID
-              : folders.filter((f) => f.id == item.itemID)[0].name;
-
             const isSubfolderOpen =
               item.kind != SubitemKind.SpotifyURI &&
               openedFolders.has(trail.toString());
@@ -210,7 +206,7 @@ function FolderExporer({
                             : "none"};
                         `}
                       >
-                        {name}
+                        <ItemName id={item.itemID} kind={item.kind} />
                       </a>
                       <DisableButton
                         className="labelHover"

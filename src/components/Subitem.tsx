@@ -4,6 +4,7 @@ import { SubitemKind } from "@/api/types/Folder";
 import { faFolder, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { CSSProperties, useEffect, useState } from "react";
+import ItemName from "./ItemName";
 
 const subItemStyles: CSSProperties = {
   listStyle: "none",
@@ -19,22 +20,14 @@ export default function Subitem({
   id: string;
   kind: SubitemKind;
 }): React.ReactNode {
-  const [itemName, setItemName] = useState<null | string>(null);
-
-  useEffect(() => {
-    console.log(id);
-    if (kind == SubitemKind.SpotifyURI)
-      getPlaylist(id).then((obj) => setItemName(obj.name));
-    else getFolder(id).then((obj) => setItemName(obj.name));
-  }, [id, kind]);
-
   return (
     <>
-      {itemName ? (
-        <li style={subItemStyles}>
-          <FontAwesomeIcon icon={(kind == SubitemKind.SpotifyURI) ? faMusic : faFolder}/>{itemName}
-        </li>
-      ) : null}
+      <li style={subItemStyles}>
+        <FontAwesomeIcon
+          icon={kind == SubitemKind.SpotifyURI ? faMusic : faFolder}
+        />
+        <ItemName id={id} kind={kind} />
+      </li>
     </>
   );
 }
