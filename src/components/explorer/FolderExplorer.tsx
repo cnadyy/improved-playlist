@@ -2,15 +2,13 @@ import Folder, { SubitemKind } from "@/api/types/Folder";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
-  faBookmark,
-  faEllipsis,
   faFolder,
   faFolderOpen,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import ItemName from "@/components/ItemName";
+import FolderExplorerLabel from "./FolderExplorerLabel";
 
 const Grid = styled.div<{ subfolder?: boolean }>`
   display: grid;
@@ -19,24 +17,7 @@ const Grid = styled.div<{ subfolder?: boolean }>`
   grid-template-columns: min-content auto;
   margin-left: 0.75rem;
   margin-top: 0.15rem;
-  font-size: ${(props) => (props.subfolder ? "0.9em" : "1.2rem")};
-`;
-
-const Label = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 0.625rem;
-  padding: 0.25rem;
-  border: solid 0.5px #ffffff;
-  &:hover {
-    background-color: #dddddd;
-    border-color: #dddddd;
-    border-radius: 4px;
-  }
-  &:hover .labelHover {
-    display: block;
-  }
+  font-size: ${(props) => (props.subfolder ? "0.95em" : "1.2rem")};
 `;
 
 const BarHolder = styled.div`
@@ -60,18 +41,6 @@ const Bar = styled.div`
   border-top-width: 0px;
   border-bottom-width: 0px;
   border-radius: 10px;
-`;
-
-const RightIcons = styled.div`
-  font-size: 1rem;
-  display: none;
-`;
-
-const DisableButton = styled.div`
-  font-size: 0.75rem;
-  font-weight: 300;
-  margin-left: 1rem;
-  display: none;
 `;
 
 // This only renders subitems,
@@ -190,51 +159,19 @@ function FolderExporer({
                   <FontAwesomeIcon
                     icon={icon}
                     color="gray"
-                    size={!isRoot ? "lg" : "2x"}
+                    size={!isRoot ? "xl" : "2x"}
                     onClick={onOpenClick}
                     css={css`
                       margin-bottom: 0.15rem;
                       cursor: pointer;
                     `}
                   />{" "}
-                  <Label>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <a
-                        css={css`
-                          text-decoration: ${isDisabled
-                            ? "line-through"
-                            : "none"};
-                        `}
-                      >
-                        <ItemName id={item.itemID} kind={item.kind} />
-                      </a>
-                      <DisableButton
-                        className="labelHover"
-                        css={css`
-                          cursor: pointer;
-                          user-select: none;
-                        `}
-                        onClick={onDisableClick}
-                      >
-                        Click to {isLocallyDisabled ? "enable" : "disable"}
-                      </DisableButton>
-                    </div>
-
-                    <RightIcons className="labelHover">
-                      <FontAwesomeIcon
-                        css={css`
-                          margin: 0 0.5rem;
-                        `}
-                        icon={faBookmark}
-                      />
-                      <FontAwesomeIcon
-                        css={css`
-                          margin: 0 0.5rem;
-                        `}
-                        icon={faEllipsis}
-                      />
-                    </RightIcons>
-                  </Label>
+                  <FolderExplorerLabel
+                    item={item}
+                    strikethrough={isDisabled}
+                    isDisabled={isLocallyDisabled}
+                    onDisableClick={onDisableClick}
+                  />
                   <BarHolder onClick={onOpenClick}>
                     <Bar />
                   </BarHolder>

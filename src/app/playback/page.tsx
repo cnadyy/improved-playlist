@@ -3,7 +3,7 @@
 import FolderDetailsComponent from "@/components/FolderDetails";
 import { useSearchParams } from "next/navigation";
 import { useFolderList } from "@/api/getFolderList";
-import FolderExplorer from "@/components/FolderExplorer";
+import FolderExplorer from "@/components/explorer/FolderExplorer";
 import { css } from "@emotion/react";
 import { useState } from "react";
 import Header from "@/components/Header";
@@ -24,9 +24,9 @@ export default function Page() {
   }
 
   return (
-    <> 
-      <Header/>
-      <main style={{ margin: "2rem 0"}}>
+    <>
+      <Header />
+      <main style={{ margin: "2rem 0" }}>
         <div
           css={css`
             margin: 0 2rem;

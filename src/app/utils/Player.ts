@@ -39,9 +39,12 @@ async function playFolder(
   const playlists = getPlaylistFolders(folderID, folders, [], disabled);
   Promise.all(
     playlists.flatMap(async (playlistURI) =>
-      getPlaylist(playlistURI).then((obj) => {
-        return obj.tracks.items.map((track) => track.track.uri);
-      }),
+      getPlaylist(playlistURI).then(
+        (obj) => {
+          return obj.tracks.items.map((track) => track.track.uri);
+        },
+        () => [],
+      ),
     ),
   ).then((urisArr) => {
     const uris = urisArr.flatMap((track) => track);

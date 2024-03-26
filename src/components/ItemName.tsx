@@ -1,7 +1,9 @@
 import getFolder from "@/api/getFolder";
 import getPlaylist from "@/api/getPlaylist";
 import { SubitemKind } from "@/api/types/Folder";
-import { cache, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+const cache: { [key: string]: Promise<Playlist> } = {};
 
 export default function ItemName({
   id,
@@ -13,29 +15,32 @@ export default function ItemName({
   const [name, setName] = useState("Loading...");
 
   useEffect(() => {
-    if (kind == SubitemKind.SpotifyURI) {
-      getPlaylist(id).then(
-        (playlist) => {
+    async function resolve() {
+      if (kind == SubitemKind.SpotifyURI) {
+        if (!cache[id]) {
+          cache[id] = getPlaylist(id);
+          console.log(cache);
+        }
+        try {
+          const playlist = await cache[id];
           setName(playlist.name);
-        },
-        (err) => {
-          if (err.error) {
-            setName("Private or invalid playlist");
-          }
-        },
-      );
-    } else {
-      getFolder(id).then(
-        (playlist) => {
-          setName(playlist.name);
-        },
-        (err) => {
-          if (err.error) {
-            setName("Private or invalid folder");
-          }
-        },
-      );
+        } catch (e) {
+          setName("Private or invalid playlist");
+        }
+      } else {
+        getFolder(id).then(
+          (playlist) => {
+            setName(playlist.name);
+          },
+          (err) => {
+            if (err.error) {
+              setName("Private or invalid folder");
+            }
+          },
+        );
+      }
     }
+    resolve();
   }, [id, kind]);
 
   return <>{name}</>;

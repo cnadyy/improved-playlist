@@ -1,9 +1,7 @@
-import getFolder from "@/api/getFolder";
-import getPlaylist from "@/api/getPlaylist";
 import { SubitemKind } from "@/api/types/Folder";
 import { faFolder, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties } from "react";
 import ItemName from "./ItemName";
 
 const subItemStyles: CSSProperties = {
