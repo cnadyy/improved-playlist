@@ -10,8 +10,15 @@ interface Playlist {
     items: TrackItem[];
   };
   uri: string;
+  images: img[];
 }
 
 interface TrackItem {
   track: Track;
+}
+
+interface img {
+  url: string;
+  height: number;
+  width: number;
 }
