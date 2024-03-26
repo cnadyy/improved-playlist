@@ -171,6 +171,7 @@ function FolderExporer({
                     strikethrough={isDisabled}
                     isDisabled={isLocallyDisabled}
                     onDisableClick={onDisableClick}
+                    isPlaylist={isPlaylist}
                   />
                   <BarHolder onClick={onOpenClick}>
                     <Bar />

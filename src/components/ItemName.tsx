@@ -1,9 +1,21 @@
 import getFolder from "@/api/getFolder";
 import getPlaylist from "@/api/getPlaylist";
 import { SubitemKind } from "@/api/types/Folder";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-const cache: { [key: string]: Promise<Playlist> } = {};
+async function resolve(id: string, kind: SubitemKind) {
+  try {
+    if (kind == SubitemKind.SpotifyURI) {
+      const playlist = await getPlaylist(id);
+      return playlist.name;
+    } else {
+      const folder = await getFolder(id);
+      return folder.name;
+    }
+  } catch (err) {
+    return "Invalid or private folder/playlist";
+  }
+}
 
 export default function ItemName({
   id,
@@ -12,36 +24,15 @@ export default function ItemName({
   id: string;
   kind: SubitemKind;
 }) {
-  const [name, setName] = useState("Loading...");
+  const item = useQuery({
+    queryKey: [kind, id],
+    queryFn: () => resolve(id, kind),
+    staleTime: 12000,
+  });
 
-  useEffect(() => {
-    async function resolve() {
-      if (kind == SubitemKind.SpotifyURI) {
-        if (!cache[id]) {
-          cache[id] = getPlaylist(id);
-          console.log(cache);
-        }
-        try {
-          const playlist = await cache[id];
-          setName(playlist.name);
-        } catch (e) {
-          setName("Private or invalid playlist");
-        }
-      } else {
-        getFolder(id).then(
-          (playlist) => {
-            setName(playlist.name);
-          },
-          (err) => {
-            if (err.error) {
-              setName("Private or invalid folder");
-            }
-          },
-        );
-      }
-    }
-    resolve();
-  }, [id, kind]);
-
-  return <>{name}</>;
+  if (item.isFetching) {
+    return <>Loading...</>;
+  } else {
+    return item.data;
+  }
 }
