@@ -46,18 +46,19 @@ function FolderComponent({ data }: { data: Folder }) {
   const folderRef = useRef<null | HTMLDivElement>(null);
   const clientWidth = document.documentElement.clientWidth;
   const [posRight, setPostRight] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     if (folderRef.current) {
       const rightMeasure = folderRef.current.getBoundingClientRect().right;
       if (rightMeasure != posRight) setPostRight(rightMeasure);
     }
-  });
+  }, [isHovering]);
 
   const useRightTooltip = (clientWidth - (330) > posRight);
 
   return (
-    <div style={folderStyle} className={"folderComponent"} ref={folderRef}>
+    <div style={folderStyle} className={"folderComponent"} ref={folderRef} onMouseOver={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
       <div
         className={"folderIcon"}
         style={{ backgroundColor: data.color, ...folderIconStyle }}
