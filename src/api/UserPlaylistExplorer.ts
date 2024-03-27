@@ -52,7 +52,7 @@ class UserPlaylistExplorer {
   }
 }
 async function getCurrentUserPlaylist(): Promise<UserPlaylist> {
-  return await fetch("me/playlists?limit=1", { method: "GET" });
+  return await fetch("me/playlists", { method: "GET" });
 }
 
 export default UserPlaylistExplorer;
