@@ -27,7 +27,7 @@ export default function ItemName({
   const item = useQuery({
     queryKey: [kind, id],
     queryFn: () => resolve(id, kind),
-    staleTime: 12000,
+    staleTime: 1000 * 60 * 12,
   });
 
   if (item.isFetching) {

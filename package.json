@@ -23,7 +23,8 @@
     "@tanstack/react-query-devtools": "^5.28.8",
     "next": "14.1.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-movable": "^3.2.0"
   },
   "devDependencies": {
     "@styled/typescript-styled-plugin": "^1.0.1",

@@ -3,8 +3,11 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ItemName from "@/components/ItemName";
-import { faBookmark, faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import {
+  faBars,
+  faBookmark,
+  faEllipsis,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Label = styled.div`
   display: flex;
@@ -48,21 +51,8 @@ export default function FolderExplorerLabel({
   isPlaylist: boolean;
   onDisableClick: () => void;
 }) {
-  const [dragOver, setDragOver] = useState(false);
-  const [isDragging, setDragging] = useState(false);
-
   return (
-    <Label
-      draggable={true}
-      onDragOver={() => setDragOver(true)}
-      onDragLeave={() => setDragOver(false)}
-      onDragStart={() => setDragging(true)}
-      onDragEnd={() => setDragging(false)}
-      style={{
-        borderColor: dragOver && !isPlaylist && !isDragging ? "#ebbab9" : "#ffffff",
-        opacity: isDragging && !dragOver ? 0.5 : 1,
-      }}
-    >
+    <Label>
       <div style={{ display: "flex", alignItems: "center" }}>
         <a
           css={css`
@@ -85,6 +75,13 @@ export default function FolderExplorerLabel({
 
       <RightIcons className="labelHover">
         <FontAwesomeIcon
+          data-movable-handle
+          style={{
+            marginRight: "1.25em",
+          }}
+          icon={faBars}
+        />
+        <FontAwesomeIcon
           css={css`
             margin: 0 0.5rem;
           `}
@@ -98,5 +95,6 @@ export default function FolderExplorerLabel({
         />
       </RightIcons>
     </Label>
+    // </Draggable>
   );
 }

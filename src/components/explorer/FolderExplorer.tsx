@@ -1,48 +1,12 @@
 import Folder, { SubitemKind } from "@/api/types/Folder";
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import {
   faFolder,
   faFolderOpen,
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import FolderExplorerLabel from "./FolderExplorerLabel";
-
-const Grid = styled.div<{ subfolder?: boolean }>`
-  display: grid;
-  align-items: center;
-  grid-template-rows: min-content auto;
-  grid-template-columns: min-content auto;
-  margin-left: 0.75rem;
-  margin-top: 0.15rem;
-  font-size: ${(props) => (props.subfolder ? "0.95em" : "1.2rem")};
-`;
-
-const BarHolder = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  cursor: pointer;
-  &:hover div {
-    border: solid 2px;
-    border-color: black;
-    border-top-width: 0px;
-    border-bottom-width: 0px;
-  }
-`;
-
-const Bar = styled.div`
-  height: 100%;
-  border: solid 1px;
-  border-color: gray;
-  border-top-width: 0px;
-  border-bottom-width: 0px;
-  border-radius: 10px;
-`;
-
+import FolderExplorerItem from "./FolderExplorerItem";
+import { List } from "react-movable";
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
 function FolderExporer({
@@ -89,6 +53,8 @@ function FolderExporer({
     setDisabledFolders(newDisabledFolders);
   }
 
+  function moveFolder(oldTrail: number[], newTrail: number[]) {}
+
   function generateIDs(trail: string, id: string): string {
     const value = uniqueIDs.get(trail);
     if (value) {
@@ -111,15 +77,17 @@ function FolderExporer({
   ) {
     return (
       <>
-        <div>
-          {folder.items.map((item, i) => {
-            trail.push(i);
+        <List
+          lockVertically
+          values={folder.items}
+          onChange={() => {}}
+          renderList={({ children, props }) => <div {...props}>{children}</div>}
+          renderItem={({ value, props, index }) => {
+            const item = value;
+            if (index != undefined) {
+              trail.push(index);
+            }
             const isPlaylist = item.kind == SubitemKind.SpotifyURI;
-
-            const id = isPlaylist
-              ? item.itemID
-              : folders.filter((f) => f.id == item.itemID)[0].id;
-            const uniqueID = generateIDs(trail.toString(), id);
 
             const isSubfolderOpen =
               item.kind != SubitemKind.SpotifyURI &&
@@ -140,7 +108,7 @@ function FolderExporer({
                 folders.filter((f) => f.id == item.itemID)[0],
                 false,
                 isDisabled,
-                trail,
+                [...trail],
               );
 
             const currItemTrail = [...trail];
@@ -151,37 +119,29 @@ function FolderExporer({
               toggleDisableFolder(currItemTrail.toString());
             };
 
-            trail.pop();
+            if (index != undefined) {
+              trail.pop();
+            }
 
             return (
-              <div key={uniqueID}>
-                <Grid subfolder={!isRoot}>
-                  <FontAwesomeIcon
-                    icon={icon}
-                    color="gray"
-                    size={!isRoot ? "xl" : "2x"}
-                    onClick={onOpenClick}
-                    css={css`
-                      margin-bottom: 0.15rem;
-                      cursor: pointer;
-                    `}
-                  />{" "}
-                  <FolderExplorerLabel
-                    item={item}
-                    strikethrough={isDisabled}
-                    isDisabled={isLocallyDisabled}
-                    onDisableClick={onDisableClick}
+              <>
+                <div {...props}>
+                  <FolderExplorerItem
+                    isRoot={isRoot}
+                    onOpenClick={onOpenClick}
+                    isDisabled={isDisabled}
+                    isLocallyDisabled={isLocallyDisabled}
                     isPlaylist={isPlaylist}
+                    onDisableClick={onDisableClick}
+                    item={item}
+                    icon={icon}
+                    subitems={subitems}
                   />
-                  <BarHolder onClick={onOpenClick}>
-                    <Bar />
-                  </BarHolder>
-                  <div>{subitems}</div>
-                </Grid>
-              </div>
+                </div>
+              </>
             );
-          })}
-        </div>
+          }}
+        />
       </>
     );
   }

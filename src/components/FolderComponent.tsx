@@ -34,13 +34,13 @@ const rightToolTip: CSSProperties = {
   position: "absolute",
   left: "105%",
   top: "5%",
-}
+};
 
 const leftToolTip: CSSProperties = {
   position: "absolute",
   right: "105%",
   top: "5%",
-}
+};
 
 function FolderComponent({ data }: { data: Folder }) {
   const folderRef = useRef<null | HTMLDivElement>(null);
@@ -55,21 +55,34 @@ function FolderComponent({ data }: { data: Folder }) {
     }
   }, [isHovering]);
 
-  const useRightTooltip = (clientWidth - (330) > posRight);
+  const useRightTooltip = clientWidth - 330 > posRight;
 
   return (
-    <div style={folderStyle} className={"folderComponent"} ref={folderRef} onMouseOver={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+    <div
+      style={folderStyle}
+      className={"folderComponent"}
+      ref={folderRef}
+      onMouseOver={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
       <div
         className={"folderIcon"}
         style={{ backgroundColor: data.color, ...folderIconStyle }}
       />
       <h2 style={textStyle}>{data.name}</h2>
-      <div style={useRightTooltip ? rightToolTip : leftToolTip} className={"contentsList"}>
+      <div
+        style={useRightTooltip ? rightToolTip : leftToolTip}
+        className={"contentsList"}
+      >
         <h4>{data.name}</h4>
         <p>Item count: {data.items.length}</p>
-        <ul style={{padding: "0"}}>
-          {data.items.map((i) => (
-            <ItemName id={i.itemID} kind={i.kind} key={i.itemID} />
+        <ul style={{ padding: "0" }}>
+          {data.items.map((i, index) => (
+            <ItemName
+              id={i.itemID}
+              kind={i.kind}
+              key={"folder-" + index + "-" + i.itemID}
+            />
           ))}
         </ul>
       </div>
