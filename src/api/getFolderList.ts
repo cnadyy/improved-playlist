@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Folder from "./types/Folder";
+import setFolderList from "./setFolderList";
 
 function getFolderList(): Folder[] {
   const item = localStorage.getItem("folderStore");
@@ -14,7 +15,12 @@ function useFolderList(): [Folder[], (folders: Folder[]) => void] {
     setFolders(item ? (JSON.parse(item) as Folder[]) : []);
   }, []);
 
-  return [folders, setFolders];
+  function setFolder(folders: Folder[]) {
+    setFolders(folders);
+    setFolderList(folders);
+  }
+
+  return [folders, setFolder];
 }
 
 export { getFolderList as default, useFolderList };

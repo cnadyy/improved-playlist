@@ -18,7 +18,7 @@ const Grid = styled.div<{ subfolder?: boolean }>`
   grid-template-columns: min-content auto;
   margin-left: 0.75rem;
   margin-top: 0rem;
-  font-size: ${(props) => (props.subfolder ? "0.95em" : "1.2rem")};
+  font-size: ${(props) => (props.subfolder ? "1.1rem" : "1.2rem")};
 `;
 
 const BarHolder = styled.div`

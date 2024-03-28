@@ -16,10 +16,8 @@ const Label = styled.div`
   margin-left: 0.625rem;
   padding: 0.25rem;
   border-radius: 4px;
-  border: solid 1.5px #ffffff;
   &:hover {
     background-color: #dddddd;
-    border-color: #dddddd;
   }
   &:hover .labelHover {
     display: block;
