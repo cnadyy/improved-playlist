@@ -42,13 +42,11 @@ export default function FolderExplorerLabel({
   item,
   strikethrough,
   isDisabled,
-  isPlaylist,
   onDisableClick,
 }: {
   item: { kind: SubitemKind; itemID: string };
   strikethrough: boolean;
   isDisabled: boolean;
-  isPlaylist: boolean;
   onDisableClick: () => void;
 }) {
   return (

@@ -6,12 +6,12 @@ function getPlaylistFolders(
   folderID: string,
   folders: Folder[],
   trail: number[],
-  disabled: Set<string>,
+  disabled: number[][],
 ): string[] {
   return folders
     .filter((folder) => folder.id == folderID)[0]
     .items.filter((_, i) => {
-      return !disabled.has([...trail, i].toString());
+      return !disabled.some((f) => f.toString() == [...trail, i].toString());
     })
     .flatMap((item, i) => {
       if (item.kind == SubitemKind.Folder) {
@@ -33,7 +33,7 @@ function getPlaylistFolders(
 async function playFolder(
   folderID: string,
   folders: Folder[],
-  disabled: Set<string>,
+  disabled: number[][],
   deviceID?: string,
 ) {
   const playlists = getPlaylistFolders(folderID, folders, [], disabled);

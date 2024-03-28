@@ -3,7 +3,13 @@ import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FolderExplorerLabel from "./FolderExplorerLabel";
 import { useState } from "react";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFolder,
+  faFolderOpen,
+  faMusic,
+} from "@fortawesome/free-solid-svg-icons";
+import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
+import { DrawFolderList } from "./FolderExplorer";
 
 const Grid = styled.div<{ subfolder?: boolean }>`
   display: grid;
@@ -39,16 +45,64 @@ const Bar = styled.div`
 `;
 
 export default function FolderExplorerItem({
+  folders,
+  setFolders,
   isRoot,
-  onOpenClick,
-  isDisabled,
-  isLocallyDisabled,
-  isPlaylist,
-  onDisableClick,
+  isParentDisabled,
+  trail,
   item,
-  icon,
-  subitems,
-}: any) {
+  // FIXME: use a context.
+  disabled,
+  setDisabled,
+}: {
+  folders: Folder[];
+  setFolders: (folders: Folder[]) => void;
+  isRoot: boolean;
+  isParentDisabled: boolean;
+  trail: number[];
+  item: Subitem;
+  disabled: number[][];
+  setDisabled: (disabled: number[][]) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const isPlaylist = item.kind == SubitemKind.SpotifyURI;
+
+  const isSubfolderOpen = item.kind != SubitemKind.SpotifyURI && open;
+
+  const icon = isPlaylist ? faMusic : isSubfolderOpen ? faFolderOpen : faFolder;
+
+  const isLocallyDisabled = disabled.some(
+    (f) => f.toString() == trail.toString(),
+  );
+  const isDisabled = isParentDisabled || isLocallyDisabled;
+
+  const subitems = isSubfolderOpen && (
+    <DrawFolderList
+      folders={folders}
+      setFolders={setFolders}
+      folder={folders.filter((f) => f.id == item.itemID)[0]}
+      isRoot={false}
+      isParentDisabled={isDisabled}
+      trail={trail}
+      disabled={disabled}
+      setDisabled={setDisabled}
+    />
+  );
+
+  const onOpenClick = () => {
+    if (!isPlaylist) setOpen(!open);
+  };
+  const onDisableClick = () => {
+    let newDisabled = [...disabled];
+    if (newDisabled.some((f) => f.toString() == trail.toString())) {
+      newDisabled = newDisabled.filter((f) => f.toString() != trail.toString());
+    } else {
+      newDisabled.push(trail);
+    }
+    setDisabled(newDisabled);
+  };
+
   return (
     <Grid subfolder={!isRoot}>
       <div></div>
@@ -70,14 +124,6 @@ export default function FolderExplorerItem({
           `}
         ></div>
       </div>
-      {/**
-        <div
-        css={css`
-          display: flex;
-          align-items: center;
-          `}
-          >
-      */}
       <FontAwesomeIcon
         role="button"
         icon={icon}
@@ -89,16 +135,12 @@ export default function FolderExplorerItem({
           cursor: pointer;
         `}
       />{" "}
-      {/**
-      </div>
-      */}
       <div>
         <FolderExplorerLabel
           item={item}
           strikethrough={isDisabled}
           isDisabled={isLocallyDisabled}
           onDisableClick={onDisableClick}
-          isPlaylist={isPlaylist}
         />
       </div>
       <BarHolder onClick={onOpenClick}>

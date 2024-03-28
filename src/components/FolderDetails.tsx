@@ -33,14 +33,14 @@ const FolderName = styled.h1`
   -webkit-line-clamp: 2;
   overflow: hidden;
   &::after {
-    content: "${props => props.content}";
+    content: "${(props) => props.content}";
     background-color: white;
     position: absolute;
     left: 0;
     top: 0;
     visibility: hidden;
     pointer-events: none;
-  },
+  }
   &:hover::after {
     visibility: visible;
   }
@@ -49,12 +49,16 @@ const FolderName = styled.h1`
 export default function FolderDetailsComponent({
   folder,
   disabledFolders,
+  folders,
+  setFolders
 }: {
   folder: Folder;
-  disabledFolders: Set<string>;
+  folders: Folder[];
+  setFolders: (folder: Folder[]) => void
+  disabledFolders: number[][];
 }) {
   const router = useRouter();
-  const folders = useFolderList();
+  // const [folders, setFolders] = useFolderList();
   return (
     <div
       css={css`
@@ -69,10 +73,12 @@ export default function FolderDetailsComponent({
       />
       <div
         css={css`
-        padding: 0 1rem;
+          padding: 0 1rem;
         `}
       >
-        <div style={{position: "relative"}}><FolderName content={folder.name}>{folder.name}</FolderName></div>
+        <div style={{ position: "relative" }}>
+          <FolderName content={folder.name}>{folder.name}</FolderName>
+        </div>
         {/**
           <h3
           css={css`

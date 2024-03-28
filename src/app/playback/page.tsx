@@ -10,12 +10,9 @@ import Header from "@/components/Header";
 
 export default function Page() {
   const searchParams = useSearchParams();
-  const folders = useFolderList();
+  const [folders, setFolders] = useFolderList();
 
-  const [disabledFolders, setDisabledFolders] = useState<Set<string>>(
-    () => new Set(),
-  );
-
+  const [disabledFolders, setDisabledFolders] = useState<number[][]>([]);
   const folderID = searchParams.get("id");
   const folder = folders.find((folder) => folder.id == folderID);
 
@@ -34,6 +31,8 @@ export default function Page() {
         >
           <FolderDetailsComponent
             folder={folder}
+            folders={folders}
+            setFolders={setFolders}
             disabledFolders={disabledFolders}
           />
         </div>
@@ -44,6 +43,7 @@ export default function Page() {
         >
           <FolderExplorer
             folders={folders}
+            setFolders={setFolders}
             rootId={folderID}
             disabledFolders={disabledFolders}
             setDisabledFolders={setDisabledFolders}

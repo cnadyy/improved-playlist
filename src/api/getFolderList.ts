@@ -6,7 +6,7 @@ function getFolderList(): Folder[] {
   return item ? (JSON.parse(item) as Folder[]) : [];
 }
 
-function useFolderList() {
+function useFolderList(): [Folder[], (folders: Folder[]) => void] {
   const [folders, setFolders] = useState<Folder[]>([]);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ function useFolderList() {
     setFolders(item ? (JSON.parse(item) as Folder[]) : []);
   }, []);
 
-  return folders;
+  return [folders, setFolders];
 }
 
 export { getFolderList as default, useFolderList };
