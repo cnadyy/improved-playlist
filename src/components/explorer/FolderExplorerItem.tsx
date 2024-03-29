@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
 import { DrawFolderList } from "./FolderExplorer";
-import { FolderContext } from "./FolderContext";
+import { FolderActionKind, FolderContext } from "./FolderContext";
 
 const Grid = styled.div<{ subfolder?: boolean }>`
   display: grid;
@@ -63,9 +63,9 @@ export default function FolderExplorerItem({
 }) {
   const {
     disabledFolders,
-    setDisabledFolders,
+    updateDisabledFolders,
     openedFolders,
-    setOpenedFolders,
+    updateOpenedFolders,
   } = useContext(FolderContext);
 
   const isPlaylist = item.kind == SubitemKind.SpotifyURI;
@@ -92,23 +92,17 @@ export default function FolderExplorerItem({
 
   const onOpenClick = () => {
     if (!isPlaylist) {
-      let newOpened = [...openedFolders];
-      if (newOpened.some((f) => f.toString() == trail.toString())) {
-        newOpened = newOpened.filter((f) => f.toString() != trail.toString());
-      } else {
-        newOpened.push(trail);
-      }
-      setOpenedFolders(newOpened);
+      updateOpenedFolders({
+        kind: FolderActionKind.Toggle,
+        trail: trail,
+      });
     }
   };
   const onDisableClick = () => {
-    let newDisabled = [...disabledFolders];
-    if (newDisabled.some((f) => f.toString() == trail.toString())) {
-      newDisabled = newDisabled.filter((f) => f.toString() != trail.toString());
-    } else {
-      newDisabled.push(trail);
-    }
-    setDisabledFolders(newDisabled);
+    updateDisabledFolders({
+      kind: FolderActionKind.Toggle,
+      trail: trail,
+    });
   };
 
   return (

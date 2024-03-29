@@ -1,9 +1,8 @@
 import Folder from "@/api/types/Folder";
 import FolderExplorerItem from "./FolderExplorerItem";
 import { List } from "react-movable";
-import moveTrail from "@/utils";
 import { useContext } from "react";
-import { FolderContext } from "./FolderContext";
+import { FolderActionKind, FolderContext } from "./FolderContext";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -43,12 +42,8 @@ function DrawFolderList({
   isParentDisabled: boolean;
   trail: number[];
 }) {
-  const {
-    disabledFolders,
-    setDisabledFolders,
-    openedFolders,
-    setOpenedFolders,
-  } = useContext(FolderContext);
+  const { updateDisabledFolders, updateOpenedFolders } =
+    useContext(FolderContext);
 
   return (
     <>
@@ -56,11 +51,11 @@ function DrawFolderList({
         lockVertically
         values={folder.items}
         beforeDrag={(p) => {
-          setOpenedFolders(
-            openedFolders.filter(
-              (t) => t.toString() != [...trail, p.index].toString(),
-            ),
-          );
+          // setOpenedFolders(
+          //   openedFolders.filter(
+          //     (t) => t.toString() != [...trail, p.index].toString(),
+          //   ),
+          // );
         }}
         onChange={(meta) => {
           const newFolders = folders.map((f) => {
@@ -73,20 +68,16 @@ function DrawFolderList({
             }
           });
           setFolders(newFolders);
-          setDisabledFolders(
-            moveTrail(
-              disabledFolders,
-              [...trail, meta.oldIndex],
-              [...trail, meta.newIndex],
-            ),
-          );
-          setOpenedFolders(
-            moveTrail(
-              openedFolders,
-              [...trail, meta.oldIndex],
-              [...trail, meta.newIndex],
-            ),
-          );
+          updateDisabledFolders({
+            kind: FolderActionKind.UpdateTrail,
+            oldTrail: [...trail, meta.oldIndex],
+            newTrail: [...trail, meta.newIndex],
+          });
+          updateOpenedFolders({
+            kind: FolderActionKind.UpdateTrail,
+            oldTrail: [...trail, meta.oldIndex],
+            newTrail: [...trail, meta.newIndex],
+          });
         }}
         renderList={({ children, props }) => <div {...props}>{children}</div>}
         renderItem={({ value, props, index }) => {

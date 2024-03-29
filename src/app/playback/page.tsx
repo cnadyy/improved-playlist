@@ -5,16 +5,25 @@ import { useSearchParams } from "next/navigation";
 import { useFolderList } from "@/api/getFolderList";
 import FolderExplorer from "@/components/explorer/FolderExplorer";
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import Header from "@/components/Header";
-import { FolderContext } from "@/components/explorer/FolderContext";
+import {
+  FolderContext,
+  updateFoldersTrail,
+} from "@/components/explorer/FolderContext";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const [folders, setFolders] = useFolderList();
 
-  const [disabledFolders, setDisabledFolders] = useState<number[][]>([]);
-  const [openedFolders, setOpenedFolders] = useState<number[][]>([]);
+  const [disabledFolders, updateDisabledFolders] = useReducer(
+    updateFoldersTrail,
+    [],
+  );
+  const [openedFolders, updateOpenedFolders] = useReducer(
+    updateFoldersTrail,
+    [],
+  );
   const folderID = searchParams.get("id");
   const folder = folders.find((folder) => folder.id == folderID);
 
@@ -29,9 +38,9 @@ export default function Page() {
         <FolderContext.Provider
           value={{
             disabledFolders,
-            setDisabledFolders,
+            updateDisabledFolders,
             openedFolders,
-            setOpenedFolders,
+            updateOpenedFolders,
           }}
         >
           <div
