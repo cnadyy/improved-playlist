@@ -8,7 +8,7 @@ import { css } from "@emotion/react";
 import { useReducer, useState } from "react";
 import Header from "@/components/Header";
 import {
-  FolderContext,
+  FolderExplorerContext,
   updateFoldersTrail,
 } from "@/components/explorer/FolderContext";
 
@@ -35,7 +35,7 @@ export default function Page() {
     <>
       <Header />
       <main style={{ margin: "2rem 0" }}>
-        <FolderContext.Provider
+        <FolderExplorerContext.Provider
           value={{
             disabledFolders,
             updateDisabledFolders,
@@ -48,12 +48,7 @@ export default function Page() {
               margin: 0 2rem;
             `}
           >
-            <FolderDetailsComponent
-              folder={folder}
-              folders={folders}
-              setFolders={setFolders}
-              disabledFolders={disabledFolders}
-            />
+            <FolderDetailsComponent folder={folder} folders={folders} />
           </div>
           <div
             css={css`
@@ -76,7 +71,7 @@ export default function Page() {
             <li>Currently playing information</li>
             <li>Skip song and skip playlist buttons</li>
           </ol>
-        </FolderContext.Provider>
+        </FolderExplorerContext.Provider>
       </main>
     </>
   );

@@ -1,7 +1,7 @@
 import moveTrail from "@/utils";
 import { createContext } from "react";
 
-export const FolderContext = createContext<{
+export const FolderExplorerContext = createContext<{
   disabledFolders: number[][];
   updateDisabledFolders: (action: FolderAction) => void;
   openedFolders: number[][];
@@ -40,4 +40,8 @@ export function updateFoldersTrail(state: number[][], action: FolderAction) {
   } else {
     return moveTrail(state, action.oldTrail, action.newTrail);
   }
+}
+
+export function foldersIncludes(state: number[][], trail: number[]) {
+  return state.some((f) => f.toString() == trail.toString());
 }

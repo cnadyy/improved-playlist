@@ -10,16 +10,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
 import { DrawFolderList } from "./FolderExplorer";
-import { FolderActionKind, FolderContext } from "./FolderContext";
+import {
+  FolderActionKind,
+  FolderExplorerContext,
+  foldersIncludes as foldersInclude,
+} from "./FolderContext";
+import { folderIconStyle } from "../FolderComponent";
 
-const Grid = styled.div<{ subfolder?: boolean }>`
+const Grid = styled.div<{ depth: number }>`
   display: grid;
   align-items: center;
   grid-template-rows: min-content auto;
   grid-template-columns: min-content auto;
   margin-left: 0.75rem;
   margin-top: 0rem;
-  font-size: ${(props) => (props.subfolder ? "1.1rem" : "1.2rem")};
+  font-size: ${(props) => Math.pow(0.95, props.depth - 1) * 1.2 + "rem"};
 `;
 
 const BarHolder = styled.div`
@@ -49,15 +54,12 @@ export default function FolderExplorerItem({
   trail,
   folders,
   setFolders,
-  isRoot,
   isParentDisabled,
   item,
-  // FIXME: use a context.
 }: {
   trail: number[];
   folders: Folder[];
   setFolders: (folders: Folder[]) => void;
-  isRoot: boolean;
   isParentDisabled: boolean;
   item: Subitem;
 }) {
@@ -66,25 +68,22 @@ export default function FolderExplorerItem({
     updateDisabledFolders,
     openedFolders,
     updateOpenedFolders,
-  } = useContext(FolderContext);
+  } = useContext(FolderExplorerContext);
 
   const isPlaylist = item.kind == SubitemKind.SpotifyURI;
-  const isSubfolderOpen =
-    item.kind != SubitemKind.SpotifyURI &&
-    openedFolders.some((f) => f.toString() == trail.toString());
-  const icon = isPlaylist ? faMusic : isSubfolderOpen ? faFolderOpen : faFolder;
+  const isOpen =
+    item.kind != SubitemKind.SpotifyURI && foldersInclude(openedFolders, trail);
 
-  const isLocallyDisabled = disabledFolders.some(
-    (f) => f.toString() == trail.toString(),
-  );
+  const icon = isPlaylist ? faMusic : isOpen ? faFolderOpen : faFolder;
+
+  const isLocallyDisabled = foldersInclude(disabledFolders, trail);
   const isDisabled = isParentDisabled || isLocallyDisabled;
 
-  const subitems = isSubfolderOpen && (
+  const subitems = isOpen && (
     <DrawFolderList
       folders={folders}
       setFolders={setFolders}
       folder={folders.filter((f) => f.id == item.itemID)[0]}
-      isRoot={false}
       isParentDisabled={isDisabled}
       trail={trail}
     />
@@ -106,7 +105,7 @@ export default function FolderExplorerItem({
   };
 
   return (
-    <Grid subfolder={!isRoot}>
+    <Grid depth={trail.length}>
       <div></div>
       <div
         css={css`
@@ -130,7 +129,7 @@ export default function FolderExplorerItem({
         role="button"
         icon={icon}
         color="gray"
-        size={!isRoot ? "xl" : "2x"}
+        size={trail.length != 1 ? "xl" : "2x"}
         onClick={onOpenClick}
         css={css`
           margin-bottom: 0.15rem;

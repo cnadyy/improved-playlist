@@ -7,7 +7,8 @@ import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { relative } from "path";
-import { CSSProperties } from "react";
+import { CSSProperties, useContext } from "react";
+import { FolderExplorerContext } from "./explorer/FolderContext";
 
 const folderIconStyle: CSSProperties = {
   minWidth: "13rem",
@@ -48,16 +49,13 @@ const FolderName = styled.h1`
 
 export default function FolderDetailsComponent({
   folder,
-  disabledFolders,
   folders,
-  setFolders
 }: {
   folder: Folder;
   folders: Folder[];
-  setFolders: (folder: Folder[]) => void
-  disabledFolders: number[][];
 }) {
   const router = useRouter();
+  const { disabledFolders } = useContext(FolderExplorerContext);
   // const [folders, setFolders] = useFolderList();
   return (
     <div

@@ -2,7 +2,7 @@ import Folder from "@/api/types/Folder";
 import FolderExplorerItem from "./FolderExplorerItem";
 import { List } from "react-movable";
 import { useContext } from "react";
-import { FolderActionKind, FolderContext } from "./FolderContext";
+import { FolderActionKind, FolderExplorerContext } from "./FolderContext";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -20,7 +20,6 @@ function FolderExporer({
       folders={folders}
       setFolders={setFolders}
       folder={folders.filter((folder) => folder.id == rootId)[0]}
-      isRoot={true}
       isParentDisabled={false}
       trail={[]}
     />
@@ -31,19 +30,17 @@ function DrawFolderList({
   folders,
   setFolders,
   folder,
-  isRoot,
   isParentDisabled,
   trail,
 }: {
   folders: Folder[];
   setFolders: (folders: Folder[]) => void;
   folder: Folder;
-  isRoot: boolean;
   isParentDisabled: boolean;
   trail: number[];
 }) {
   const { updateDisabledFolders, updateOpenedFolders } =
-    useContext(FolderContext);
+    useContext(FolderExplorerContext);
 
   return (
     <>
@@ -92,7 +89,6 @@ function DrawFolderList({
               <FolderExplorerItem
                 folders={folders}
                 setFolders={setFolders}
-                isRoot={isRoot}
                 isParentDisabled={isParentDisabled}
                 trail={itemTrail}
                 item={item}
