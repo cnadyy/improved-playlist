@@ -21,11 +21,8 @@ export default function moveTrail(
         trail.slice(0, oldTrail.length - 1).toString() &&
       oldTrail[oldTrail.length - 1] <= trail[oldTrail.length - 1]
     ) {
-      return [
-        ...trail.slice(0, oldTrail.length - 1),
-        trail[oldTrail.length - 1] - 1,
-        ...trail.slice(oldTrail.length),
-      ];
+      trail[oldTrail.length - 1] -= 1;
+      return trail;
     } else {
       return trail;
     }
@@ -37,11 +34,8 @@ export default function moveTrail(
         trail.slice(0, newTrail.length - 1).toString() &&
       newTrail[newTrail.length - 1] <= trail[newTrail.length - 1]
     ) {
-      return [
-        ...trail.slice(0, newTrail.length - 1),
-        trail[newTrail.length - 1] + 1,
-        ...trail.slice(newTrail.length),
-      ];
+      trail[newTrail.length - 1] += 1;
+      return trail;
     } else {
       return trail;
     }
@@ -52,5 +46,6 @@ export default function moveTrail(
 
 // // FIXME: consider this example
 // // Should this return [[6, 5, 6]] or [6, 4, 6]
+// console.log(moveTrail([[7, 4, 6]], [3], [7, 4]));
 
 // console.log(moveTrail([[3, 4, 6]], [3], [7]));

@@ -8,10 +8,14 @@ interface Folder {
   isPinned: boolean;
 }
 
-interface Subitem {
-  kind: SubitemKind;
-  itemID: string | SpotifyURI;
-}
+// interface Subitem {
+//   kind: SubitemKind;
+//   itemID: string | SpotifyURI;
+// }
+
+type Subitem =
+  | { kind: SubitemKind.SpotifyURI; itemID: SpotifyURI, uri: string }
+  | { kind: SubitemKind.Folder; itemID: string };
 
 enum SubitemKind {
   SpotifyURI = 1,

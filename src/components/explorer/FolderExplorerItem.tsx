@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FolderExplorerLabel from "./FolderExplorerLabel";
-import { useState } from "react";
+import { useContext } from "react";
 import {
   faFolder,
   faFolderOpen,
@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
 import { DrawFolderList } from "./FolderExplorer";
+import { FolderContext } from "./FolderContext";
 
 const Grid = styled.div<{ subfolder?: boolean }>`
   display: grid;
@@ -45,34 +46,35 @@ const Bar = styled.div`
 `;
 
 export default function FolderExplorerItem({
+  trail,
   folders,
   setFolders,
   isRoot,
   isParentDisabled,
-  trail,
   item,
   // FIXME: use a context.
-  disabled,
-  setDisabled,
 }: {
+  trail: number[];
   folders: Folder[];
   setFolders: (folders: Folder[]) => void;
   isRoot: boolean;
   isParentDisabled: boolean;
-  trail: number[];
   item: Subitem;
-  disabled: number[][];
-  setDisabled: (disabled: number[][]) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const {
+    disabledFolders,
+    setDisabledFolders,
+    openedFolders,
+    setOpenedFolders,
+  } = useContext(FolderContext);
 
   const isPlaylist = item.kind == SubitemKind.SpotifyURI;
-
-  const isSubfolderOpen = item.kind != SubitemKind.SpotifyURI && open;
-
+  const isSubfolderOpen =
+    item.kind != SubitemKind.SpotifyURI &&
+    openedFolders.some((f) => f.toString() == trail.toString());
   const icon = isPlaylist ? faMusic : isSubfolderOpen ? faFolderOpen : faFolder;
 
-  const isLocallyDisabled = disabled.some(
+  const isLocallyDisabled = disabledFolders.some(
     (f) => f.toString() == trail.toString(),
   );
   const isDisabled = isParentDisabled || isLocallyDisabled;
@@ -85,22 +87,28 @@ export default function FolderExplorerItem({
       isRoot={false}
       isParentDisabled={isDisabled}
       trail={trail}
-      disabled={disabled}
-      setDisabled={setDisabled}
     />
   );
 
   const onOpenClick = () => {
-    if (!isPlaylist) setOpen(!open);
+    if (!isPlaylist) {
+      let newOpened = [...openedFolders];
+      if (newOpened.some((f) => f.toString() == trail.toString())) {
+        newOpened = newOpened.filter((f) => f.toString() != trail.toString());
+      } else {
+        newOpened.push(trail);
+      }
+      setOpenedFolders(newOpened);
+    }
   };
   const onDisableClick = () => {
-    let newDisabled = [...disabled];
+    let newDisabled = [...disabledFolders];
     if (newDisabled.some((f) => f.toString() == trail.toString())) {
       newDisabled = newDisabled.filter((f) => f.toString() != trail.toString());
     } else {
       newDisabled.push(trail);
     }
-    setDisabled(newDisabled);
+    setDisabledFolders(newDisabled);
   };
 
   return (

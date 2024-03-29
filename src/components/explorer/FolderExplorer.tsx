@@ -2,6 +2,8 @@ import Folder from "@/api/types/Folder";
 import FolderExplorerItem from "./FolderExplorerItem";
 import { List } from "react-movable";
 import moveTrail from "@/utils";
+import { useContext } from "react";
+import { FolderContext } from "./FolderContext";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -9,14 +11,10 @@ function FolderExporer({
   folders,
   setFolders,
   rootId,
-  disabledFolders,
-  setDisabledFolders,
 }: {
   folders: Folder[];
   setFolders: (folders: Folder[]) => void;
   rootId: string;
-  disabledFolders: number[][];
-  setDisabledFolders: (folders: number[][]) => void;
 }) {
   return (
     <DrawFolderList
@@ -26,8 +24,6 @@ function FolderExporer({
       isRoot={true}
       isParentDisabled={false}
       trail={[]}
-      disabled={disabledFolders}
-      setDisabled={setDisabledFolders}
     />
   );
 }
@@ -39,8 +35,6 @@ function DrawFolderList({
   isRoot,
   isParentDisabled,
   trail,
-  disabled,
-  setDisabled,
 }: {
   folders: Folder[];
   setFolders: (folders: Folder[]) => void;
@@ -48,14 +42,26 @@ function DrawFolderList({
   isRoot: boolean;
   isParentDisabled: boolean;
   trail: number[];
-  disabled: number[][];
-  setDisabled: (disabled: number[][]) => void;
 }) {
+  const {
+    disabledFolders,
+    setDisabledFolders,
+    openedFolders,
+    setOpenedFolders,
+  } = useContext(FolderContext);
+
   return (
     <>
       <List
         lockVertically
         values={folder.items}
+        beforeDrag={(p) => {
+          setOpenedFolders(
+            openedFolders.filter(
+              (t) => t.toString() != [...trail, p.index].toString(),
+            ),
+          );
+        }}
         onChange={(meta) => {
           const newFolders = folders.map((f) => {
             if (f.id == folder.id) {
@@ -67,9 +73,16 @@ function DrawFolderList({
             }
           });
           setFolders(newFolders);
-          setDisabled(
+          setDisabledFolders(
             moveTrail(
-              disabled,
+              disabledFolders,
+              [...trail, meta.oldIndex],
+              [...trail, meta.newIndex],
+            ),
+          );
+          setOpenedFolders(
+            moveTrail(
+              openedFolders,
               [...trail, meta.oldIndex],
               [...trail, meta.newIndex],
             ),
@@ -84,20 +97,16 @@ function DrawFolderList({
           }
 
           return (
-            <>
-              <div {...props}>
-                <FolderExplorerItem
-                  folders={folders}
-                  setFolders={setFolders}
-                  isRoot={isRoot}
-                  isParentDisabled={isParentDisabled}
-                  trail={itemTrail}
-                  item={item}
-                  disabled={disabled}
-                  setDisabled={setDisabled}
-                />
-              </div>
-            </>
+            <div {...props}>
+              <FolderExplorerItem
+                folders={folders}
+                setFolders={setFolders}
+                isRoot={isRoot}
+                isParentDisabled={isParentDisabled}
+                trail={itemTrail}
+                item={item}
+              />
+            </div>
           );
         }}
       />
