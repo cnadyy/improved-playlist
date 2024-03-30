@@ -15,7 +15,6 @@ import {
   FolderExplorerContext,
   foldersIncludes as foldersInclude,
 } from "./FolderContext";
-import { folderIconStyle } from "../FolderComponent";
 
 const Grid = styled.div<{ depth: number }>`
   display: grid;

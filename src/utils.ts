@@ -1,47 +1,45 @@
-export default function moveTrail(
+import Folder from "./api/types/Folder";
+import {
+  FolderAction,
+  FolderActionKind,
+} from "./components/explorer/FolderContext";
+
+export default function moveTrails(
   disabled: number[][],
   oldTrail: number[],
   newTrail: number[],
 ) {
-  const oldSubitems = disabled
-    .filter((trail) => {
-      return oldTrail.toString() == trail.slice(0, oldTrail.length).toString();
-    })
-    .map((trail) => {
-      return [...newTrail, ...trail.slice(oldTrail.length)];
-    });
+  return disabled.map((trail) => moveTrail(trail, oldTrail, newTrail));
+}
 
-  const filtered = disabled.filter((trail) => {
-    return oldTrail.toString() != trail.slice(0, oldTrail.length).toString();
-  });
+export function moveTrail(
+  trail: number[],
+  oldTrail: number[],
+  newTrail: number[],
+) {
+  if (trail.toString() == oldTrail.toString()) {
+    return newTrail;
+  }
+  if (oldTrail.toString() == trail.slice(0, oldTrail.length).toString()) {
+    return [...newTrail, ...trail.slice(oldTrail.length)];
+  }
+  const movedTrail = [...trail];
+  if (
+    oldTrail.slice(0, oldTrail.length - 1).toString() ==
+      trail.slice(0, oldTrail.length - 1).toString() &&
+    oldTrail[oldTrail.length - 1] <= trail[oldTrail.length - 1]
+  ) {
+    movedTrail[oldTrail.length - 1] -= 1;
+  }
 
-  const moveBack = filtered.map((trail) => {
-    if (
-      oldTrail.slice(0, oldTrail.length - 1).toString() ==
-        trail.slice(0, oldTrail.length - 1).toString() &&
-      oldTrail[oldTrail.length - 1] <= trail[oldTrail.length - 1]
-    ) {
-      trail[oldTrail.length - 1] -= 1;
-      return trail;
-    } else {
-      return trail;
-    }
-  });
-
-  const moveForward = moveBack.map((trail) => {
-    if (
-      newTrail.slice(0, newTrail.length - 1).toString() ==
-        trail.slice(0, newTrail.length - 1).toString() &&
-      newTrail[newTrail.length - 1] <= trail[newTrail.length - 1]
-    ) {
-      trail[newTrail.length - 1] += 1;
-      return trail;
-    } else {
-      return trail;
-    }
-  });
-
-  return [...moveForward, ...oldSubitems];
+  if (
+    newTrail.slice(0, newTrail.length - 1).toString() ==
+      movedTrail.slice(0, newTrail.length - 1).toString() &&
+    newTrail[newTrail.length - 1] <= movedTrail[newTrail.length - 1]
+  ) {
+    movedTrail[newTrail.length - 1] += 1;
+  }
+  return movedTrail;
 }
 
 // // FIXME: consider this example
@@ -49,3 +47,74 @@ export default function moveTrail(
 // console.log(moveTrail([[7, 4, 6]], [3], [7, 4]));
 
 // console.log(moveTrail([[3, 4, 6]], [3], [7]));
+
+export function updateFolders(
+  trailsToFolders: { trail: number[]; id: string }[],
+  setTrailsToFolders: (trails: { trail: number[]; id: string }[]) => void,
+  folders: Folder[],
+  setFolders: (folders: Folder[]) => void,
+  updateDisabledFolders: (action: FolderAction) => void,
+  updateOpenedFolders: (action: FolderAction) => void,
+  folderID: string,
+  from: number,
+  to: number,
+  isRoot: boolean,
+) {
+  const newFolders = folders.map((f) => {
+    if (f.id == folderID) {
+      const elem = f.items.splice(from, 1);
+      f.items.splice(to, 0, ...elem);
+      return f;
+    } else {
+      return f;
+    }
+  });
+  setFolders(newFolders);
+  for (const i in trailsToFolders) {
+    const folderTrail = trailsToFolders[i];
+    if (folderTrail.id == folderID) {
+      setTrailsToFolders(
+        trailsToFolders.map((obj) => {
+          return {
+            id: obj.id,
+            trail: moveTrail(
+              obj.trail,
+              [...folderTrail.trail, from],
+              [...folderTrail.trail, to],
+            ),
+          };
+        }),
+      );
+      updateDisabledFolders({
+        kind: FolderActionKind.UpdateTrail,
+        oldTrail: [...folderTrail.trail, from],
+        newTrail: [...folderTrail.trail, to],
+      });
+      updateOpenedFolders({
+        kind: FolderActionKind.UpdateTrail,
+        oldTrail: [...folderTrail.trail, from],
+        newTrail: [...folderTrail.trail, to],
+      });
+    }
+  }
+  if (isRoot) {
+    setTrailsToFolders(
+      trailsToFolders.map((obj) => {
+        return {
+          id: obj.id,
+          trail: moveTrail(obj.trail, [from], [to]),
+        };
+      }),
+    );
+    updateDisabledFolders({
+      kind: FolderActionKind.UpdateTrail,
+      oldTrail: [from],
+      newTrail: [to],
+    });
+    updateOpenedFolders({
+      kind: FolderActionKind.UpdateTrail,
+      oldTrail: [from],
+      newTrail: [to],
+    });
+  }
+}

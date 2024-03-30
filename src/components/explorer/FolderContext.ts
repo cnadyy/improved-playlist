@@ -1,4 +1,4 @@
-import moveTrail from "@/utils";
+import moveTrails from "@/utils";
 import { createContext } from "react";
 
 export const FolderExplorerContext = createContext<{
@@ -38,7 +38,7 @@ export function updateFoldersTrail(state: number[][], action: FolderAction) {
     }
     return newState;
   } else {
-    return moveTrail(state, action.oldTrail, action.newTrail);
+    return moveTrails(state, action.oldTrail, action.newTrail);
   }
 }
 
