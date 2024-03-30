@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import SearchBar from "../SearchBar";
 import SearchItemList from "./SearchItemList";
@@ -7,14 +9,49 @@ import lineClamp from "@/css/LineClamp";
 import UserPlaylistExplorer from "@/api/UserPlaylistExplorer";
 import HideScrollBar from "@/css/HideScrollBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";
+import FilterDialog from "./FilterDialog";
+import filterOptions from "@/api/types/FilterOptions";
+import filterPlaylist from "@/api/search-functions/filterPlaylists";
+import filterFolder from "@/api/search-functions/filterFolders";
 
 const AddItemStyles: CSSProperties = {
   maxWidth: "750px",
   width: "750px",
   padding: "0",
-  maxHeight: "65vh",
+  height: "75vh",
+  overflow: "hidden",
 };
+
+const FolderBlock: (f: Folder) => React.ReactNode = (f) => (
+  <div style={{ minWidth: "8rem", maxWidth: "8rem" }} key={f.id}>
+    <div
+      style={{
+        width: "8rem",
+        aspectRatio: "1/1",
+        backgroundColor: f.color,
+      }}
+    />
+    <p style={lineClamp}>{f.name}</p>
+  </div>
+);
+
+const PlaylistBlock: (p: Playlist) => React.ReactNode = (p) => (
+  <div style={{ minWidth: "8rem", maxWidth: "8rem" }} key={p.id}>
+    {p.images.length != 0 ? (
+      <img src={p.images[0]?.url} style={{ width: "8rem" }} />
+    ) : (
+      <div
+        style={{
+          backgroundColor: "grey",
+          width: "8rem",
+          height: "8rem",
+        }}
+      />
+    )}
+    <p style={lineClamp}>{p.name}</p>
+  </div>
+);
 
 /**
  *
@@ -32,11 +69,28 @@ export default function AddItem({
 }): React.ReactNode {
   const ref = useRef<HTMLDialogElement>(null);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState<filterOptions>(filterOptions.NONE);
+  const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
   const [folderList, setFolderList] = useState<Folder[]>([]);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [controller, setController] = useState<UserPlaylistExplorer | null>(
     null,
+  );
+
+  const FilteredList = () => (
+    <div style={{ overflowY: "scroll", ...HideScrollBar, margin: "2rem 0" }}>
+      <SearchItemList full>
+        {filter == filterOptions.FOLDERS ? (
+          folderList.filter((f) => filterFolder(f, query)).map(FolderBlock)
+        ) : filter == filterOptions.PLAYLISTS ? (
+          playlists.filter((p) => filterPlaylist(p, query)).map(PlaylistBlock)
+        ) : filter == filterOptions.PUBLIC ? (
+          <p>TODO: Public spotify searching</p>
+        ) : (
+          <p>No filter selected</p>
+        )}
+      </SearchItemList>
+    </div>
   );
 
   useEffect(() => {
@@ -62,11 +116,12 @@ export default function AddItem({
     <dialog ref={ref} onCancel={closeModal} style={AddItemStyles}>
       <div
         style={{
-          maxHeight: "65vh",
-          overflowY: "scroll",
-          overflowX: "hidden",
+          maxHeight: "75vh",
+          overflowY: "visible",
           boxSizing: "border-box",
-          padding: "1.5rem 2rem 2rem",
+          padding: "1.5rem 2rem 0.1rem",
+          display: "flex",
+          flexDirection: "column",
           ...HideScrollBar,
         }}
       >
@@ -86,46 +141,38 @@ export default function AddItem({
           />
           <FontAwesomeIcon
             icon={faFilter}
-            style={{ height: "1.5rem", position: "absolute", right: "3rem" }}
+            style={{
+              height: "1.5rem",
+              position: "absolute",
+              right: "3rem",
+              cursor: "pointer",
+            }}
+            onClick={() => setFiltersOpen(!filtersOpen)}
+          />
+          <FilterDialog
+            showFilters={filtersOpen}
+            closeFilters={() => setFiltersOpen(false)}
+            filter={filter}
+            setFilter={(f) => setFilter(f)}
           />
         </div>
-        {!filter ? (
-          <div>
-            <SearchItemList name="Folders">
-              {folderList.map((f) => (
-                <div style={{ minWidth: "8rem" }} key={f.id}>
-                  <div
-                    style={{
-                      width: "8rem",
-                      aspectRatio: "1/1",
-                      backgroundColor: f.color,
-                    }}
-                  />
-                  <p style={lineClamp}>{f.name}</p>
-                </div>
-              ))}
+        {filter == filterOptions.NONE ? (
+          <div style={{ overflowY: "scroll", ...HideScrollBar }}>
+            <SearchItemList
+              name="Folders"
+              expandList={() => setFilter(filterOptions.FOLDERS)}
+            >
+              {folderList.map(FolderBlock)}
             </SearchItemList>
-            <SearchItemList name="Playlists">
-              {playlists.map((p) => (
-                <div style={{ minWidth: "8rem" }} key={p.id}>
-                  {p.images.length != 0 ? (
-                    <img src={p.images[0]?.url} style={{ width: "8rem" }} />
-                  ) : (
-                    <div
-                      style={{
-                        backgroundColor: "grey",
-                        width: "8rem",
-                        height: "8rem",
-                      }}
-                    />
-                  )}
-                  <p style={lineClamp}>{p.name}</p>
-                </div>
-              ))}
+            <SearchItemList
+              name="Playlists"
+              expandList={() => setFilter(filterOptions.PLAYLISTS)}
+            >
+              {playlists.map(PlaylistBlock)}
             </SearchItemList>
           </div>
         ) : (
-          <ul>{/* some items will reside in here */}</ul>
+          <FilteredList />
         )}
       </div>
       <div
@@ -134,8 +181,7 @@ export default function AddItem({
           width: "100%",
           left: "0",
           bottom: "0",
-          backgroundColor: "rgb(98, 114, 164)",
-          padding: "0.3rem",
+          padding: "0.6rem 1rem",
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "row-reverse",
@@ -144,25 +190,29 @@ export default function AddItem({
       >
         <button
           style={{
-            borderRadius: "2px",
-            backgroundColor: "white",
+            borderRadius: "18px",
+            backgroundColor: "#6fb57e",
+            color: "#568c66",
             borderStyle: "none",
             fontSize: "1.2rem",
+            padding: "0 3rem",
           }}
           onClick={closeModal}
         >
-          Save and quit
+          add
         </button>
         <button
           style={{
-            borderRadius: "2px",
-            backgroundColor: "red",
+            borderRadius: "18px",
+            backgroundColor: "#b56f6f",
+            color: "#8e5555",
             borderStyle: "none",
             fontSize: "1.2rem",
+            padding: "2px 10px",
           }}
           onClick={closeModal}
         >
-          Discard changes and encourge designer to decide on colours
+          <FontAwesomeIcon icon={faTrash} />
         </button>
       </div>
     </dialog>

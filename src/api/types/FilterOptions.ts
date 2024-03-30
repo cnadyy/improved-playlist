@@ -1,7 +1,7 @@
 enum filterOptions {
   FOLDERS = "Folders",
   PLAYLISTS = "Playlists",
-  ALL = "All items",
+  PUBLIC = "Public Spotify",
   NONE = "None",
 }
 

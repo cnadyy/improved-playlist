@@ -29,7 +29,6 @@ export default function FilterDialog({
   console.log(showFilters)
 
   useEffect(() => {
-    console.log("something");
     if (showFilters) ref.current?.show();
     else ref.current?.close();
   }, [showFilters]);
@@ -37,9 +36,12 @@ export default function FilterDialog({
   const Item = ({ item }: { item: FilterOptions }) => (
     <p
       aria-selected={item == filter}
-      style={{"padding": "0.2rem 0.4rem", fontSize: "1.3rem", margin: "0", cursor: "pointer",
-      ...(
-        item == filter
+      style={{
+        padding: "0.2rem 0.4rem",
+        fontSize: "1.3rem",
+        margin: "0",
+        cursor: "pointer",
+        ...(item == filter
           ? {
               backgroundColor: "#bcbcbc",
               borderRadius: "5px",
@@ -47,8 +49,8 @@ export default function FilterDialog({
               margin: "0",
               color: "#dddada",
             }
-          : {})}
-      }
+          : {}),
+      }}
       onClick={() => setFilter(item)}
     >
       {item}
@@ -56,7 +58,17 @@ export default function FilterDialog({
   );
 
   return (
-    <dialog ref={ref} style={{ padding: "0", border: "none" }}>
+    <dialog
+      ref={ref}
+      style={{
+        padding: "0",
+        border: "none",
+        top: "3rem",
+        right: "-15rem",
+        borderRadius: "14px",
+        zIndex: "2",
+      }}
+    >
       <div style={filterStyles}>
         <div
           style={{
@@ -87,7 +99,7 @@ export default function FilterDialog({
             justifyContent: "flex-end",
           }}
         >
-          <Item item={FilterOptions.ALL} />
+          <Item item={FilterOptions.PUBLIC} />
           <Item item={FilterOptions.PLAYLISTS} />
           <Item item={FilterOptions.FOLDERS} />
           <Item item={FilterOptions.NONE} />

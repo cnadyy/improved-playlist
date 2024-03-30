@@ -1,5 +1,4 @@
 import React from "react";
-import HideScrollBar from "@/css/HideScrollBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
@@ -11,9 +10,13 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 export default function SearchItemList({
   name,
   children,
+  full = false,
+  expandList,
 }: {
   name?: string;
   children: React.ReactNode;
+  full?: boolean;
+  expandList?: () => void;
 }): React.ReactElement {
   return (
     <div>
@@ -33,31 +36,34 @@ export default function SearchItemList({
       <div
         style={{
           display: "flex",
-          flexWrap: "nowrap",
           overflowX: "hidden",
           gap: "0.3rem",
           position: "relative",
+          ...(full ? { flexWrap: "wrap" } : { flexWrap: "nowrap" }),
         }}
       >
         {children}
-        <div
-          style={{
-            position: "absolute",
-            right: "0",
-            top: "0",
-            height: "100%",
-            width: "4rem",
-            background:
-              "linear-gradient(to right, transparent 0%, #9e9e9e 100%)",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faAngleRight}
-            style={{ width: "60%", height: "100%" }}
-          />
-        </div>
+        {!full && expandList ? (
+          <div
+            style={{
+              position: "absolute",
+              right: "0",
+              top: "0",
+              height: "100%",
+              width: "4rem",
+              background:
+                "linear-gradient(to right, transparent 0%, #9e9e9e 100%)",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faAngleRight}
+              style={{ width: "60%", height: "100%", cursor: "pointer" }}
+              onClick={expandList}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );
