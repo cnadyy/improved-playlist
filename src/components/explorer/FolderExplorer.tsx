@@ -1,7 +1,7 @@
-import Folder from "@/api/types/Folder";
+import Folder, { Subitem } from "@/api/types/Folder";
 import FolderExplorerItem from "./FolderExplorerItem";
 import { arrayMove } from "react-movable";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import {
   FolderAction,
@@ -53,7 +53,7 @@ function FolderExporer({
   );
 }
 
-let trails: { trail: number[]; id: string }[] = [];
+let trails: { trail: number[]; item: Subitem }[] = [];
 
 function DrawFolderList({
   folders,
@@ -71,7 +71,6 @@ function DrawFolderList({
   const { updateDisabledFolders, updateOpenedFolders } = useContext(
     FolderExplorerContext,
   );
-  const folder = folders.find((f) => f.id == folderID);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
@@ -79,6 +78,10 @@ function DrawFolderList({
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
+
+  const [activeID, setActiveID] = useState<number | null>(null);
+
+  const folder = folders.find((f) => f.id == folderID);
   if (!folder) {
     return <>Invalid Folder?</>;
   }
@@ -89,6 +92,7 @@ function DrawFolderList({
       trail: trails[Number(e.active.id)].trail,
       value: false,
     });
+    setActiveID(Number(e.active.id));
   }
 
   function handleEnd(e: DragEndEvent) {
@@ -113,6 +117,7 @@ function DrawFolderList({
         trail.length == 0,
       );
     }
+    setActiveID(null);
   }
 
   const items = folder.items.map((value, index) => {
@@ -127,7 +132,7 @@ function DrawFolderList({
     );
     if (key == -1) {
       key = trails.length;
-      trails.push({ id: item.itemID, trail: itemTrail });
+      trails.push({ item: item, trail: itemTrail });
     }
     if (key == 0) {
       return "0";
@@ -173,16 +178,16 @@ function DrawFolderList({
           </div>
         </SortableContext>
         <DragOverlay>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "orange",
-              height: "100%",
-            }}
-          >
-            hi
-          </div>
+          {activeID ? (
+            <FolderExplorerItem
+              trail={trails[activeID].trail}
+              folders={folders}
+              setFolders={setFolders}
+              isParentDisabled={isParentDisabled}
+              id={0}
+              item={trails[activeID].item}
+            />
+          ) : null}
         </DragOverlay>
       </DndContext>
     </>

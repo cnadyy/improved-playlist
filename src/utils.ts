@@ -1,4 +1,4 @@
-import Folder from "./api/types/Folder";
+import Folder, { Subitem } from "./api/types/Folder";
 import {
   FolderAction,
   FolderActionKind,
@@ -49,8 +49,8 @@ export function moveTrail(
 // console.log(moveTrail([[3, 4, 6]], [3], [7]));
 
 export function updateFolders(
-  trails: { trail: number[]; id: string }[],
-  setTrails: (trails: { trail: number[]; id: string }[]) => void,
+  trails: { trail: number[]; item: Subitem }[],
+  setTrails: (trails: { trail: number[]; item: Subitem }[]) => void,
   folders: Folder[],
   setFolders: (folders: Folder[]) => void,
   updateDisabledFolders: (action: FolderAction) => void,
@@ -72,11 +72,11 @@ export function updateFolders(
   setFolders(newFolders);
   for (const i in trails) {
     const folderTrail = trails[i];
-    if (folderTrail.id == folderID) {
+    if (folderTrail.item.itemID == folderID) {
       console.log(folderTrail);
       trails = trails.map((obj) => {
         return {
-          id: obj.id,
+          ...obj,
           trail: moveTrail(
             obj.trail,
             [...folderTrail.trail, from],
@@ -101,7 +101,7 @@ export function updateFolders(
     setTrails(
       trails.map((obj) => {
         return {
-          id: obj.id,
+          ...obj,
           trail: moveTrail(obj.trail, [from], [to]),
         };
       }),

@@ -23,7 +23,6 @@ const Grid = styled.div<{ depth: number }>`
   align-items: center;
   grid-template-rows: min-content auto;
   grid-template-columns: min-content auto;
-  margin-left: 0.75rem;
   margin-top: 0.5rem;
   font-size: ${(props) => Math.pow(0.95, props.depth - 1) * 1.2 + "rem"};
 `;
@@ -136,20 +135,18 @@ export default function FolderExplorerItem({
           cursor: pointer;
         `}
       />{" "}
-      <div>
-        <FolderExplorerLabel
-          item={item}
-          strikethrough={isDisabled}
-          isDisabled={isLocallyDisabled}
-          onDisableClick={onDisableClick}
-          activatorListeners={listeners}
-          activatorAttributes={attributes}
-        />
-      </div>
+      <FolderExplorerLabel
+        item={item}
+        strikethrough={isDisabled}
+        isDisabled={isLocallyDisabled}
+        onDisableClick={onDisableClick}
+        activatorListeners={listeners}
+        activatorAttributes={attributes}
+      />
       <BarHolder onClick={onOpenClick}>
         <Bar />
       </BarHolder>
-      <div>{subitems}</div>
+      <div style={{ marginLeft: "0.75rem" }}>{subitems}</div>
     </Grid>
   );
 }
