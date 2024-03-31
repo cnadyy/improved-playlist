@@ -7,10 +7,10 @@ import {
   faBookmark,
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  SyntheticListenerMap,
-} from "@dnd-kit/core/dist/hooks/utilities";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { DraggableAttributes } from "@dnd-kit/core";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { css } from "@emotion/react";
 
 const Label = styled.div`
   display: flex;
@@ -52,43 +52,62 @@ const LabelText = styled.a<{ strikethrough?: boolean }>`
 
 export default function FolderExplorerLabel({
   item,
+  isRootNode,
+  icon,
   strikethrough,
   isDisabled,
-  onDisableClick,
+  onOpenClick = () => {},
+  onDisableClick = () => {},
   activatorListeners,
   activatorAttributes,
 }: {
   item: { kind: SubitemKind; itemID: string };
+  isRootNode: boolean;
+  icon: IconProp;
   strikethrough: boolean;
   isDisabled: boolean;
-  onDisableClick: () => void;
-  activatorListeners: SyntheticListenerMap | undefined;
-  activatorAttributes: DraggableAttributes;
+  onOpenClick?: () => void;
+  onDisableClick?: () => void;
+  activatorListeners?: SyntheticListenerMap;
+  activatorAttributes?: DraggableAttributes;
 }) {
   return (
-    <Label>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <LabelText strikethrough={strikethrough}>
-          <ItemName id={item.itemID} kind={item.kind} />
-        </LabelText>
-        <DisableButton
-          className="labelHover"
-          role="button"
-          onClick={onDisableClick}
-        >
-          Click to {isDisabled ? "enable" : "disable"}
-        </DisableButton>
-      </div>
+    <>
+      <FontAwesomeIcon
+        role="button"
+        icon={icon}
+        color="gray"
+        size={isRootNode ? "2xl" : "xl"}
+        onClick={onOpenClick}
+        css={css`
+          margin-bottom: 0.15rem;
+          cursor: pointer;
+        `}
+      />{" "}
+      <Label>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <LabelText strikethrough={strikethrough}>
+            <ItemName id={item.itemID} kind={item.kind} />
+          </LabelText>
+          <DisableButton
+            className="labelHover"
+            role="button"
+            onClick={onDisableClick}
+          >
+            Click to {isDisabled ? "enable" : "disable"}
+          </DisableButton>
+        </div>
 
-      <RightIcons className="labelHover">
-        <RightIcon
-          {...activatorAttributes}
-          {...activatorListeners}
-          icon={faBars}
-        />
-        <RightIcon icon={faBookmark} />
-        <RightIcon icon={faEllipsis} />
-      </RightIcons>
-    </Label>
+        <RightIcons className="labelHover">
+          <RightIcon
+            {...activatorAttributes}
+            {...activatorListeners}
+            icon={faBars}
+          />
+          <RightIcon icon={faBookmark} />
+          <RightIcon icon={faEllipsis} />
+        </RightIcons>
+      </Label>
+    </>
   );
 }

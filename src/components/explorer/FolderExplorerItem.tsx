@@ -1,6 +1,4 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FolderExplorerLabel from "./FolderExplorerLabel";
 import { CSSProperties, useContext } from "react";
 import {
@@ -18,7 +16,7 @@ import {
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-const Grid = styled.div<{ depth: number }>`
+export const Grid = styled.div<{ depth: number }>`
   display: grid;
   align-items: center;
   grid-template-rows: min-content auto;
@@ -57,6 +55,7 @@ export default function FolderExplorerItem({
   isParentDisabled,
   item,
   id,
+  isDragOverlay = false,
 }: {
   trail: number[];
   folders: Folder[];
@@ -64,6 +63,7 @@ export default function FolderExplorerItem({
   isParentDisabled: boolean;
   item: Subitem;
   id: number | string;
+  isDragOverlay?: boolean;
 }) {
   const {
     disabledFolders,
@@ -84,7 +84,7 @@ export default function FolderExplorerItem({
   const style: CSSProperties = {
     transform: CSS.Translate.toString(transform),
     zIndex: isDragging ? 1 : 0,
-    visibility: isDragging ? "hidden" : "visible",
+    opacity: isDragging ? 0 : undefined,
     transition,
   };
 
@@ -97,7 +97,7 @@ export default function FolderExplorerItem({
   const isLocallyDisabled = foldersInclude(disabledFolders, trail);
   const isDisabled = isParentDisabled || isLocallyDisabled;
 
-  const subitems = isOpen && !isDragging && (
+  const subitems = isOpen && !isDragOverlay && (
     <DrawFolderList
       folders={folders}
       setFolders={setFolders}
@@ -124,24 +124,16 @@ export default function FolderExplorerItem({
 
   return (
     <Grid ref={setNodeRef} style={style} depth={trail.length}>
-      <FontAwesomeIcon
-        role="button"
-        icon={icon}
-        color="gray"
-        size={trail.length != 1 ? "xl" : "2x"}
-        onClick={onOpenClick}
-        css={css`
-          margin-bottom: 0.15rem;
-          cursor: pointer;
-        `}
-      />{" "}
       <FolderExplorerLabel
         item={item}
+        icon={icon}
         strikethrough={isDisabled}
         isDisabled={isLocallyDisabled}
         onDisableClick={onDisableClick}
         activatorListeners={listeners}
         activatorAttributes={attributes}
+        isRootNode={trail.length == 1}
+        onOpenClick={onOpenClick}
       />
       <BarHolder onClick={onOpenClick}>
         <Bar />

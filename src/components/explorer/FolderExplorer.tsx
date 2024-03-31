@@ -1,14 +1,14 @@
-import Folder, { Subitem } from "@/api/types/Folder";
-import FolderExplorerItem from "./FolderExplorerItem";
-import { arrayMove } from "react-movable";
+import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
+import FolderExplorerComponent, {
+  Grid,
+} from "@/components/explorer/FolderExplorerItem";
 import { useContext, useState } from "react";
 
 import {
-  FolderAction,
-  FolderActionKind,
   FolderExplorerContext,
-} from "./FolderContext";
-import { moveTrail, updateFolders } from "@/utils";
+  foldersIncludes,
+} from "@/components/explorer/FolderContext";
+import { updateFolders } from "@/utils";
 import {
   DndContext,
   DragEndEvent,
@@ -30,6 +30,13 @@ import {
   restrictToVerticalAxis,
   restrictToParentElement,
 } from "@dnd-kit/modifiers";
+import FolderExplorerLabel from "@/components/explorer/FolderExplorerLabel";
+import {
+  faFolder,
+  faFolderOpen,
+  faMusic,
+} from "@fortawesome/free-solid-svg-icons";
+import { act } from "react-dom/test-utils";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -68,9 +75,12 @@ function DrawFolderList({
   isParentDisabled: boolean;
   trail: number[];
 }) {
-  const { updateDisabledFolders, updateOpenedFolders } = useContext(
-    FolderExplorerContext,
-  );
+  const {
+    disabledFolders,
+    updateDisabledFolders,
+    openedFolders,
+    updateOpenedFolders,
+  } = useContext(FolderExplorerContext);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
@@ -79,25 +89,34 @@ function DrawFolderList({
     }),
   );
 
-  const [activeID, setActiveID] = useState<number | null>(null);
+  const [active, setActive] = useState<{
+    id: number;
+    opened: boolean;
+    disabled: boolean;
+  } | null>(null);
 
   const folder = folders.find((f) => f.id == folderID);
   if (!folder) {
     return <>Invalid Folder?</>;
   }
 
-  function handleStart(e: DragStartEvent) {
-    updateOpenedFolders({
-      kind: FolderActionKind.Set,
-      trail: trails[Number(e.active.id)].trail,
-      value: false,
+  function handleStart(event: DragStartEvent) {
+    setActive({
+      id: Number(event.active.id),
+      opened: foldersIncludes(
+        openedFolders,
+        trails[Number(event.active.id)].trail,
+      ),
+      disabled: foldersIncludes(
+        disabledFolders,
+        trails[Number(event.active.id)].trail,
+      ),
     });
-    setActiveID(Number(e.active.id));
   }
 
-  function handleEnd(e: DragEndEvent) {
-    console.log(e);
-    if (e.over && folder) {
+  function handleEnd(event: DragEndEvent) {
+    setActive(null);
+    if (event.over && folder) {
       updateFolders(
         trails,
         (f) => {
@@ -108,16 +127,15 @@ function DrawFolderList({
         updateDisabledFolders,
         updateOpenedFolders,
         folder.id,
-        trails[Number(e.active.id)].trail[
-          trails[Number(e.active.id)].trail.length - 1
+        trails[Number(event.active.id)].trail[
+          trails[Number(event.active.id)].trail.length - 1
         ],
-        trails[Number(e.over.id)].trail[
-          trails[Number(e.over.id)].trail.length - 1
+        trails[Number(event.over.id)].trail[
+          trails[Number(event.over.id)].trail.length - 1
         ],
         trail.length == 0,
       );
     }
-    setActiveID(null);
   }
 
   const items = folder.items.map((value, index) => {
@@ -163,7 +181,7 @@ function DrawFolderList({
               return (
                 <>
                   {/*key*/}
-                  <FolderExplorerItem
+                  <FolderExplorerComponent
                     folders={folders}
                     setFolders={setFolders}
                     isParentDisabled={isParentDisabled}
@@ -178,15 +196,22 @@ function DrawFolderList({
           </div>
         </SortableContext>
         <DragOverlay>
-          {activeID ? (
-            <FolderExplorerItem
-              trail={trails[activeID].trail}
-              folders={folders}
-              setFolders={setFolders}
-              isParentDisabled={isParentDisabled}
-              id={0}
-              item={trails[activeID].item}
-            />
+          {active != null ? (
+            <Grid depth={trail.length + 1}>
+              <FolderExplorerLabel
+                item={trails[active.id].item}
+                icon={
+                  trails[active.id].item.kind == SubitemKind.SpotifyURI
+                    ? faMusic
+                    : active.opened
+                      ? faFolderOpen
+                      : faFolder
+                }
+                strikethrough={isParentDisabled || active.disabled}
+                isDisabled={active.disabled}
+                isRootNode={trail.length + 1 == 1}
+              />
+            </Grid>
           ) : null}
         </DragOverlay>
       </DndContext>

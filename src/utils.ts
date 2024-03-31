@@ -73,7 +73,6 @@ export function updateFolders(
   for (const i in trails) {
     const folderTrail = trails[i];
     if (folderTrail.item.itemID == folderID) {
-      console.log(folderTrail);
       trails = trails.map((obj) => {
         return {
           ...obj,
