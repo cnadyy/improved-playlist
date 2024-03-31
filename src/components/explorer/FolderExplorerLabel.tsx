@@ -1,5 +1,4 @@
 import { SubitemKind } from "@/api/types/Folder";
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ItemName from "@/components/ItemName";
@@ -8,7 +7,9 @@ import {
   faBookmark,
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
-import { SyntheticListener } from "@dnd-kit/core/dist/hooks/utilities";
+import {
+  SyntheticListenerMap,
+} from "@dnd-kit/core/dist/hooks/utilities";
 import { DraggableAttributes } from "@dnd-kit/core";
 
 const Label = styled.div`
@@ -31,11 +32,22 @@ const DisableButton = styled.div`
   font-weight: 300;
   margin-left: 1rem;
   display: none;
+  cursor: pointer;
+  user-select: none;
 `;
 
 const RightIcons = styled.div`
   font-size: 1rem;
   display: none;
+`;
+
+const RightIcon = styled(FontAwesomeIcon)`
+  margin: 0 0.5rem;
+`;
+
+const LabelText = styled.a<{ strikethrough?: boolean }>`
+  text-decoration: ${(props) =>
+    props.strikethrough ? "line-through" : "none"};
 `;
 
 export default function FolderExplorerLabel({
@@ -50,25 +62,17 @@ export default function FolderExplorerLabel({
   strikethrough: boolean;
   isDisabled: boolean;
   onDisableClick: () => void;
-  activatorListeners: SyntheticListener;
+  activatorListeners: SyntheticListenerMap | undefined;
   activatorAttributes: DraggableAttributes;
 }) {
   return (
     <Label>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <a
-          css={css`
-            text-decoration: ${strikethrough ? "line-through" : "none"};
-          `}
-        >
+        <LabelText strikethrough={strikethrough}>
           <ItemName id={item.itemID} kind={item.kind} />
-        </a>
+        </LabelText>
         <DisableButton
           className="labelHover"
-          css={css`
-            cursor: pointer;
-            user-select: none;
-          `}
           role="button"
           onClick={onDisableClick}
         >
@@ -77,28 +81,14 @@ export default function FolderExplorerLabel({
       </div>
 
       <RightIcons className="labelHover">
-        <FontAwesomeIcon
+        <RightIcon
           {...activatorAttributes}
           {...activatorListeners}
-          style={{
-            marginRight: "1.25em",
-          }}
           icon={faBars}
         />
-        <FontAwesomeIcon
-          css={css`
-            margin: 0 0.5rem;
-          `}
-          icon={faBookmark}
-        />
-        <FontAwesomeIcon
-          css={css`
-            margin: 0 0.5rem;
-          `}
-          icon={faEllipsis}
-        />
+        <RightIcon icon={faBookmark} />
+        <RightIcon icon={faEllipsis} />
       </RightIcons>
     </Label>
-    // </Draggable>
   );
 }

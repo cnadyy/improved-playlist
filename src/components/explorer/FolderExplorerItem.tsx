@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FolderExplorerLabel from "./FolderExplorerLabel";
-import { useContext } from "react";
+import { CSSProperties, useContext } from "react";
 import {
   faFolder,
   faFolderOpen,
@@ -82,9 +82,10 @@ export default function FolderExplorerItem({
     isDragging,
   } = useSortable({ id: id });
 
-  const style = {
+  const style: CSSProperties = {
     transform: CSS.Translate.toString(transform),
     zIndex: isDragging ? 1 : 0,
+    visibility: isDragging ? "hidden" : "visible",
     transition,
   };
 
@@ -135,12 +136,14 @@ export default function FolderExplorerItem({
           cursor: pointer;
         `}
       />{" "}
-      <div {...attributes} {...listeners}>
+      <div>
         <FolderExplorerLabel
           item={item}
           strikethrough={isDisabled}
           isDisabled={isLocallyDisabled}
           onDisableClick={onDisableClick}
+          activatorListeners={listeners}
+          activatorAttributes={attributes}
         />
       </div>
       <BarHolder onClick={onOpenClick}>

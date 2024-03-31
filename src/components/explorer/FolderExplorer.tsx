@@ -8,10 +8,12 @@ import {
   FolderActionKind,
   FolderExplorerContext,
 } from "./FolderContext";
-import { moveTrail } from "@/utils";
+import { moveTrail, updateFolders } from "@/utils";
 import {
   DndContext,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
@@ -51,74 +53,7 @@ function FolderExporer({
   );
 }
 
-function updateFolders(
-  folders: Folder[],
-  setFolders: (folders: Folder[]) => void,
-  updateDisabledFolders: (action: FolderAction) => void,
-  updateOpenedFolders: (action: FolderAction) => void,
-  folderID: string,
-  from: number,
-  to: number,
-  isRoot: boolean,
-) {
-  setFolders(
-    folders.map((f) => {
-      if (f.id == folderID) {
-        return {
-          ...f,
-          items: arrayMove(f.items, from, to),
-        };
-      } else {
-        return f;
-      }
-    }),
-  );
-  for (const i in trailsToFolders) {
-    const folderTrail = trailsToFolders[i];
-    if (folderTrail.id == folderID) {
-      trailsToFolders = trailsToFolders.map((obj) => {
-        return {
-          id: obj.id,
-          trail: moveTrail(
-            obj.trail,
-            [...folderTrail.trail, from],
-            [...folderTrail.trail, to],
-          ),
-        };
-      });
-      updateDisabledFolders({
-        kind: FolderActionKind.UpdateTrail,
-        oldTrail: [...folderTrail.trail, from],
-        newTrail: [...folderTrail.trail, to],
-      });
-      updateOpenedFolders({
-        kind: FolderActionKind.UpdateTrail,
-        oldTrail: [...folderTrail.trail, from],
-        newTrail: [...folderTrail.trail, to],
-      });
-    }
-  }
-  if (isRoot) {
-    trailsToFolders = trailsToFolders.map((obj) => {
-      return {
-        id: obj.id,
-        trail: moveTrail(obj.trail, [from], [to]),
-      };
-    });
-    updateDisabledFolders({
-      kind: FolderActionKind.UpdateTrail,
-      oldTrail: [from],
-      newTrail: [to],
-    });
-    updateOpenedFolders({
-      kind: FolderActionKind.UpdateTrail,
-      oldTrail: [from],
-      newTrail: [to],
-    });
-  }
-}
-
-let trailsToFolders: { trail: number[]; id: string }[] = [];
+let trails: { trail: number[]; id: string }[] = [];
 
 function DrawFolderList({
   folders,
@@ -148,25 +83,57 @@ function DrawFolderList({
     return <>Invalid Folder?</>;
   }
 
-  // let trailsToFolders = useMemo<{ trail: number[]; id: string }[]>(() => {
-  //   return [];
-  // }, []);
-  //
+  function handleStart(e: DragStartEvent) {
+    updateOpenedFolders({
+      kind: FolderActionKind.Set,
+      trail: trails[Number(e.active.id)].trail,
+      value: false,
+    });
+  }
+
   function handleEnd(e: DragEndEvent) {
     console.log(e);
     if (e.over && folder) {
       updateFolders(
+        trails,
+        (f) => {
+          trails = f;
+        },
         folders,
         setFolders,
         updateDisabledFolders,
         updateOpenedFolders,
         folder.id,
-        Number(e.active.id),
-        Number(e.over.id),
+        trails[Number(e.active.id)].trail[
+          trails[Number(e.active.id)].trail.length - 1
+        ],
+        trails[Number(e.over.id)].trail[
+          trails[Number(e.over.id)].trail.length - 1
+        ],
         trail.length == 0,
       );
     }
   }
+
+  const items = folder.items.map((value, index) => {
+    const item = value;
+    const itemTrail = [...trail];
+    if (index != undefined) {
+      itemTrail.push(index);
+    }
+
+    let key = trails.findIndex(
+      (a) => a.trail.toString() == itemTrail.toString(),
+    );
+    if (key == -1) {
+      key = trails.length;
+      trails.push({ id: item.itemID, trail: itemTrail });
+    }
+    if (key == 0) {
+      return "0";
+    }
+    return key;
+  });
 
   return (
     <>
@@ -175,17 +142,9 @@ function DrawFolderList({
         modifiers={[restrictToVerticalAxis, restrictToParentElement]}
         collisionDetection={closestCenter}
         onDragEnd={handleEnd}
+        onDragStart={handleStart}
       >
-        <SortableContext
-          strategy={verticalListSortingStrategy}
-          items={[
-            "0",
-            ...Array.from(
-              { length: folder.items.length - 1 },
-              (value, index) => index + 1,
-            ),
-          ]}
-        >
+        <SortableContext strategy={verticalListSortingStrategy} items={items}>
           <div style={{ display: "grid" }}>
             {folder.items.map((value, index) => {
               const item = value;
@@ -194,28 +153,37 @@ function DrawFolderList({
                 itemTrail.push(index);
               }
 
-              let t = trailsToFolders.findIndex(
-                (a) => a.trail.toString() == itemTrail.toString(),
-              );
-              if (t == -1) {
-                t = trailsToFolders.length;
-                trailsToFolders.push({ id: item.itemID, trail: itemTrail });
-              }
+              const key = items[index];
 
               return (
-                <FolderExplorerItem
-                  folders={folders}
-                  setFolders={setFolders}
-                  isParentDisabled={isParentDisabled}
-                  trail={itemTrail}
-                  item={item}
-                  id={index ? index : "0"} // FIXME: if we want to use DragOverlay, this needs to be unique!
-                  key={t}
-                />
+                <>
+                  {/*key*/}
+                  <FolderExplorerItem
+                    folders={folders}
+                    setFolders={setFolders}
+                    isParentDisabled={isParentDisabled}
+                    trail={itemTrail}
+                    item={item}
+                    id={key}
+                    key={key}
+                  />
+                </>
               );
             })}
           </div>
         </SortableContext>
+        <DragOverlay>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "orange",
+              height: "100%",
+            }}
+          >
+            hi
+          </div>
+        </DragOverlay>
       </DndContext>
     </>
   );

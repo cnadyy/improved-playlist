@@ -49,8 +49,8 @@ export function moveTrail(
 // console.log(moveTrail([[3, 4, 6]], [3], [7]));
 
 export function updateFolders(
-  trailsToFolders: { trail: number[]; id: string }[],
-  setTrailsToFolders: (trails: { trail: number[]; id: string }[]) => void,
+  trails: { trail: number[]; id: string }[],
+  setTrails: (trails: { trail: number[]; id: string }[]) => void,
   folders: Folder[],
   setFolders: (folders: Folder[]) => void,
   updateDisabledFolders: (action: FolderAction) => void,
@@ -70,21 +70,21 @@ export function updateFolders(
     }
   });
   setFolders(newFolders);
-  for (const i in trailsToFolders) {
-    const folderTrail = trailsToFolders[i];
+  for (const i in trails) {
+    const folderTrail = trails[i];
     if (folderTrail.id == folderID) {
-      setTrailsToFolders(
-        trailsToFolders.map((obj) => {
-          return {
-            id: obj.id,
-            trail: moveTrail(
-              obj.trail,
-              [...folderTrail.trail, from],
-              [...folderTrail.trail, to],
-            ),
-          };
-        }),
-      );
+      console.log(folderTrail);
+      trails = trails.map((obj) => {
+        return {
+          id: obj.id,
+          trail: moveTrail(
+            obj.trail,
+            [...folderTrail.trail, from],
+            [...folderTrail.trail, to],
+          ),
+        };
+      });
+      setTrails(trails);
       updateDisabledFolders({
         kind: FolderActionKind.UpdateTrail,
         oldTrail: [...folderTrail.trail, from],
@@ -98,8 +98,8 @@ export function updateFolders(
     }
   }
   if (isRoot) {
-    setTrailsToFolders(
-      trailsToFolders.map((obj) => {
+    setTrails(
+      trails.map((obj) => {
         return {
           id: obj.id,
           trail: moveTrail(obj.trail, [from], [to]),

@@ -1,5 +1,6 @@
 import moveTrails from "@/utils";
 import { createContext } from "react";
+import { act } from "react-dom/test-utils";
 
 export const FolderExplorerContext = createContext<{
   disabledFolders: number[][];
@@ -15,6 +16,7 @@ export const FolderExplorerContext = createContext<{
 
 export type FolderAction =
   | { kind: FolderActionKind.Toggle; trail: number[] }
+  | { kind: FolderActionKind.Set; trail: number[]; value: boolean }
   | {
       kind: FolderActionKind.UpdateTrail;
       oldTrail: number[];
@@ -23,6 +25,7 @@ export type FolderAction =
 
 export enum FolderActionKind {
   Toggle,
+  Set,
   UpdateTrail,
 }
 
@@ -37,8 +40,22 @@ export function updateFoldersTrail(state: number[][], action: FolderAction) {
       newState.push(action.trail);
     }
     return newState;
-  } else {
+  } else if (action.kind == FolderActionKind.UpdateTrail) {
     return moveTrails(state, action.oldTrail, action.newTrail);
+  } else {
+    let newState = [...state];
+    if (!action.value) {
+      newState = newState.filter(
+        (f) => f.toString() != action.trail.toString(),
+      );
+    }
+    if (
+      !state.some((f) => f.toString() == action.trail.toString()) &&
+      action.value
+    ) {
+      newState.push(action.trail);
+    }
+    return newState;
   }
 }
 

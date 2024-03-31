@@ -13,6 +13,7 @@ async function resolve(id: string, kind: SubitemKind) {
       return folder.name;
     }
   } catch (err) {
+    console.log(err);
     return "Invalid or private folder/playlist";
   }
 }
