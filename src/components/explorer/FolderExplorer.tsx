@@ -1,6 +1,6 @@
 import Folder from "@/api/types/Folder";
 import FolderExplorerItem from "./FolderExplorerItem";
-import { List, arrayMove } from "react-movable";
+import { arrayMove } from "react-movable";
 import { useContext } from "react";
 
 import {
@@ -11,7 +11,7 @@ import {
 import { moveTrail } from "@/utils";
 import {
   DndContext,
-  DragOverlay,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
@@ -23,6 +23,10 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -131,7 +135,6 @@ function DrawFolderList({
   const { updateDisabledFolders, updateOpenedFolders } = useContext(
     FolderExplorerContext,
   );
-
   const folder = folders.find((f) => f.id == folderID);
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -146,43 +149,71 @@ function DrawFolderList({
   // let trailsToFolders = useMemo<{ trail: number[]; id: string }[]>(() => {
   //   return [];
   // }, []);
+  //
+  function handleEnd(e: DragEndEvent) {
+    console.log(e);
+    if (e.over && folder) {
+      updateFolders(
+        folders,
+        setFolders,
+        updateDisabledFolders,
+        updateOpenedFolders,
+        folder.id,
+        Number(e.active.id),
+        Number(e.over.id),
+        trail.length == 0,
+      );
+    }
+  }
 
   return (
     <>
-      <DndContext sensors={sensors} collisionDetection={closestCenter}>
+      <DndContext
+        sensors={sensors}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        collisionDetection={closestCenter}
+        onDragEnd={handleEnd}
+      >
         <SortableContext
           strategy={verticalListSortingStrategy}
-          items={[0, 1, 2, 3]}
+          items={[
+            "0",
+            ...Array.from(
+              { length: folder.items.length - 1 },
+              (value, index) => index + 1,
+            ),
+          ]}
         >
-          {folder.items.map((value, index) => {
-            const item = value;
-            const itemTrail = [...trail];
-            if (index != undefined) {
-              itemTrail.push(index);
-            }
+          <div style={{ display: "grid" }}>
+            {folder.items.map((value, index) => {
+              const item = value;
+              const itemTrail = [...trail];
+              if (index != undefined) {
+                itemTrail.push(index);
+              }
 
-            let t = trailsToFolders.findIndex(
-              (a) => a.trail.toString() == itemTrail.toString(),
-            );
-            if (t == -1) {
-              t = trailsToFolders.length;
-              trailsToFolders.push({ id: item.itemID, trail: itemTrail });
-            }
+              let t = trailsToFolders.findIndex(
+                (a) => a.trail.toString() == itemTrail.toString(),
+              );
+              if (t == -1) {
+                t = trailsToFolders.length;
+                trailsToFolders.push({ id: item.itemID, trail: itemTrail });
+              }
 
-            return (
-              <FolderExplorerItem
-                folders={folders}
-                setFolders={setFolders}
-                isParentDisabled={isParentDisabled}
-                trail={itemTrail}
-                item={item}
-                id={index}
-                key={t}
-              />
-            );
-          })}
+              return (
+                <FolderExplorerItem
+                  folders={folders}
+                  setFolders={setFolders}
+                  isParentDisabled={isParentDisabled}
+                  trail={itemTrail}
+                  item={item}
+                  id={index ? index : "0"} // FIXME: if we want to use DragOverlay, this needs to be unique!
+                  key={t}
+                />
+              );
+            })}
+          </div>
         </SortableContext>
-        <DragOverlay>hi</DragOverlay>
       </DndContext>
     </>
   );
