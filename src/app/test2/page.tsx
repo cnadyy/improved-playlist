@@ -16,15 +16,18 @@ export default function Test(): React.ReactNode {
   const [fVisibile, setFvisible] = useState<boolean>(false);
 
   const readSomeData = () => {
-    const userDoc = doc(Db, "userFolders", Auth.currentUser!.uid);
-    getDoc(userDoc)
-      .then(data => {
-        setDbDAta(data.get("whatis"));
+    const folder = doc(Db, "folders", "rtQhD7YGAqYpB6b9Kzwl");
+    getDoc(folder)
+      .then((data) => {
+        const whatis = data.get("name");
+        console.log(whatis)
+        setDbDAta(whatis);
       })
-      .catch(e => {
+      .catch((e) => {
         setDbDAta({ error: e });
       });
   }
+
   return (
     <div>
       <button onClick={() => setFolderList(folders)}>
@@ -43,6 +46,7 @@ export default function Test(): React.ReactNode {
         filter={filter}
         setFilter={(f) => setFilter(f)}
       />
+      <p>{Auth.currentUser?.uid}</p>
       <p>{JSON.stringify(dbData)}</p>
     </div>
   );

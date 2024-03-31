@@ -9,6 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "dev-emulators": "firebase emulators:exec --import ./mock-data/firebase --ui \"echo && echo && echo =!=!=!=!=!=!=!remember to uncomment the mock databse connection=!=!=!=!=!=!=! && yarn dev\"",
     "lint": "next lint",
     "sync-rules": "firebase deploy"
   },

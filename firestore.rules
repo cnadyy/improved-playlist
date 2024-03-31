@@ -6,8 +6,9 @@ service cloud.firestore {
       allow read, write: if false;
     }
     
-    match /userFolders/{UID} {
-    	allow read, write: if request.auth.uid == UID;
+    match /folders/{folderId} {
+      allow read: if resource.data.public == true;
+      allow read, write: if resource.data.owner == request.auth.uid;
     }
   }
 }
