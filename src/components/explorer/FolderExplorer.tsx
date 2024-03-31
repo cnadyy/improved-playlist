@@ -1,6 +1,6 @@
 import Folder from "@/api/types/Folder";
 import FolderExplorerItem from "./FolderExplorerItem";
-import { List } from "react-movable";
+import { List, arrayMove } from "react-movable";
 import { useContext } from "react";
 
 import {
@@ -9,7 +9,20 @@ import {
   FolderExplorerContext,
 } from "./FolderContext";
 import { moveTrail } from "@/utils";
-import setFolderList from "@/api/setFolderList";
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -26,7 +39,7 @@ function FolderExporer({
     <DrawFolderList
       folders={folders}
       setFolders={setFolders}
-      folder={folders.filter((folder) => folder.id == rootId)[0]}
+      folderID={rootId}
       isParentDisabled={false}
       trail={[]}
     />
@@ -43,16 +56,18 @@ function updateFolders(
   to: number,
   isRoot: boolean,
 ) {
-  const newFolders = folders.map((f) => {
-    if (f.id == folderID) {
-      const elem = f.items.splice(from, 1);
-      f.items.splice(to, 0, ...elem);
-      return f;
-    } else {
-      return f;
-    }
-  });
-  setFolders(newFolders);
+  setFolders(
+    folders.map((f) => {
+      if (f.id == folderID) {
+        return {
+          ...f,
+          items: arrayMove(f.items, from, to),
+        };
+      } else {
+        return f;
+      }
+    }),
+  );
   for (const i in trailsToFolders) {
     const folderTrail = trailsToFolders[i];
     if (folderTrail.id == folderID) {
@@ -103,13 +118,13 @@ let trailsToFolders: { trail: number[]; id: string }[] = [];
 function DrawFolderList({
   folders,
   setFolders,
-  folder,
+  folderID,
   isParentDisabled,
   trail,
 }: {
   folders: Folder[];
   setFolders: (folders: Folder[]) => void;
-  folder: Folder;
+  folderID: string;
   isParentDisabled: boolean;
   trail: number[];
 }) {
@@ -117,64 +132,58 @@ function DrawFolderList({
     FolderExplorerContext,
   );
 
+  const folder = folders.find((f) => f.id == folderID);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+  if (!folder) {
+    return <>Invalid Folder?</>;
+  }
+
   // let trailsToFolders = useMemo<{ trail: number[]; id: string }[]>(() => {
   //   return [];
   // }, []);
 
   return (
     <>
-      <List
-        lockVertically
-        values={folder.items}
-        beforeDrag={() => {
-          // updateOpenedFolders({
-          //   kind: FolderActionKind.Toggle,
-          //   trail: [...trail, p.index],
-          // });
-        }}
-        onChange={(meta) => {
-          updateFolders(
-            folders,
-            setFolderList,
-            updateDisabledFolders,
-            updateOpenedFolders,
-            folder.id,
-            meta.oldIndex,
-            meta.newIndex,
-            trail.length == 0,
-          );
-        }}
-        renderList={({ children, props }) => <div {...props}>{children}</div>}
-        renderItem={({ value, props, index }) => {
-          const item = value;
-          const itemTrail = [...trail];
-          if (index != undefined) {
-            itemTrail.push(index);
-          }
+      <DndContext sensors={sensors} collisionDetection={closestCenter}>
+        <SortableContext
+          strategy={verticalListSortingStrategy}
+          items={[0, 1, 2, 3]}
+        >
+          {folder.items.map((value, index) => {
+            const item = value;
+            const itemTrail = [...trail];
+            if (index != undefined) {
+              itemTrail.push(index);
+            }
 
-          let t = trailsToFolders.findIndex(
-            (a) => a.trail.toString() == itemTrail.toString(),
-          );
-          if (t == -1) {
-            t = trailsToFolders.length;
-            trailsToFolders.push({ id: item.itemID, trail: itemTrail });
-          }
+            let t = trailsToFolders.findIndex(
+              (a) => a.trail.toString() == itemTrail.toString(),
+            );
+            if (t == -1) {
+              t = trailsToFolders.length;
+              trailsToFolders.push({ id: item.itemID, trail: itemTrail });
+            }
 
-          const obj = { key: undefined, ...props };
-          return (
-            <div {...obj} key={t}>
-              {/*t*/}
+            return (
               <FolderExplorerItem
                 folders={folders}
                 setFolders={setFolders}
                 isParentDisabled={isParentDisabled}
                 trail={itemTrail}
                 item={item}
+                id={index}
+                key={t}
               />
-            </div>
-          );
-        }}
-      />
+            );
+          })}
+        </SortableContext>
+        <DragOverlay>hi</DragOverlay>
+      </DndContext>
     </>
   );
 }

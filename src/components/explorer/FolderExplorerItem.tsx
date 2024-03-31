@@ -16,13 +16,16 @@ import {
   foldersIncludes as foldersInclude,
 } from "./FolderContext";
 
+import React from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 const Grid = styled.div<{ depth: number }>`
   display: grid;
   align-items: center;
   grid-template-rows: min-content auto;
   grid-template-columns: min-content auto;
   margin-left: 0.75rem;
-  margin-top: 0rem;
+  margin-top: 0.5rem;
   font-size: ${(props) => Math.pow(0.95, props.depth - 1) * 1.2 + "rem"};
 `;
 
@@ -55,12 +58,14 @@ export default function FolderExplorerItem({
   setFolders,
   isParentDisabled,
   item,
+  id,
 }: {
   trail: number[];
   folders: Folder[];
   setFolders: (folders: Folder[]) => void;
   isParentDisabled: boolean;
   item: Subitem;
+  id: number;
 }) {
   const {
     disabledFolders,
@@ -68,6 +73,14 @@ export default function FolderExplorerItem({
     openedFolders,
     updateOpenedFolders,
   } = useContext(FolderExplorerContext);
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: id });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  };
 
   const isPlaylist = item.kind == SubitemKind.SpotifyURI;
   const isOpen =
@@ -82,7 +95,7 @@ export default function FolderExplorerItem({
     <DrawFolderList
       folders={folders}
       setFolders={setFolders}
-      folder={folders.filter((f) => f.id == item.itemID)[0]}
+      folderID={item.itemID}
       isParentDisabled={isDisabled}
       trail={trail}
     />
@@ -104,26 +117,7 @@ export default function FolderExplorerItem({
   };
 
   return (
-    <Grid depth={trail.length}>
-      <div></div>
-      <div
-        css={css`
-          height: 0.5rem;
-          border-radius: 4px;
-          width: 100%;
-          display: flex;
-          align-items: center;
-        `}
-      >
-        <div
-          css={css`
-            height: 4px;
-            border-radius: 4px;
-            width: 100%;
-            margin-left: 1rem;
-          `}
-        ></div>
-      </div>
+    <Grid ref={setNodeRef} style={style} depth={trail.length}>
       <FontAwesomeIcon
         role="button"
         icon={icon}
@@ -135,7 +129,7 @@ export default function FolderExplorerItem({
           cursor: pointer;
         `}
       />{" "}
-      <div>
+      <div {...attributes} {...listeners}>
         <FolderExplorerLabel
           item={item}
           strikethrough={isDisabled}
