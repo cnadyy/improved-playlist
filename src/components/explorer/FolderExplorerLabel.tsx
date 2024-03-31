@@ -8,6 +8,8 @@ import {
   faBookmark,
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
+import { SyntheticListener } from "@dnd-kit/core/dist/hooks/utilities";
+import { DraggableAttributes } from "@dnd-kit/core";
 
 const Label = styled.div`
   display: flex;
@@ -41,11 +43,15 @@ export default function FolderExplorerLabel({
   strikethrough,
   isDisabled,
   onDisableClick,
+  activatorListeners,
+  activatorAttributes,
 }: {
   item: { kind: SubitemKind; itemID: string };
   strikethrough: boolean;
   isDisabled: boolean;
   onDisableClick: () => void;
+  activatorListeners: SyntheticListener;
+  activatorAttributes: DraggableAttributes;
 }) {
   return (
     <Label>
@@ -63,6 +69,7 @@ export default function FolderExplorerLabel({
             cursor: pointer;
             user-select: none;
           `}
+          role="button"
           onClick={onDisableClick}
         >
           Click to {isDisabled ? "enable" : "disable"}
@@ -71,7 +78,8 @@ export default function FolderExplorerLabel({
 
       <RightIcons className="labelHover">
         <FontAwesomeIcon
-          data-movable-handle
+          {...activatorAttributes}
+          {...activatorListeners}
           style={{
             marginRight: "1.25em",
           }}
