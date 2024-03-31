@@ -1,7 +1,7 @@
 interface Playlist {
   description: string | undefined;
   href: string;
-  id: string;
+  id: PlaylistId;
   name: string;
   public: boolean;
   tracks: {

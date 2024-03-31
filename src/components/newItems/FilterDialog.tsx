@@ -26,8 +26,6 @@ export default function FilterDialog({
 }): React.ReactNode {
   const ref = useRef<HTMLDialogElement>(null);
 
-  console.log(showFilters)
-
   useEffect(() => {
     if (showFilters) ref.current?.show();
     else ref.current?.close();

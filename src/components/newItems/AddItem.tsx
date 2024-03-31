@@ -1,6 +1,12 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import React, { CSSProperties, useEffect, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import SearchBar from "../SearchBar";
 import SearchItemList from "./SearchItemList";
 import Folder from "@/api/types/Folder";
@@ -14,6 +20,7 @@ import FilterDialog from "./FilterDialog";
 import filterOptions from "@/api/types/FilterOptions";
 import filterPlaylist from "@/api/search-functions/filterPlaylists";
 import filterFolder from "@/api/search-functions/filterFolders";
+import UpdateSelectedItems, { SelectedItems } from "./UpdateSelectedItems";
 
 const AddItemStyles: CSSProperties = {
   maxWidth: "750px",
@@ -23,8 +30,34 @@ const AddItemStyles: CSSProperties = {
   overflow: "hidden",
 };
 
-const FolderBlock: (f: Folder) => React.ReactNode = (f) => (
-  <div style={{ minWidth: "8rem", maxWidth: "8rem" }} key={f.id}>
+const Selected: () => React.ReactNode = () => (
+  <div
+    style={{
+      position: "absolute",
+      top: "0",
+      left: "0",
+      width: "100%",
+      height: "8rem",
+      backgroundColor: "#00000066",
+      display: "grid",
+      placeItems: "center",
+      pointerEvents: "none",
+    }}
+  >
+    <p style={{ color: "white" }}>selected</p>
+  </div>
+);
+
+const FolderBlock: (
+  f: Folder,
+  selectedItems: SelectedItems,
+  sOnClick: (id: FolderId) => void,
+) => React.ReactElement = (f, selectedItems, sOnClick) => (
+  <div
+    style={{ minWidth: "8rem", maxWidth: "8rem", position: "relative" }}
+    key={f.id}
+    onClick={() => sOnClick(f.id)}
+  >
     <div
       style={{
         width: "8rem",
@@ -33,11 +66,20 @@ const FolderBlock: (f: Folder) => React.ReactNode = (f) => (
       }}
     />
     <p style={lineClamp}>{f.name}</p>
+    {selectedItems.folders?.includes(f.id) ? <Selected /> : null}
   </div>
 );
 
-const PlaylistBlock: (p: Playlist) => React.ReactNode = (p) => (
-  <div style={{ minWidth: "8rem", maxWidth: "8rem" }} key={p.id}>
+const PlaylistBlock: (
+  p: Playlist,
+  selectedItems: SelectedItems,
+  sOnClick: (id: PlaylistId) => void,
+) => React.ReactNode = (p, selectedItems, sOnClick) => (
+  <div
+    style={{ minWidth: "8rem", maxWidth: "8rem", position: "relative" }}
+    key={p.id}
+    onClick={() => sOnClick(p.id)}
+  >
     {p.images.length != 0 ? (
       <img src={p.images[0]?.url} style={{ width: "8rem" }} />
     ) : (
@@ -50,6 +92,7 @@ const PlaylistBlock: (p: Playlist) => React.ReactNode = (p) => (
       />
     )}
     <p style={lineClamp}>{p.name}</p>
+    {selectedItems.playlists?.includes(p.id) ? <Selected /> : null}
   </div>
 );
 
@@ -67,6 +110,7 @@ export default function AddItem({
   showModal: boolean;
   closeModal: () => void;
 }): React.ReactNode {
+  // FIXME: too many useStates
   const ref = useRef<HTMLDialogElement>(null);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<filterOptions>(filterOptions.NONE);
@@ -77,13 +121,27 @@ export default function AddItem({
     null,
   );
 
+  const [selected, dispatchSelected] = useReducer(UpdateSelectedItems, {
+    folders: [],
+    playlists: [],
+  });
+
+  const AwareFBlock: (f: Folder) => React.ReactNode = (f) =>
+    FolderBlock(f, selected, (id) =>
+      dispatchSelected({ type: "SET_FOLDER", id: id }),
+    );
+  const AwarePBlock: (p: Playlist) => React.ReactNode = (p) =>
+    PlaylistBlock(p, selected, (id) =>
+      dispatchSelected({ type: "SET_PLAYLIST", id: id }),
+    );
+
   const FilteredList = () => (
     <div style={{ overflowY: "scroll", ...HideScrollBar, margin: "2rem 0" }}>
       <SearchItemList full>
         {filter == filterOptions.FOLDERS ? (
-          folderList.filter((f) => filterFolder(f, query)).map(FolderBlock)
+          folderList.filter((f) => filterFolder(f, query)).map(AwareFBlock)
         ) : filter == filterOptions.PLAYLISTS ? (
-          playlists.filter((p) => filterPlaylist(p, query)).map(PlaylistBlock)
+          playlists.filter((p) => filterPlaylist(p, query)).map(AwarePBlock)
         ) : filter == filterOptions.PUBLIC ? (
           <p>TODO: Public spotify searching</p>
         ) : (
@@ -162,13 +220,13 @@ export default function AddItem({
               name="Folders"
               expandList={() => setFilter(filterOptions.FOLDERS)}
             >
-              {folderList.map(FolderBlock)}
+              {folderList.map(AwareFBlock)}
             </SearchItemList>
             <SearchItemList
               name="Playlists"
               expandList={() => setFilter(filterOptions.PLAYLISTS)}
             >
-              {playlists.map(PlaylistBlock)}
+              {playlists.map(AwarePBlock)}
             </SearchItemList>
           </div>
         ) : (
