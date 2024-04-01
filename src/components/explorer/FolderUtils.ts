@@ -1,10 +1,20 @@
-import Folder, { Subitem } from "./api/types/Folder";
+import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
 import {
-  FolderAction,
-  FolderActionKind,
-} from "./components/explorer/FolderContext";
+  faFolder,
+  faFolderOpen,
+  faMusic,
+} from "@fortawesome/free-solid-svg-icons";
+import { FolderAction, FolderActionKind } from "./FolderContext";
 
-export default function moveTrails(
+export function getIcon(kind: SubitemKind, opened: boolean) {
+  return kind == SubitemKind.SpotifyURI
+    ? faMusic
+    : opened
+      ? faFolderOpen
+      : faFolder;
+}
+
+export function moveTrails(
   disabled: number[][],
   oldTrail: number[],
   newTrail: number[],
@@ -24,29 +34,25 @@ export function moveTrail(
     return [...newTrail, ...trail.slice(oldTrail.length)];
   }
   const movedTrail = [...trail];
+  const oldTrailInit = oldTrail.slice(0, oldTrail.length - 1).toString();
+  const trailInit = trail.slice(0, oldTrail.length - 1).toString();
   if (
-    oldTrail.slice(0, oldTrail.length - 1).toString() ==
-      trail.slice(0, oldTrail.length - 1).toString() &&
+    oldTrailInit == trailInit &&
     oldTrail[oldTrail.length - 1] <= trail[oldTrail.length - 1]
   ) {
     movedTrail[oldTrail.length - 1] -= 1;
   }
 
+  const newTrailInit = newTrail.slice(0, newTrail.length - 1).toString();
+  const movedTrailInit = movedTrail.slice(0, newTrail.length - 1).toString();
   if (
-    newTrail.slice(0, newTrail.length - 1).toString() ==
-      movedTrail.slice(0, newTrail.length - 1).toString() &&
+    newTrailInit == movedTrailInit &&
     newTrail[newTrail.length - 1] <= movedTrail[newTrail.length - 1]
   ) {
     movedTrail[newTrail.length - 1] += 1;
   }
   return movedTrail;
 }
-
-// // FIXME: consider this example
-// // Should this return [[6, 5, 6]] or [6, 4, 6]
-// console.log(moveTrail([[7, 4, 6]], [3], [7, 4]));
-
-// console.log(moveTrail([[3, 4, 6]], [3], [7]));
 
 export function updateFolders(
   trails: { trail: number[]; item: Subitem }[],

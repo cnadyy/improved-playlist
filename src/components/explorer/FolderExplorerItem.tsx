@@ -1,21 +1,17 @@
 import styled from "@emotion/styled";
 import FolderExplorerLabel from "./FolderExplorerLabel";
 import { CSSProperties, useContext } from "react";
-import {
-  faFolder,
-  faFolderOpen,
-  faMusic,
-} from "@fortawesome/free-solid-svg-icons";
 import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
 import { DrawFolderList } from "./FolderExplorer";
 import {
   FolderActionKind,
   FolderExplorerContext,
   foldersIncludes as foldersInclude,
-} from "./FolderContext";
+} from "@/components/explorer/FolderContext";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { getIcon } from "@/components/explorer/FolderUtils";
 export const Grid = styled.div<{ depth: number }>`
   display: grid;
   align-items: center;
@@ -92,7 +88,7 @@ export default function FolderExplorerItem({
   const isOpen =
     item.kind != SubitemKind.SpotifyURI && foldersInclude(openedFolders, trail);
 
-  const icon = isPlaylist ? faMusic : isOpen ? faFolderOpen : faFolder;
+  const icon = getIcon(item.kind, isOpen);
 
   const isLocallyDisabled = foldersInclude(disabledFolders, trail);
   const isDisabled = isParentDisabled || isLocallyDisabled;

@@ -1,6 +1,5 @@
-import moveTrails from "@/utils";
+import { moveTrails } from "@/components/explorer/FolderUtils";
 import { createContext } from "react";
-import { act } from "react-dom/test-utils";
 
 export const FolderExplorerContext = createContext<{
   disabledFolders: number[][];
@@ -30,32 +29,29 @@ export enum FolderActionKind {
 }
 
 export function updateFoldersTrail(state: number[][], action: FolderAction) {
-  if (action.kind == FolderActionKind.Toggle) {
-    let newState = [...state];
-    if (state.some((f) => f.toString() == action.trail.toString())) {
-      newState = newState.filter(
-        (f) => f.toString() != action.trail.toString(),
-      );
-    } else {
-      newState.push(action.trail);
-    }
-    return newState;
-  } else if (action.kind == FolderActionKind.UpdateTrail) {
-    return moveTrails(state, action.oldTrail, action.newTrail);
-  } else {
-    let newState = [...state];
-    if (!action.value) {
-      newState = newState.filter(
-        (f) => f.toString() != action.trail.toString(),
-      );
-    }
-    if (
-      !state.some((f) => f.toString() == action.trail.toString()) &&
-      action.value
-    ) {
-      newState.push(action.trail);
-    }
-    return newState;
+  let newState = [...state];
+  switch (action.kind) {
+    case FolderActionKind.Toggle:
+      if (foldersIncludes(state, action.trail)) {
+        newState = newState.filter(
+          (f) => f.toString() != action.trail.toString(),
+        );
+      } else {
+        newState.push(action.trail);
+      }
+      return newState;
+    case FolderActionKind.UpdateTrail:
+      return moveTrails(state, action.oldTrail, action.newTrail);
+    case FolderActionKind.Set:
+      if (!action.value) {
+        newState = newState.filter(
+          (f) => f.toString() != action.trail.toString(),
+        );
+      }
+      if (!foldersIncludes(state, action.trail) && action.value) {
+        newState.push(action.trail);
+      }
+      return newState;
   }
 }
 

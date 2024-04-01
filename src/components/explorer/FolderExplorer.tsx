@@ -8,7 +8,6 @@ import {
   FolderExplorerContext,
   foldersIncludes,
 } from "@/components/explorer/FolderContext";
-import { updateFolders } from "@/utils";
 import {
   DndContext,
   DragEndEvent,
@@ -31,12 +30,7 @@ import {
   restrictToParentElement,
 } from "@dnd-kit/modifiers";
 import FolderExplorerLabel from "@/components/explorer/FolderExplorerLabel";
-import {
-  faFolder,
-  faFolderOpen,
-  faMusic,
-} from "@fortawesome/free-solid-svg-icons";
-import { act } from "react-dom/test-utils";
+import { getIcon, updateFolders } from "@/components/explorer/FolderUtils";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -116,7 +110,14 @@ function DrawFolderList({
 
   function handleEnd(event: DragEndEvent) {
     setActive(null);
+
     if (event.over && folder) {
+      const activeTrail = trails[Number(event.active.id)].trail;
+      const from = activeTrail[activeTrail.length - 1];
+
+      const overTrail = trails[Number(event.over.id)].trail;
+      const to = overTrail[overTrail.length - 1];
+
       updateFolders(
         trails,
         (f) => {
@@ -127,18 +128,14 @@ function DrawFolderList({
         updateDisabledFolders,
         updateOpenedFolders,
         folder.id,
-        trails[Number(event.active.id)].trail[
-          trails[Number(event.active.id)].trail.length - 1
-        ],
-        trails[Number(event.over.id)].trail[
-          trails[Number(event.over.id)].trail.length - 1
-        ],
+        from,
+        to,
         trail.length == 0,
       );
     }
   }
 
-  const items = folder.items.map((value, index) => {
+  const itemKeys = folder.items.map((value, index) => {
     const item = value;
     const itemTrail = [...trail];
     if (index != undefined) {
@@ -167,7 +164,10 @@ function DrawFolderList({
         onDragEnd={handleEnd}
         onDragStart={handleStart}
       >
-        <SortableContext strategy={verticalListSortingStrategy} items={items}>
+        <SortableContext
+          strategy={verticalListSortingStrategy}
+          items={itemKeys}
+        >
           <div style={{ display: "grid" }}>
             {folder.items.map((value, index) => {
               const item = value;
@@ -176,7 +176,7 @@ function DrawFolderList({
                 itemTrail.push(index);
               }
 
-              const key = items[index];
+              const key = itemKeys[index];
 
               return (
                 <>
@@ -200,13 +200,7 @@ function DrawFolderList({
             <Grid depth={trail.length + 1}>
               <FolderExplorerLabel
                 item={trails[active.id].item}
-                icon={
-                  trails[active.id].item.kind == SubitemKind.SpotifyURI
-                    ? faMusic
-                    : active.opened
-                      ? faFolderOpen
-                      : faFolder
-                }
+                icon={getIcon(trails[active.id].item.kind, active.opened)}
                 strikethrough={isParentDisabled || active.disabled}
                 isDisabled={active.disabled}
                 isRootNode={trail.length + 1 == 1}
