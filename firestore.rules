@@ -5,10 +5,11 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if false;
     }
-    
+
     match /folders/{folderId} {
       allow read: if resource.data.public == true;
       allow read, write: if resource.data.owner == request.auth.uid;
+      allow create: if request.auth != null;
     }
   }
 }

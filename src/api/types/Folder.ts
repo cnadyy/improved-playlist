@@ -6,6 +6,8 @@ interface Folder {
     // covers will be a fixed colour for now
     color: string;
     isPinned: boolean;
+    // in future these should be required.
+    // in localstorage they are not, in firebase they are.
     public?: boolean;
     owner?: string;
 }
