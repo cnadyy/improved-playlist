@@ -5,27 +5,27 @@ import React, { CSSProperties } from "react";
 import ItemName from "./ItemName";
 
 const subItemStyles: CSSProperties = {
-  listStyle: "none",
-  display: "flex",
-  gap: "10px",
-  paddingLeft: "10px",
+    listStyle: "none",
+    display: "flex",
+    gap: "10px",
+    paddingLeft: "10px",
 };
 
 export default function Subitem({
-  id,
-  kind,
+    id,
+    kind,
 }: {
-  id: string;
-  kind: SubitemKind;
+    id: string;
+    kind: SubitemKind;
 }): React.ReactNode {
-  return (
-    <>
-      <li style={subItemStyles}>
-        <FontAwesomeIcon
-          icon={kind == SubitemKind.SpotifyURI ? faMusic : faFolder}
-        />
-        <ItemName id={id} kind={kind} />
-      </li>
-    </>
-  );
+    return (
+        <>
+            <li style={subItemStyles}>
+                <FontAwesomeIcon
+                    icon={kind == SubitemKind.SpotifyURI ? faMusic : faFolder}
+                />
+                <ItemName id={id} kind={kind} />
+            </li>
+        </>
+    );
 }

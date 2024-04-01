@@ -10,60 +10,60 @@ import Header from "@/components/Header";
 import filterFolder from "@/api/search-functions/filterFolders";
 
 const folderListStyle: CSSProperties = {
-  display: "flex",
-  gap: "1rem",
-  flexWrap: "wrap",
-  padding: "0",
-  margin: "0",
+    display: "flex",
+    gap: "1rem",
+    flexWrap: "wrap",
+    padding: "0",
+    margin: "0",
 };
 
 export default function Folders() {
-  const [folderList, setFolderList] = useState<Folder[]>([]);
-  const [searchEntry, setSearchEntry] = useState<string>("");
+    const [folderList, setFolderList] = useState<Folder[]>([]);
+    const [searchEntry, setSearchEntry] = useState<string>("");
 
-  useEffect(() => {
-    setFolderList(getFolderList());
-  }, []);
+    useEffect(() => {
+        setFolderList(getFolderList());
+    }, []);
 
-  const filteredFolders = folderList.filter((f) =>
-    filterFolder(f, searchEntry),
-  );
+    const filteredFolders = folderList.filter((f) =>
+        filterFolder(f, searchEntry),
+    );
 
-  return (
-    <>
-      <Header
-        searchEntry={searchEntry}
-        setSearchEntry={setSearchEntry}
-        styling={{ backgroundColor: "white" }}
-      >
-        <NewFolder />
-      </Header>
-      <div style={{ padding: "0 2rem" }}>
-        {filteredFolders.length ? (
-          <ul style={folderListStyle}>
-            {filteredFolders.map((folder) => (
-              <li key={folder.id} style={{ listStyle: "none" }}>
-                <Link
-                  href={"/playback?id=" + folder.id}
-                  style={{ all: "unset" }}
-                >
-                  <FolderComponent data={folder} />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <h1
-            style={{
-              backgroundImage: "linear-gradient(indigo, green)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            No folders found! Try creating the folder you seek
-          </h1>
-        )}
-      </div>
-    </>
-  );
+    return (
+        <>
+            <Header
+                searchEntry={searchEntry}
+                setSearchEntry={setSearchEntry}
+                styling={{ backgroundColor: "white" }}
+            >
+                <NewFolder />
+            </Header>
+            <div style={{ padding: "0 2rem" }}>
+                {filteredFolders.length ? (
+                    <ul style={folderListStyle}>
+                        {filteredFolders.map((folder) => (
+                            <li key={folder.id} style={{ listStyle: "none" }}>
+                                <Link
+                                    href={"/playback?id=" + folder.id}
+                                    style={{ all: "unset" }}
+                                >
+                                    <FolderComponent data={folder} />
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <h1
+                        style={{
+                            backgroundImage: "linear-gradient(indigo, green)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                        }}
+                    >
+                        No folders found! Try creating the folder you seek
+                    </h1>
+                )}
+            </div>
+        </>
+    );
 }

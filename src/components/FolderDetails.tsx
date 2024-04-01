@@ -11,73 +11,73 @@ import { CSSProperties, useContext } from "react";
 import { FolderExplorerContext } from "./explorer/FolderContext";
 
 const folderIconStyle: CSSProperties = {
-  minWidth: "13rem",
-  minHeight: "13rem",
-  filter: "saturate(0.4)",
-  transition: "0.5s",
+    minWidth: "13rem",
+    minHeight: "13rem",
+    filter: "saturate(0.4)",
+    transition: "0.5s",
 };
 
 const button = css`
-  margin-right: 20px;
-  transition: color 0.15s ease;
-  &:hover {
-    color: #666666;
-  }
+    margin-right: 20px;
+    transition: color 0.15s ease;
+    &:hover {
+        color: #666666;
+    }
 `;
 
 const FolderName = styled.h1`
-  font-weight: 600;
-  margin: 0rem;
-  font-size: 4rem;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  &::after {
-    content: "${(props) => props.content}";
-    background-color: white;
-    position: absolute;
-    left: 0;
-    top: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-  &:hover::after {
-    visibility: visible;
-  }
+    font-weight: 600;
+    margin: 0rem;
+    font-size: 4rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    &::after {
+        content: "${(props) => props.content}";
+        background-color: white;
+        position: absolute;
+        left: 0;
+        top: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+    &:hover::after {
+        visibility: visible;
+    }
 `;
 
 export default function FolderDetailsComponent({
-  folder,
-  folders,
+    folder,
+    folders,
 }: {
-  folder: Folder;
-  folders: Folder[];
+    folder: Folder;
+    folders: Folder[];
 }) {
-  const router = useRouter();
-  const { disabledFolders } = useContext(FolderExplorerContext);
-  // const [folders, setFolders] = useFolderList();
-  return (
-    <div
-      css={css`
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-      `}
-    >
-      <div
-        className={"folderIcon"}
-        style={{ backgroundColor: folder.color, ...folderIconStyle }}
-      />
-      <div
-        css={css`
-          padding: 0 1rem;
-        `}
-      >
-        <div style={{ position: "relative" }}>
-          <FolderName content={folder.name}>{folder.name}</FolderName>
-        </div>
-        {/**
+    const router = useRouter();
+    const { disabledFolders } = useContext(FolderExplorerContext);
+    // const [folders, setFolders] = useFolderList();
+    return (
+        <div
+            css={css`
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+            `}
+        >
+            <div
+                className={"folderIcon"}
+                style={{ backgroundColor: folder.color, ...folderIconStyle }}
+            />
+            <div
+                css={css`
+                    padding: 0 1rem;
+                `}
+            >
+                <div style={{ position: "relative" }}>
+                    <FolderName content={folder.name}>{folder.name}</FolderName>
+                </div>
+                {/**
           <h3
           css={css`
             padding: 0.25rem;
@@ -88,27 +88,29 @@ export default function FolderDetailsComponent({
             This is a cool folder description :)
             </h3>
         **/}
-        <div
-          css={css`
-            margin-left: 0.5rem;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-          `}
-        >
-          <FontAwesomeIcon
-            css={button}
-            icon={faPlayCircle}
-            size="2xl"
-            onClick={() => playFolder(folder.id, folders, disabledFolders)}
-          />
-          <FontAwesomeIcon
-            onClick={() => router.push("/edit?" + folder.id)}
-            css={button}
-            icon={faPencil}
-            size="2xl"
-          />
+                <div
+                    css={css`
+                        margin-left: 0.5rem;
+                        margin-top: 1rem;
+                        margin-bottom: 1rem;
+                    `}
+                >
+                    <FontAwesomeIcon
+                        css={button}
+                        icon={faPlayCircle}
+                        size="2xl"
+                        onClick={() =>
+                            playFolder(folder.id, folders, disabledFolders)
+                        }
+                    />
+                    <FontAwesomeIcon
+                        onClick={() => router.push("/edit?" + folder.id)}
+                        css={button}
+                        icon={faPencil}
+                        size="2xl"
+                    />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

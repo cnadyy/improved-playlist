@@ -1,3 +1,3 @@
 interface Track {
-  uri: string;
+    uri: string;
 }

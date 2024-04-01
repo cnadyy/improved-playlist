@@ -1,24 +1,24 @@
 interface Playlist {
-  description: string | undefined;
-  href: string;
-  id: PlaylistId;
-  name: string;
-  public: boolean;
-  tracks: {
+    description: string | undefined;
     href: string;
-    total: number;
-    items: TrackItem[];
-  };
-  uri: string;
-  images: img[];
+    id: PlaylistId;
+    name: string;
+    public: boolean;
+    tracks: {
+        href: string;
+        total: number;
+        items: TrackItem[];
+    };
+    uri: string;
+    images: img[];
 }
 
 interface TrackItem {
-  track: Track;
+    track: Track;
 }
 
 interface img {
-  url: string;
-  height: number;
-  width: number;
+    url: string;
+    height: number;
+    width: number;
 }

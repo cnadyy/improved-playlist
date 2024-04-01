@@ -1,3 +1,3 @@
 interface ReturnsParameter<Type> {
-  (items: Type): Type;
+    (items: Type): Type;
 }
