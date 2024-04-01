@@ -1,4 +1,4 @@
-import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
+import Folder, { Subitem } from "@/api/types/Folder";
 import FolderExplorerComponent, {
     Grid,
 } from "@/components/explorer/FolderExplorerItem";
@@ -16,7 +16,7 @@ import {
     KeyboardSensor,
     PointerSensor,
     TouchSensor,
-    closestCenter,
+    rectIntersection,
     useSensor,
     useSensors,
 } from "@dnd-kit/core";
@@ -160,7 +160,7 @@ function DrawFolderList({
             <DndContext
                 sensors={sensors}
                 modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-                collisionDetection={closestCenter}
+                collisionDetection={rectIntersection}
                 onDragEnd={handleEnd}
                 onDragStart={handleStart}
             >
