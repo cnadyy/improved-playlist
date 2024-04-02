@@ -16,9 +16,7 @@ const App = initializeApp(firebaseConfig);
 
 const Db = getFirestore(App);
 
-// when operating with the emulator connect the db
-// unsure how to enable only on dev-emulators
-// connectFirestoreEmulator(Db, "127.0.0.1", 8080);
+if (process.env.NODE_ENV) connectFirestoreEmulator(Db, "127.0.0.1", 8080);
 
 const Auth = getAuth(App);
 
