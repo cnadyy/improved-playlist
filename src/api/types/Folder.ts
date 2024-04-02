@@ -1,24 +1,15 @@
 interface Folder {
-    // Playlists are only kept by id as data is likely to be regularly mutated by the user on Spotify
     items: Subitem[];
     id: string;
     name: string;
-    // covers will be a fixed colour for now
     color: string;
     isPinned: boolean;
-    // in future these should be required.
-    // in localstorage they are not, in firebase they are.
-    public?: boolean;
-    owner?: string;
+    public: boolean;
+    owner: string;
 }
 
-// interface Subitem {
-//   kind: SubitemKind;
-//   itemID: string | SpotifyURI;
-// }
-
 type Subitem =
-    | { kind: SubitemKind.SpotifyURI; itemID: SpotifyURI; uri: string }
+    | { kind: SubitemKind.SpotifyURI; itemID: SpotifyURI; uri: SpotifyURI }
     | { kind: SubitemKind.Folder; itemID: string };
 
 enum SubitemKind {

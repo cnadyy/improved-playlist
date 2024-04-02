@@ -1,17 +1,19 @@
-import getFolderList from "./getFolderList";
-import Folder from "./types/Folder";
-import setFolderList from "./setFolderList";
+import { Auth } from "@/api/firebase/createApp";
+import setFolder from "@/api/firebase/set/folder";
 
-// at some later point the localstorage api will be replaced with firebase
+/**
+ * @returns id of newly created folder
+ */
 export default async function newFolder(pinned = false): Promise<FolderId> {
-    const currentFolders = getFolderList();
-    currentFolders.push({
+    const newFolder = {
         items: [],
         id: crypto.randomUUID(),
         name: "Default Folder",
         color: "#535620",
         isPinned: pinned,
-    } as Folder);
+        public: false,
+        owner: Auth.currentUser!.uid,
+    };
 
-    return (setFolderList(currentFolders).at(-1) as Folder).id;
+    return setFolder(newFolder).then(() => newFolder.id);
 }

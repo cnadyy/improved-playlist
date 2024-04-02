@@ -7,12 +7,9 @@ import getUserData from "@api/spotify/get/me";
 import queueTrack from "@api/spotify/set/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
 import startResumePlayback from "@api/spotify/set/playbackToggle";
-import Folder, { SubitemKind } from "@/api/types/Folder";
 import getAvailableDevices from "@api/spotify/get/devices";
 import PlayerSelector from "@/components/PlayerSelector";
 import Device from "@/api/types/Device";
-import subfolders from "@mock/subfolders.json";
-import getPlaylist from "@/api/spotify/get/playlist";
 import mock from "@mock/subfolders.json";
 
 function getDisplayName(setDisplayName: (display: string) => void) {
@@ -51,40 +48,6 @@ export default function Profile() {
         });
     }
 
-    function getPlaylistFolders(folderID: string, folders: Folder[]): string[] {
-        console.log(folderID);
-        return folders
-            .filter((folder) => folder.id == folderID)[0]
-            .items.flatMap((item) => {
-                if (item.kind == SubitemKind.Folder) {
-                    return getPlaylistFolders(item.itemID, folders);
-                } else {
-                    return item.itemID;
-                }
-            });
-    }
-
-    async function playFolder(folderID: string, folders: Folder[]) {
-        console.log(folders);
-        const playlists = getPlaylistFolders(folderID, folders);
-        Promise.all(
-            playlists.flatMap(async (playlistURI) =>
-                getPlaylist(playlistURI).then((obj) => {
-                    console.log(obj);
-                    return obj.tracks.items.map((track) => track.track.uri);
-                }),
-            ),
-        ).then((urisArr) => {
-            const uris = urisArr.flatMap((track) => track);
-            startResumePlayback({
-                uris: uris,
-                deviceID: devices[currentPlayer].id,
-            });
-        });
-    }
-
-    const [folders, setFolders] = useState<Folder[]>(subfolders);
-
     function updateDevices() {
         getAvailableDevices().then((res) => setDevices(res.devices));
     }
@@ -98,13 +61,6 @@ export default function Profile() {
             >
                 {" "}
                 play the celesete
-            </a>
-            <a
-                style={{ color: "green", cursor: "pointer" }}
-                onClick={() => playFolder("xxx-xxx", mock)}
-            >
-                {" "}
-                play the playlist
             </a>
             <h3>Folder explorer</h3>
             {/*<FolderExporer folders={folders} rootId={"xxx-xxx"} />*/}

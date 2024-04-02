@@ -38,6 +38,8 @@ async function playFolder(
     disabled: number[][],
     deviceID?: string,
 ) {
+    console.error("FIXME: Update to resolve data from firestore");
+    return;
     const playlists = getPlaylistFolders(folderID, folders, [], disabled);
     Promise.all(
         playlists.flatMap(async (playlistURI) =>
