@@ -8,7 +8,6 @@ export default async function getUserFolders(): Promise<Folder[]> {
         folders,
         where("owner", "==", Auth.currentUser!.uid),
         orderBy("name"),
-        orderBy("id"),
     );
 
     return (await getDocs(foldersQ)).docs.map((f) => f.data()) as Folder[];
