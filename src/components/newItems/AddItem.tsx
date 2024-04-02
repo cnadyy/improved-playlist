@@ -12,7 +12,7 @@ import SearchItemList from "./SearchItemList";
 import Folder from "@/api/types/Folder";
 import getFolderList from "@/api/getFolderList";
 import lineClamp from "@/css/LineClamp";
-import UserPlaylistExplorer from "@/api/UserPlaylistExplorer";
+import UserPlaylistExplorer from "@/api/spotify/get/UserPlaylistExplorer";
 import HideScrollBar from "@/css/HideScrollBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";

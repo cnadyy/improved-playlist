@@ -1,7 +1,7 @@
 // TODO: Rewrite using reducer
 
 import { useEffect, useState } from "react";
-import PlaylistExplorer from "@api/UserPlaylistExplorer";
+import PlaylistExplorer from "@api/spotify/get/UserPlaylistExplorer";
 
 function AuthUserPlaylists() {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);

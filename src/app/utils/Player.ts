@@ -1,5 +1,5 @@
-import getPlaylist from "@/api/getPlaylist";
-import startResumePlayback from "@/api/startResumePlayback";
+import getPlaylist from "@/api/spotify/get/playlist";
+import startResumePlayback from "@/api/spotify/set/playbackToggle";
 import Folder, { SubitemKind } from "@/api/types/Folder";
 
 function getPlaylistFolders(

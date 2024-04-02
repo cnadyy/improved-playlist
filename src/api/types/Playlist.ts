@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-unused-vars: 0 */
 interface Playlist {
     description: string | undefined;
     href: string;

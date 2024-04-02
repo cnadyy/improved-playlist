@@ -3,7 +3,6 @@ import Folder from "@/api/types/Folder";
 import "@css/folderIconStyle.css";
 import "@css/floatingContents.css";
 import ItemName from "./Subitem";
-import { redirect } from "next/dist/server/api-utils";
 
 const folderIconStyle: CSSProperties = {
     width: "100%",
@@ -54,7 +53,7 @@ function FolderComponent({ data }: { data: Folder }) {
                 folderRef.current.getBoundingClientRect().right;
             if (rightMeasure != posRight) setPostRight(rightMeasure);
         }
-    }, [isHovering]);
+    }, [isHovering, posRight]);
 
     const useRightTooltip = clientWidth - 330 > posRight;
 

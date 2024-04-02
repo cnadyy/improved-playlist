@@ -1,4 +1,3 @@
-import { useFolderList } from "@/api/getFolderList";
 import Folder from "@/api/types/Folder";
 import playFolder from "@/app/utils/Player";
 import { css } from "@emotion/react";
@@ -6,7 +5,6 @@ import styled from "@emotion/styled";
 import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import { relative } from "path";
 import { CSSProperties, useContext } from "react";
 import { FolderExplorerContext } from "./explorer/FolderContext";
 

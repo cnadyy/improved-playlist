@@ -1,5 +1,5 @@
 import getFolder from "@/api/getFolder";
-import getPlaylist from "@/api/getPlaylist";
+import getPlaylist from "@/api/spotify/get/playlist";
 import { SubitemKind } from "@/api/types/Folder";
 import { useQuery } from "@tanstack/react-query";
 

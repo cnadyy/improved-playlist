@@ -23,7 +23,7 @@ export default function Redirect() {
             );
             setIsSuccessful(progress.success);
         } else setIsSuccessful(progress.failed);
-    }, []);
+    }, [params]);
 
     const userMessage: (state: progress) => string = (state) => {
         if (state == progress.success)

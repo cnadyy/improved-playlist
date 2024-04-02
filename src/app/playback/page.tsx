@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useFolderList } from "@/api/getFolderList";
 import FolderExplorer from "@/components/explorer/FolderExplorer";
 import { css } from "@emotion/react";
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 import Header from "@/components/Header";
 import {
     FolderExplorerContext,

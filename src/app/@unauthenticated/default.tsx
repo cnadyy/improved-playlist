@@ -1,6 +1,6 @@
 "use client";
 
-import authenticate from "@/api/authenticate";
+import authenticate from "@/api/spotify/authenticate";
 import {
     isFirebaseAuthenticated,
     isSpotifyAuthenticated,
@@ -15,7 +15,7 @@ enum sending {
     sent,
 }
 
-export default function unauthenticated() {
+export default function Unauthenticated() {
     const [spotify, setSpotify] = useState(false);
     const [firebase, setFirebase] = useState(false);
     const [userEmail, setUserEmail] = useState("");
@@ -58,7 +58,7 @@ export default function unauthenticated() {
         return () => window.removeEventListener("storage", handleChange);
     }, []);
 
-    const emailState: (state: sending) => string = (state) => {
+    const emailState: () => string = () => {
         if (emailSending == sending.notSent) return "Email not sent";
         if (emailSending == sending.sending) return "Email sending";
         else return "Email sent";
@@ -88,7 +88,7 @@ export default function unauthenticated() {
                 onChange={(e) => setUserEmail(e.target.value)}
             />
             <button onClick={sendLink}>Send sign in link to email</button>
-            <p>{emailState(emailSending)}</p>
+            <p>{emailState()}</p>
             <p>{firebase ? " Firebase is authenticated." : ""}</p>
             <p>{error ? error + ". Refresh to try again." : ""}</p>
         </div>

@@ -1,4 +1,4 @@
-import CLIENT_ID from "../app/secrets";
+import CLIENT_ID from "../../app/secrets";
 
 const generateRandomString = (length: number) => {
     const possible =

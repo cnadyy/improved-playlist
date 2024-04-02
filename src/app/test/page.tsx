@@ -1,16 +1,18 @@
 "use client";
 
+/* eslint @typescript-eslint/no-unused-vars: 0 */
+
 import { useEffect, useState } from "react";
-import getUserData from "@api/getUserData";
-import queueTrack from "@api/queueTrack";
+import getUserData from "@api/spotify/get/me";
+import queueTrack from "@api/spotify/set/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
-import startResumePlayback from "@api/startResumePlayback";
+import startResumePlayback from "@api/spotify/set/playbackToggle";
 import Folder, { SubitemKind } from "@/api/types/Folder";
-import getAvailableDevices from "@/api/getAvailableDevices";
+import getAvailableDevices from "@api/spotify/get/devices";
 import PlayerSelector from "@/components/PlayerSelector";
 import Device from "@/api/types/Device";
 import subfolders from "@mock/subfolders.json";
-import getPlaylist from "@/api/getPlaylist";
+import getPlaylist from "@/api/spotify/get/playlist";
 import mock from "@mock/subfolders.json";
 
 function getDisplayName(setDisplayName: (display: string) => void) {

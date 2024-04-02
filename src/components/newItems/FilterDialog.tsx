@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, useEffect, useRef } from "react";
 import FilterOptions from "@api/types/FilterOptions";
 
 const filterStyles: CSSProperties = {

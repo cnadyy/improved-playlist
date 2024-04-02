@@ -1,11 +1,9 @@
 "use client";
 
-import setFolderList from "@/api/setFolderList";
 import React, { useState } from "react";
 import folders from "@mock/subfolders.json";
 import AddItem from "@/components/newItems/AddItem";
-import { Auth, Db } from "@/api/firebase/createApp";
-import { doc, getDoc } from "firebase/firestore";
+import { Auth } from "@/api/firebase/createApp";
 import FilterDialog from "@/components/newItems/FilterDialog";
 import filterOptions from "@/api/types/FilterOptions";
 import getFolder from "@fb/get/folder";
@@ -29,7 +27,11 @@ export default function Test(): React.ReactNode {
             .catch((e) => console.log(e));
 
     const transfer = () =>
-        setFolder({public: true, owner: "xBTkBIBePlc6PFR0EhqcEk5xLVp2", ...getFolderList()[0]})
+        setFolder({
+            public: true,
+            owner: "xBTkBIBePlc6PFR0EhqcEk5xLVp2",
+            ...getFolderList()[0],
+        })
             .then(() => console.log("set it"))
             .catch((e) => console.log(e));
 
@@ -61,7 +63,7 @@ export default function Test(): React.ReactNode {
             <p>{JSON.stringify(dbData)}</p>
             <ol>
                 {folderList.map((f) => (
-                    <li>{f.name}</li>
+                    <li key={f.id}>{f.name}</li>
                 ))}
             </ol>
         </div>

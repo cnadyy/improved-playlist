@@ -2,7 +2,7 @@
 // TODO: Handle "No active device found" 404 errors seperately, explaining remote control.
 
 import CLIENT_ID from "@/app/secrets";
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 // will always be defined. This surpresses
 // build step error "window is not defined"
@@ -86,6 +86,7 @@ async function webAPIFetch(
 async function webAPIFetchWithJSON(
     resource: string,
     options?: RequestInit,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
     return webAPIFetch(resource, options, true).then(async (res) => {
         const json = await res.json();
