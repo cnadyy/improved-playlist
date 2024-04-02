@@ -1,4 +1,4 @@
-import getFolder from "@/api/getFolder";
+import getCachedFolder from "@/api/firebase/get/folder-cached";
 import getPlaylist from "@/api/spotify/get/playlist";
 import { SubitemKind } from "@/api/types/Folder";
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +9,8 @@ async function resolve(id: string, kind: SubitemKind) {
             const playlist = await getPlaylist(id);
             return playlist.name;
         } else {
-            const folder = await getFolder(id);
+            const folder = await getCachedFolder(id);
+            console.log(folder)
             return folder.name;
         }
     } catch (err) {

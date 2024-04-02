@@ -47,7 +47,6 @@ const Bar = styled.div`
 export default function FolderExplorerItem({
     trail,
     folders,
-    setFolders,
     isParentDisabled,
     item,
     id,
@@ -55,7 +54,6 @@ export default function FolderExplorerItem({
 }: {
     trail: number[];
     folders: Folder[];
-    setFolders: (folders: Folder[]) => void;
     isParentDisabled: boolean;
     item: Subitem;
     id: number | string;
@@ -97,7 +95,6 @@ export default function FolderExplorerItem({
     const subitems = isOpen && !isDragOverlay && (
         <DrawFolderList
             folders={folders}
-            setFolders={setFolders}
             folderID={item.itemID}
             isParentDisabled={isDisabled}
             trail={trail}

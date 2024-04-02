@@ -9,7 +9,7 @@ interface Folder {
 }
 
 type Subitem =
-    | { kind: SubitemKind.SpotifyURI; itemID: SpotifyURI; uri: SpotifyURI }
+    | { kind: SubitemKind.SpotifyURI; itemID: SpotifyURI }
     | { kind: SubitemKind.Folder; itemID: string };
 
 enum SubitemKind {

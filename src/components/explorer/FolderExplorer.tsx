@@ -36,17 +36,14 @@ import { getIcon, updateFolders } from "@/components/explorer/FolderUtils";
 // it is not responseible for rendering the original folder.
 function FolderExporer({
     folders,
-    setFolders,
     rootId,
 }: {
     folders: Folder[];
-    setFolders: (folders: Folder[]) => void;
     rootId: string;
 }) {
     return (
         <DrawFolderList
             folders={folders}
-            setFolders={setFolders}
             folderID={rootId}
             isParentDisabled={false}
             trail={[]}
@@ -58,13 +55,11 @@ let trails: { trail: number[]; item: Subitem }[] = [];
 
 function DrawFolderList({
     folders,
-    setFolders,
     folderID,
     isParentDisabled,
     trail,
 }: {
     folders: Folder[];
-    setFolders: (folders: Folder[]) => void;
     folderID: string;
     isParentDisabled: boolean;
     trail: number[];
@@ -123,8 +118,6 @@ function DrawFolderList({
                 (f) => {
                     trails = f;
                 },
-                folders,
-                setFolders,
                 updateDisabledFolders,
                 updateOpenedFolders,
                 folder.id,
@@ -183,7 +176,6 @@ function DrawFolderList({
                                     {/*key*/}
                                     <FolderExplorerComponent
                                         folders={folders}
-                                        setFolders={setFolders}
                                         isParentDisabled={isParentDisabled}
                                         trail={itemTrail}
                                         item={item}

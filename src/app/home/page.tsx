@@ -4,10 +4,10 @@ import FolderComponent from "@/components/FolderComponent";
 import Folder from "@/api/types/Folder";
 import { CSSProperties, useEffect, useState } from "react";
 import NewFolder from "@/components/NewFolderComponent";
-import getFolderList from "@/api/getFolderList";
 import Link from "next/link";
 import Header from "@/components/Header";
 import filterFolder from "@/api/search-functions/filterFolders";
+import getUserFolders from "@/api/firebase/get/userFolders";
 
 const folderListStyle: CSSProperties = {
     display: "flex",
@@ -22,7 +22,7 @@ export default function Folders() {
     const [searchEntry, setSearchEntry] = useState<string>("");
 
     useEffect(() => {
-        setFolderList(getFolderList());
+        getUserFolders().then(setFolderList);
     }, []);
 
     const filteredFolders = folderList.filter((f) =>

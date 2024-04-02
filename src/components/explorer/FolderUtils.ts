@@ -5,6 +5,8 @@ import {
     faMusic,
 } from "@fortawesome/free-solid-svg-icons";
 import { FolderAction, FolderActionKind } from "./FolderContext";
+import getCachedFolder from "@/api/firebase/get/folder-cached";
+import setFolder from "@/api/firebase/set/folder";
 
 export function getIcon(kind: SubitemKind, opened: boolean) {
     return kind == SubitemKind.SpotifyURI
@@ -57,8 +59,6 @@ export function moveTrail(
 export function updateFolders(
     trails: { trail: number[]; item: Subitem }[],
     setTrails: (trails: { trail: number[]; item: Subitem }[]) => void,
-    folders: Folder[],
-    setFolders: (folders: Folder[]) => void,
     updateDisabledFolders: (action: FolderAction) => void,
     updateOpenedFolders: (action: FolderAction) => void,
     folderID: string,
@@ -66,16 +66,14 @@ export function updateFolders(
     to: number,
     isRoot: boolean,
 ) {
-    const newFolders = folders.map((f) => {
-        if (f.id == folderID) {
-            const elem = f.items.splice(from, 1);
-            f.items.splice(to, 0, ...elem);
-            return f;
-        } else {
-            return f;
-        }
+    // update to the new location in the database
+    getCachedFolder(folderID).then((f) => {
+        const elem = f.items.splice(from, 1);
+        f.items.splice(to, 0, ...elem);
+        setFolder(f);
     });
-    setFolders(newFolders);
+
+    // preform Swords authored dnd wizardry (reflect in HOC state)
     for (const i in trails) {
         const folderTrail = trails[i];
         if (folderTrail.item.itemID == folderID) {

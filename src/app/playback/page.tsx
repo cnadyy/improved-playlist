@@ -2,7 +2,6 @@
 
 import FolderDetailsComponent from "@/components/FolderDetails";
 import { useSearchParams } from "next/navigation";
-import { useFolderList } from "@/api/getFolderList";
 import FolderExplorer from "@/components/explorer/FolderExplorer";
 import { css } from "@emotion/react";
 import { useReducer } from "react";
@@ -11,10 +10,11 @@ import {
     FolderExplorerContext,
     updateFoldersTrail,
 } from "@/components/explorer/FolderContext";
+import useUserFolders from "@/api/hooks/useUserFolders";
 
 export default function Page() {
     const searchParams = useSearchParams();
-    const [folders, setFolders] = useFolderList();
+    const folders = useUserFolders();
 
     const [disabledFolders, updateDisabledFolders] = useReducer(
         updateFoldersTrail,
@@ -58,11 +58,7 @@ export default function Page() {
                             margin: 2rem;
                         `}
                     >
-                        <FolderExplorer
-                            folders={folders}
-                            setFolders={setFolders}
-                            rootId={folderID}
-                        />
+                        <FolderExplorer folders={folders} rootId={folderID} />
                     </div>
                     <h1>This should contain:</h1>
                     <ol>
