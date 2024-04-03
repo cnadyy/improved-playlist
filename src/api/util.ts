@@ -1,3 +1,16 @@
+import { Auth } from "@api/firebase/createApp";
+
+export const isFirebaseAuthenticated = () =>
+    Auth.authStateReady().then(() => Auth.currentUser != null);
+
+export const isSpotifyAuthenticated = () =>
+    localStorage.getItem("access_token") != "" &&
+    localStorage.getItem("access_token") != null;
+
+export async function isAuthenticated(): Promise<boolean> {
+    return (await isFirebaseAuthenticated()) && isSpotifyAuthenticated();
+}
+
 /**
  * @author atmin (stackoverflow)
  * @param x object x

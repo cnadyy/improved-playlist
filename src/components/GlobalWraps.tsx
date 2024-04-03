@@ -3,14 +3,14 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { usePathname } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Unauthenticated from "@/app/@unauthenticated/default";
-import checkIsAuthenticated from "@/api/checkIsAuthenticated";
+import { isAuthenticated } from "@/api/util";
 
 export default function GlobalWraps({
     children,
 }: {
     children: React.ReactNode;
 }): React.ReactNode {
-    const [isAuthenticated, setAuthenticated] = useState(false);
+    const [authBool, setAuthBool] = useState(false);
     const [queryClient] = useState(() => new QueryClient());
     const pathname = usePathname();
 
@@ -24,12 +24,12 @@ export default function GlobalWraps({
 
     // check if authenticated
     useEffect(() => {
-        checkIsAuthenticated().then(setAuthenticated);
+        isAuthenticated().then(setAuthBool);
     }, []);
 
     return (
         <QueryClientProvider client={queryClient}>
-            {isAuthenticated || exception ? children : <Unauthenticated />}
+            {authBool || exception ? children : <Unauthenticated />}
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );

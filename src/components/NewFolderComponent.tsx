@@ -2,7 +2,7 @@ import { faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { CSSProperties, useState } from "react";
-import newFolder from "@/api/newFolder";
+import newFolder from "@/api/side-effects/newFolder";
 
 export default function NewFolder({ style = {} }: { style?: CSSProperties }) {
     const [isLoading, setIsLoading] = useState(false);

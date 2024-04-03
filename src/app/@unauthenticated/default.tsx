@@ -1,10 +1,7 @@
 "use client";
 
 import authenticate from "@/api/spotify/authenticate";
-import {
-    isFirebaseAuthenticated,
-    isSpotifyAuthenticated,
-} from "@/api/checkIsAuthenticated";
+import { isFirebaseAuthenticated, isSpotifyAuthenticated } from "@/api/util";
 import { Auth } from "@/api/firebase/createApp";
 import { sendSignInLinkToEmail, signInWithEmailLink } from "firebase/auth";
 import { useEffect, useState } from "react";
