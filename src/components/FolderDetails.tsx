@@ -30,6 +30,7 @@ const FolderName = styled.h1`
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    overflow-wrap: anywhere;
     overflow: hidden;
     &::after {
         content: "${(props) => props.content}";

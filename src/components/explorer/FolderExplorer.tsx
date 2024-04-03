@@ -72,7 +72,7 @@ function DrawFolderList({
         setFolder,
     } = useContext(FolderExplorerContext);
     const sensors = useSensors(
-        useSensor(PointerSensor),
+        useSensor(PointerSensor, { activationConstraint: { distance: 0.01 } }),
         useSensor(TouchSensor),
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
@@ -121,8 +121,8 @@ function DrawFolderList({
                 },
                 updateDisabledFolders,
                 updateOpenedFolders,
+                folder,
                 setFolder,
-                folder.id,
                 from,
                 to,
                 trail.length == 0,

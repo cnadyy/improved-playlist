@@ -84,7 +84,7 @@ export default function FolderExplorerLabel({
                     cursor: pointer;
                 `}
             />{" "}
-            <Label>
+            <Label {...activatorAttributes} {...activatorListeners}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <LabelText strikethrough={strikethrough}>
                         <ItemName id={item.itemID} kind={item.kind} />
@@ -99,11 +99,7 @@ export default function FolderExplorerLabel({
                 </div>
 
                 <RightIcons className="labelHover">
-                    <RightIcon
-                        {...activatorAttributes}
-                        {...activatorListeners}
-                        icon={faBars}
-                    />
+                    <RightIcon icon={faBars} />
                     <RightIcon icon={faBookmark} />
                     <RightIcon icon={faEllipsis} />
                 </RightIcons>

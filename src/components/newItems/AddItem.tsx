@@ -80,7 +80,7 @@ const PlaylistBlock: (
         key={p.id}
         onClick={() => sOnClick(p.id)}
     >
-        {p.images.length != 0 ? (
+        {p.images != undefined && p.images.length != 0 ? (
             <img src={p.images[0]?.url} style={{ width: "8rem" }} />
         ) : (
             <div
