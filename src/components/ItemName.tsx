@@ -10,7 +10,6 @@ async function resolve(id: string, kind: SubitemKind) {
             return playlist.name;
         } else {
             const folder = await getCachedFolder(id);
-            console.log(folder)
             return folder.name;
         }
     } catch (err) {

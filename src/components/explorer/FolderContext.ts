@@ -1,3 +1,4 @@
+import Folder from "@/api/types/Folder";
 import { moveTrails } from "@/components/explorer/FolderUtils";
 import { createContext } from "react";
 
@@ -6,11 +7,13 @@ export const FolderExplorerContext = createContext<{
     updateDisabledFolders: (action: FolderAction) => void;
     openedFolders: number[][];
     updateOpenedFolders: (action: FolderAction) => void;
+    setFolder: (folder: Folder) => void;
 }>({
     disabledFolders: [],
     updateDisabledFolders: () => {},
     openedFolders: [],
     updateOpenedFolders: () => {},
+    setFolder: () => {},
 });
 
 export type FolderAction =

@@ -69,6 +69,7 @@ function DrawFolderList({
         updateDisabledFolders,
         openedFolders,
         updateOpenedFolders,
+        setFolder,
     } = useContext(FolderExplorerContext);
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -120,6 +121,7 @@ function DrawFolderList({
                 },
                 updateDisabledFolders,
                 updateOpenedFolders,
+                setFolder,
                 folder.id,
                 from,
                 to,

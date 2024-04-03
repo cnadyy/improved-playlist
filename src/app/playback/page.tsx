@@ -14,7 +14,7 @@ import useUserFolders from "@/api/hooks/useUserFolders";
 
 export default function Page() {
     const searchParams = useSearchParams();
-    const folders = useUserFolders();
+    const [folders, setFolder] = useUserFolders();
 
     const [disabledFolders, updateDisabledFolders] = useReducer(
         updateFoldersTrail,
@@ -41,6 +41,7 @@ export default function Page() {
                         updateDisabledFolders,
                         openedFolders,
                         updateOpenedFolders,
+                        setFolder,
                     }}
                 >
                     <div

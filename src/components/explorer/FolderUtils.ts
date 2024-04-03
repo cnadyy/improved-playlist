@@ -6,7 +6,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FolderAction, FolderActionKind } from "./FolderContext";
 import getCachedFolder from "@/api/firebase/get/folder-cached";
-import setFolder from "@/api/firebase/set/folder";
 
 export function getIcon(kind: SubitemKind, opened: boolean) {
     return kind == SubitemKind.SpotifyURI
@@ -61,6 +60,7 @@ export function updateFolders(
     setTrails: (trails: { trail: number[]; item: Subitem }[]) => void,
     updateDisabledFolders: (action: FolderAction) => void,
     updateOpenedFolders: (action: FolderAction) => void,
+    setFolder: (folder: Folder) => void,
     folderID: string,
     from: number,
     to: number,
