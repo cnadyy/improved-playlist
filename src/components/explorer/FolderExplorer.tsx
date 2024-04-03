@@ -64,13 +64,9 @@ function DrawFolderList({
     isParentDisabled: boolean;
     trail: number[];
 }) {
-    const {
-        disabledFolders,
-        updateDisabledFolders,
-        openedFolders,
-        updateOpenedFolders,
-        setFolder,
-    } = useContext(FolderExplorerContext);
+    const folderContext = useContext(FolderExplorerContext);
+    const { disabledFolders, openedFolders } = folderContext;
+
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 0.01 } }),
         useSensor(TouchSensor),
@@ -91,16 +87,11 @@ function DrawFolderList({
     }
 
     function handleStart(event: DragStartEvent) {
+        const currentTrail = trails[Number(event.active.id)].trail;
         setActive({
             id: Number(event.active.id),
-            opened: foldersIncludes(
-                openedFolders,
-                trails[Number(event.active.id)].trail,
-            ),
-            disabled: foldersIncludes(
-                disabledFolders,
-                trails[Number(event.active.id)].trail,
-            ),
+            opened: foldersIncludes(openedFolders, currentTrail),
+            disabled: foldersIncludes(disabledFolders, currentTrail),
         });
     }
 
@@ -115,14 +106,12 @@ function DrawFolderList({
             const to = overTrail[overTrail.length - 1];
 
             updateFolders(
+                folderContext,
                 trails,
                 (f) => {
                     trails = f;
                 },
-                updateDisabledFolders,
-                updateOpenedFolders,
                 folder,
-                setFolder,
                 from,
                 to,
                 trail.length == 0,
@@ -143,6 +132,8 @@ function DrawFolderList({
         if (key == -1) {
             key = trails.length;
             trails.push({ item: item, trail: itemTrail });
+        } else if (trails[key].item != item) {
+            trails.map((old, i) => (i == key ? { ...old, item } : old));
         }
         if (key == 0) {
             return "0";

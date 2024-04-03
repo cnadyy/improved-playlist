@@ -4,7 +4,7 @@ import {
     faFolderOpen,
     faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import { FolderAction, FolderActionKind } from "./FolderContext";
+import { FolderActionKind, FolderExplorerContextType } from "./FolderContext";
 
 export function getIcon(kind: SubitemKind, opened: boolean) {
     return kind == SubitemKind.SpotifyURI
@@ -55,12 +55,14 @@ export function moveTrail(
 }
 
 export function updateFolders(
-    trails: { trail: number[]; item: Subitem }[],
+    {
+        updateDisabledFolders,
+        updateOpenedFolders,
+        setFolder,
+    }: FolderExplorerContextType,
+    trails: { trail: number[] }[],
     setTrails: (trails: { trail: number[]; item: Subitem }[]) => void,
-    updateDisabledFolders: (action: FolderAction) => void,
-    updateOpenedFolders: (action: FolderAction) => void,
     folder: Folder,
-    setFolder: (folder: Folder) => void,
     from: number,
     to: number,
     isRoot: boolean,

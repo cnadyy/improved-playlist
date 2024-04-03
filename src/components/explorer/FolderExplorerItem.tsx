@@ -11,7 +11,7 @@ import {
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { getIcon } from "@/components/explorer/FolderUtils";
+import { getIcon, useUpdateFolders } from "@/components/explorer/FolderUtils";
 export const Grid = styled.div<{ depth: number }>`
     display: grid;
     align-items: center;
