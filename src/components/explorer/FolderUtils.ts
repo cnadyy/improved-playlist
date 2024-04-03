@@ -60,7 +60,7 @@ export function updateFolders(
         updateOpenedFolders,
         setFolder,
     }: FolderExplorerContextType,
-    trails: { trail: number[] }[],
+    trails: { trail: number[]; item: Subitem }[],
     setTrails: (trails: { trail: number[]; item: Subitem }[]) => void,
     folder: Folder,
     from: number,
