@@ -3,7 +3,6 @@ import Folder from "@/api/types/Folder";
 import { onSnapshot } from "firebase/firestore";
 import { userFolders } from "@/api/firebase/queries";
 import storeSetFolder from "@/api/firebase/set/folder";
-import { deepEqual } from "@/api/util";
 
 /**
  * @info listens for new updates on the server
@@ -17,10 +16,7 @@ export default function useUserFolders(): [Folder[], (folder: Folder) => void] {
         // create event listener for user folders
         // includes latency compenstation: new writes call this before they hit the server
         onSnapshot(userFolders(), (snapshot) => {
-            console.log(snapshot);
             const newFolders = snapshot.docs.map((f) => f.data() as Folder);
-            console.log(newFolders);
-            console.log("SETTING TJHEMMM");
             setFolders(newFolders);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
