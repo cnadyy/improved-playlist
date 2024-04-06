@@ -114,7 +114,6 @@ function DrawFolderList({
                 folder,
                 from,
                 to,
-                trail.length == 0,
             );
         }
     }

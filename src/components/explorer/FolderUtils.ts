@@ -65,7 +65,6 @@ export function updateFolders(
     folder: Folder,
     from: number,
     to: number,
-    isRoot: boolean,
 ) {
     // update to the new location in the database
     const elem = folder.items.splice(from, 1);
@@ -99,24 +98,22 @@ export function updateFolders(
             });
         }
     }
-    if (isRoot) {
-        setTrails(
-            trails.map((obj) => {
-                return {
-                    ...obj,
-                    trail: moveTrail(obj.trail, [from], [to]),
-                };
-            }),
-        );
-        updateDisabledFolders({
-            kind: FolderActionKind.UpdateTrail,
-            oldTrail: [from],
-            newTrail: [to],
-        });
-        updateOpenedFolders({
-            kind: FolderActionKind.UpdateTrail,
-            oldTrail: [from],
-            newTrail: [to],
-        });
-    }
+    setTrails(
+        trails.map((obj) => {
+            return {
+                ...obj,
+                trail: moveTrail(obj.trail, [from], [to]),
+            };
+        }),
+    );
+    updateDisabledFolders({
+        kind: FolderActionKind.UpdateTrail,
+        oldTrail: [from],
+        newTrail: [to],
+    });
+    updateOpenedFolders({
+        kind: FolderActionKind.UpdateTrail,
+        oldTrail: [from],
+        newTrail: [to],
+    });
 }
