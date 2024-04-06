@@ -1,7 +1,11 @@
 /* eslint @typescript-eslint/no-unused-vars: 0 */
-interface UserPlaylist extends Pages {
+interface Pages {
     next: string | null;
     previous: string | null;
     total: number;
-    items: Playlist[];
+    items: unknown[];
+}
+
+interface PageAble {
+    [key: string]: Pages;
 }

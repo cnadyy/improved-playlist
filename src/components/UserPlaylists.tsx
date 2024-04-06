@@ -2,19 +2,23 @@
 
 import { useEffect, useState } from "react";
 import PlaylistExplorer from "@api/spotify/get/UserPlaylistExplorer";
+import { PageExplorer } from "@/api/spotify/PageExplorer";
 
 function AuthUserPlaylists() {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
-    const [controller, setController] = useState<PlaylistExplorer | null>(null);
+    const [controller, setController] = useState<PageExplorer<
+        UserPlaylist,
+        Playlist
+    > | null>(null);
     const [hasNextPage, setNextPage] = useState<boolean>(false);
 
     useEffect(() => {
-        setController(new PlaylistExplorer());
+        setController(PlaylistExplorer());
     }, []);
 
     useEffect(() => {
         if (controller) {
-            controller.getPlaylists().then(setPlaylists);
+            controller.getItems().then(setPlaylists);
             controller.hasNextPage().then(setNextPage);
         }
     }, [controller]);
@@ -25,7 +29,7 @@ function AuthUserPlaylists() {
     const nextPage = () =>
         controller!
             .nextPage()
-            .then(() => controller!.getPlaylists().then(setPlaylists));
+            .then(() => controller!.getItems().then(setPlaylists));
 
     return (
         <ul>

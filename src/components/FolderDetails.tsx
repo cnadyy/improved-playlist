@@ -4,7 +4,6 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/navigation";
 import { CSSProperties, useContext, useState } from "react";
 import { FolderExplorerContext } from "./explorer/FolderContext";
 import AddItem from "./newItems/AddItem";
@@ -54,7 +53,6 @@ export default function FolderDetailsComponent({
     folder: Folder;
     folders: Folder[];
 }) {
-    const router = useRouter();
     const { disabledFolders } = useContext(FolderExplorerContext);
     // const [folders, setFolders] = useFolderList();
 

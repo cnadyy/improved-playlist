@@ -10,7 +10,6 @@ import startResumePlayback from "@api/spotify/set/playbackToggle";
 import getAvailableDevices from "@api/spotify/get/devices";
 import PlayerSelector from "@/components/PlayerSelector";
 import Device from "@/api/types/Device";
-import mock from "@mock/subfolders.json";
 
 function getDisplayName(setDisplayName: (display: string) => void) {
     getUserData().then((res) => setDisplayName(res.display_name));

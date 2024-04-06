@@ -24,7 +24,7 @@ export default function GlobalWraps({
 
     // check if authenticated
     useEffect(() => {
-        isAuthenticated().then(a => {
+        isAuthenticated().then((a) => {
             setAuthBool(a);
             if (!a) console.error("Not authenticated");
         });

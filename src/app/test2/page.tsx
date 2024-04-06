@@ -8,6 +8,7 @@ import filterOptions from "@/api/types/FilterOptions";
 import getFolder from "@fb/get/folder";
 import Folder from "@/api/types/Folder";
 import getUserFolders from "@/api/firebase/get/userFolders";
+import fetch from "@api/spotify/fetch";
 
 export default function Test(): React.ReactNode {
     const [displayItemModal, setDisplayItemModal] = useState(false);
@@ -35,6 +36,15 @@ export default function Test(): React.ReactNode {
             <button onClick={readSomeData}>Read some firebase data!</button>
             <button onClick={getList}>get user folders from firebase</button>
             <button onClick={() => setFvisible(true)}>Show the filters</button>
+            <button
+                onClick={() =>
+                    fetch("playlists/2bN7qoysjyn8059Nkf8Zhz")
+                        .then(console.log)
+                        .catch(console.log)
+                }
+            >
+                Fetch a playlist
+            </button>
             <FilterDialog
                 showFilters={fVisibile}
                 closeFilters={() => setFvisible(false)}
