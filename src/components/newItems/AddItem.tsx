@@ -10,7 +10,7 @@ import React, {
 import SearchBar from "../SearchBar";
 import SearchItemList from "./SearchItemList";
 import Folder from "@/api/types/Folder";
-import getFolderList from "@/api/getFolderList";
+import getFolderList from "@fb/get/userFolders";
 import lineClamp from "@/css/LineClamp";
 import UserPlaylistExplorer from "@/api/spotify/get/UserPlaylistExplorer";
 import HideScrollBar from "@/css/HideScrollBar";
@@ -21,6 +21,7 @@ import filterOptions from "@/api/types/FilterOptions";
 import filterPlaylist from "@/api/search-functions/filterPlaylists";
 import filterFolder from "@/api/search-functions/filterFolders";
 import UpdateSelectedItems, { SelectedItems } from "./UpdateSelectedItems";
+import addItems from "@/api/side-effects/addItems";
 
 const AddItemStyles: CSSProperties = {
     maxWidth: "750px",
@@ -106,9 +107,11 @@ const PlaylistBlock: (
 export default function AddItem({
     showModal,
     closeModal,
+    folderID,
 }: {
     showModal: boolean;
     closeModal: () => void;
+    folderID: FolderId;
 }): React.ReactNode {
     // FIXME: too many useStates
     const ref = useRef<HTMLDialogElement>(null);
@@ -120,6 +123,7 @@ export default function AddItem({
     const [controller, setController] = useState<UserPlaylistExplorer | null>(
         null,
     );
+    const [submit, setSubmit] = useState("add");
 
     const [selected, dispatchSelected] = useReducer(UpdateSelectedItems, {
         folders: [],
@@ -173,7 +177,7 @@ export default function AddItem({
 
     // folder fetching
     useEffect(() => {
-        setFolderList(getFolderList());
+        getFolderList().then(setFolderList);
     }, []);
 
     return (
@@ -267,9 +271,12 @@ export default function AddItem({
                         fontSize: "1.2rem",
                         padding: "0 3rem",
                     }}
-                    onClick={closeModal}
+                    onClick={() => {
+                        setSubmit("submitting...");
+                        addItems(folderID, selected).then(closeModal);
+                    }}
                 >
-                    add
+                    {submit}
                 </button>
                 <button
                     style={{

@@ -5,8 +5,9 @@ import styled from "@emotion/styled";
 import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
-import { CSSProperties, useContext } from "react";
+import { CSSProperties, useContext, useState } from "react";
 import { FolderExplorerContext } from "./explorer/FolderContext";
+import AddItem from "./newItems/AddItem";
 
 const folderIconStyle: CSSProperties = {
     minWidth: "13rem",
@@ -56,6 +57,9 @@ export default function FolderDetailsComponent({
     const router = useRouter();
     const { disabledFolders } = useContext(FolderExplorerContext);
     // const [folders, setFolders] = useFolderList();
+
+    const [editModal, setEditModal] = useState<boolean>(false);
+
     return (
         <div
             css={css`
@@ -103,13 +107,18 @@ export default function FolderDetailsComponent({
                         }
                     />
                     <FontAwesomeIcon
-                        onClick={() => router.push("/edit?" + folder.id)}
+                        onClick={() => setEditModal(true)}
                         css={button}
                         icon={faPencil}
                         size="2xl"
                     />
                 </div>
             </div>
+            <AddItem
+                showModal={editModal}
+                closeModal={() => setEditModal(false)}
+                folderID={folder.id}
+            />
         </div>
     );
 }

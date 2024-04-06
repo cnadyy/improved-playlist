@@ -24,7 +24,10 @@ export default function GlobalWraps({
 
     // check if authenticated
     useEffect(() => {
-        isAuthenticated().then(setAuthBool);
+        isAuthenticated().then(a => {
+            setAuthBool(a);
+            if (!a) console.error("Not authenticated");
+        });
     }, []);
 
     return (
