@@ -114,11 +114,13 @@ export default function FolderDetailsComponent({
                     />
                 </div>
             </div>
-            <AddItem
-                showModal={editModal}
-                closeModal={() => setEditModal(false)}
-                folderID={folder.id}
-            />
+            {editModal ? (
+                <AddItem
+                    showModal={editModal}
+                    closeModal={() => setEditModal(false)}
+                    folderID={folder.id}
+                />
+            ) : null}
         </div>
     );
 }
