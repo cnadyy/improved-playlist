@@ -11,6 +11,7 @@ import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { css } from "@emotion/react";
+import Link from "next/link";
 
 const Label = styled.div`
     display: flex;
@@ -45,9 +46,18 @@ const RightIcon = styled(FontAwesomeIcon)`
     margin: 0 0.5rem;
 `;
 
-const LabelText = styled.a<{ strikethrough?: boolean }>`
+const LabelText = styled.div<{ strikethrough: boolean }>`
+    color: black;
     text-decoration: ${(props) =>
         props.strikethrough ? "line-through" : "none"};
+`;
+
+const LabelLink = styled(Link)`
+    color: black;
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
 `;
 
 export default function FolderExplorerLabel({
@@ -87,7 +97,13 @@ export default function FolderExplorerLabel({
             <Label {...activatorAttributes} {...activatorListeners}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <LabelText strikethrough={strikethrough}>
-                        <ItemName id={item.itemID} kind={item.kind} />
+                        {item.kind == SubitemKind.SpotifyURI ? (
+                            <ItemName id={item.itemID} kind={item.kind} />
+                        ) : (
+                            <LabelLink href={"/playback?id=" + item.itemID}>
+                                <ItemName id={item.itemID} kind={item.kind} />
+                            </LabelLink>
+                        )}
                     </LabelText>
                     <DisableButton
                         className="labelHover"

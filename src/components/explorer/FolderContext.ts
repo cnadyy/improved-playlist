@@ -1,4 +1,4 @@
-import Folder from "@/api/types/Folder";
+import Folder, { Subitem } from "@/api/types/Folder";
 import { moveTrails } from "@/components/explorer/FolderUtils";
 import { createContext } from "react";
 
@@ -8,6 +8,7 @@ export type FolderExplorerContextType = {
     openedFolders: number[][];
     updateOpenedFolders: (action: FolderAction) => void;
     setFolder: (folder: Folder) => void;
+    trails: Trail[];
 };
 
 export const FolderExplorerContext = createContext<FolderExplorerContextType>({
@@ -16,6 +17,7 @@ export const FolderExplorerContext = createContext<FolderExplorerContextType>({
     openedFolders: [],
     updateOpenedFolders: () => {},
     setFolder: () => {},
+    trails: [],
 });
 
 export type FolderAction =
@@ -26,6 +28,8 @@ export type FolderAction =
           oldTrail: number[];
           newTrail: number[];
       };
+
+export type Trail = { trail: number[]; item: Subitem };
 
 export enum FolderActionKind {
     Toggle,

@@ -1,10 +1,14 @@
-import Folder, { Subitem, SubitemKind } from "@/api/types/Folder";
+import Folder, { SubitemKind } from "@/api/types/Folder";
 import {
     faFolder,
     faFolderOpen,
     faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import { FolderActionKind, FolderExplorerContextType } from "./FolderContext";
+import {
+    FolderActionKind,
+    FolderExplorerContextType,
+    Trail,
+} from "./FolderContext";
 
 export function getIcon(kind: SubitemKind, opened: boolean) {
     return kind == SubitemKind.SpotifyURI
@@ -56,12 +60,11 @@ export function moveTrail(
 
 export function updateFolders(
     {
+        trails,
         updateDisabledFolders,
         updateOpenedFolders,
         setFolder,
     }: FolderExplorerContextType,
-    trails: { trail: number[]; item: Subitem }[],
-    setTrails: (trails: { trail: number[]; item: Subitem }[]) => void,
     folder: Folder,
     from: number,
     to: number,
@@ -75,7 +78,7 @@ export function updateFolders(
     for (const i in trails) {
         const folderTrail = trails[i];
         if (folderTrail.item.itemID == folder.id) {
-            trails = trails.map((obj) => {
+            const newTrails = trails.map((obj) => {
                 return {
                     ...obj,
                     trail: moveTrail(
@@ -85,7 +88,7 @@ export function updateFolders(
                     ),
                 };
             });
-            setTrails(trails);
+            trails.splice(0, trails.length, ...newTrails); // Replaces the trail while still keeping the original reference.
             updateDisabledFolders({
                 kind: FolderActionKind.UpdateTrail,
                 oldTrail: [...folderTrail.trail, from],
@@ -98,14 +101,13 @@ export function updateFolders(
             });
         }
     }
-    setTrails(
-        trails.map((obj) => {
-            return {
-                ...obj,
-                trail: moveTrail(obj.trail, [from], [to]),
-            };
-        }),
-    );
+    const newTrails = trails.map((obj) => {
+        return {
+            ...obj,
+            trail: moveTrail(obj.trail, [from], [to]),
+        };
+    });
+    trails.splice(0, trails.length, ...newTrails); // Replaces the trail while still keeping the original reference.
     updateDisabledFolders({
         kind: FolderActionKind.UpdateTrail,
         oldTrail: [from],

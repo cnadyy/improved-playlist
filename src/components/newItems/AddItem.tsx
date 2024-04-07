@@ -168,11 +168,11 @@ export default function AddItem({
 
     // playlist fetching
     useEffect(() => {
-        setController(new UserPlaylistExplorer());
+        setController(UserPlaylistExplorer());
     }, []);
 
     useEffect(() => {
-        if (controller) controller.getPlaylists().then(setPlaylists);
+        if (controller) controller.getItems().then(setPlaylists);
     }, [controller]);
 
     // folder fetching

@@ -1,4 +1,4 @@
-import Folder, { Subitem } from "@/api/types/Folder";
+import Folder from "@/api/types/Folder";
 import FolderExplorerComponent, {
     Grid,
 } from "@/components/explorer/FolderExplorerItem";
@@ -51,8 +51,6 @@ function FolderExporer({
     );
 }
 
-let trails: { trail: number[]; item: Subitem }[] = [];
-
 function DrawFolderList({
     folders,
     folderID,
@@ -65,7 +63,7 @@ function DrawFolderList({
     trail: number[];
 }) {
     const folderContext = useContext(FolderExplorerContext);
-    const { disabledFolders, openedFolders } = folderContext;
+    const { disabledFolders, openedFolders, trails } = folderContext;
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 1 } }),
@@ -105,16 +103,7 @@ function DrawFolderList({
             const overTrail = trails[Number(event.over.id)].trail;
             const to = overTrail[overTrail.length - 1];
 
-            updateFolders(
-                folderContext,
-                trails,
-                (f) => {
-                    trails = f;
-                },
-                folder,
-                from,
-                to,
-            );
+            updateFolders(folderContext, folder, from, to);
         }
     }
 
@@ -163,18 +152,18 @@ function DrawFolderList({
 
                             const key = itemKeys[index];
 
+                            {
+                                /*key*/
+                            }
                             return (
-                                <>
-                                    {/*key*/}
-                                    <FolderExplorerComponent
-                                        folders={folders}
-                                        isParentDisabled={isParentDisabled}
-                                        trail={itemTrail}
-                                        item={item}
-                                        id={key}
-                                        key={key}
-                                    />
-                                </>
+                                <FolderExplorerComponent
+                                    folders={folders}
+                                    isParentDisabled={isParentDisabled}
+                                    trail={itemTrail}
+                                    item={item}
+                                    id={key}
+                                    key={key}
+                                />
                             );
                         })}
                     </div>
