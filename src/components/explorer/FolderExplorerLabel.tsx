@@ -24,8 +24,11 @@ const Label = styled.div`
         background-color: #dddddd;
     }
     &:hover .labelHover {
-        display: block;
+        display: flex;
     }
+    //&:hover .labelText {
+    //    width: 55vw;
+    //}
 `;
 
 const DisableButton = styled.div`
@@ -35,11 +38,12 @@ const DisableButton = styled.div`
     display: none;
     cursor: pointer;
     user-select: none;
+    white-space: nowrap;
 `;
 
 const RightIcons = styled.div`
     font-size: 1rem;
-    display: none;
+    display: flex;
 `;
 
 const RightIcon = styled(FontAwesomeIcon)`
@@ -48,6 +52,10 @@ const RightIcon = styled(FontAwesomeIcon)`
 
 const LabelText = styled.div<{ strikethrough: boolean }>`
     color: black;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    //width: 75vw;
     text-decoration: ${(props) =>
         props.strikethrough ? "line-through" : "none"};
 `;
@@ -95,8 +103,18 @@ export default function FolderExplorerLabel({
                 `}
             />{" "}
             <Label {...activatorAttributes} {...activatorListeners}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <LabelText strikethrough={strikethrough}>
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr auto",
+                        alignItems: "center",
+                        marginRight: "1rem",
+                    }}
+                >
+                    <LabelText
+                        className="labelText"
+                        strikethrough={strikethrough}
+                    >
                         {item.kind == SubitemKind.SpotifyURI ? (
                             <ItemName id={item.itemID} kind={item.kind} />
                         ) : (

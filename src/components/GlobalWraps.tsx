@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Unauthenticated from "@/app/@unauthenticated/default";
 import { isAuthenticated } from "@/api/util";
+import PlayerInfo from "@/components/player/PlayerInfo";
 
 export default function GlobalWraps({
     children,
@@ -33,7 +34,16 @@ export default function GlobalWraps({
     return (
         <QueryClientProvider client={queryClient}>
             {authBool || exception ? children : <Unauthenticated />}
-            <ReactQueryDevtools initialIsOpen={false} />
+            {authBool && (
+                <>
+                    <div style={{ marginBottom: "4rem" }}></div>
+                    <PlayerInfo />
+                </>
+            )}
+            <ReactQueryDevtools
+                buttonPosition="top-left"
+                initialIsOpen={false}
+            />
         </QueryClientProvider>
     );
 }

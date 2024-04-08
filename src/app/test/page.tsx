@@ -8,7 +8,7 @@ import queueTrack from "@api/spotify/set/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
 import startResumePlayback from "@api/spotify/set/playbackToggle";
 import getAvailableDevices from "@api/spotify/get/devices";
-import PlayerSelector from "@/components/PlayerSelector";
+import PlayerSelector from "@/components/player/PlayerSelector";
 import Device from "@/api/types/Device";
 
 function getDisplayName(setDisplayName: (display: string) => void) {
