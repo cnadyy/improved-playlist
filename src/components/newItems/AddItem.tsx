@@ -82,45 +82,7 @@ export default function AddItem({
         folders: [],
         playlists: [],
     });
-    const [playlists, playlistController] = useUserPlaylists();
-
-    const AwareFBlock: (f: Folder) => React.ReactNode = (f) =>
-        FolderBlock(f, selected, (id) =>
-            dispatchSelected({ type: "SET_FOLDER", id: id }),
-        );
-    const AwarePBlock: (p: Playlist) => React.ReactNode = (p) =>
-        PlaylistBlock(p, selected, (id) =>
-            dispatchSelected({ type: "SET_PLAYLIST", id: id }),
-        );
-
-    const FilteredList = () => (
-        <div
-            style={{ overflowY: "scroll", ...HideScrollBar, margin: "2rem 0" }}
-        >
-            <SearchItemList full>
-                {filter == filterOptions.FOLDERS ? (
-                    folderList
-                        .filter((f) => filterFolder(f, query))
-                        .map(AwareFBlock)
-                ) : filter == filterOptions.PLAYLISTS ? (
-                    playlists
-                        .filter((p) => filterPlaylist(p, query))
-                        .map(AwarePBlock)
-                ) : filter == filterOptions.PUBLIC ? (
-                    <p>TODO: Public spotify searching</p>
-                ) : (
-                    <p>No filter selected</p>
-                )}
-                {filter == filterOptions.PLAYLISTS &&
-                playlistController.next &&
-                !playlistController.isLoading ? (
-                    <button onClick={playlistController.loadNext}>
-                        load more
-                    </button>
-                ) : null}
-            </SearchItemList>
-        </div>
-    );
+    const [playlists, playlistsQuery] = useUserPlaylists();
 
     useEffect(() => {
         if (showModal) ref.current?.showModal();
@@ -200,7 +162,14 @@ export default function AddItem({
                             name="Folders"
                             expandList={() => setFilter(filterOptions.FOLDERS)}
                         >
-                            {folderList.map(AwareFBlock)}
+                            {folderList.map((f) =>
+                                FolderBlock(f, selected, (id) =>
+                                    dispatchSelected({
+                                        type: "SET_FOLDER",
+                                        id: id,
+                                    }),
+                                ),
+                            )}
                         </SearchItemList>
                         <SearchItemList
                             name="Playlists"
@@ -208,11 +177,68 @@ export default function AddItem({
                                 setFilter(filterOptions.PLAYLISTS)
                             }
                         >
-                            {playlists.map(AwarePBlock)}
+                            {playlists.map((p) =>
+                                PlaylistBlock(p, selected, (id) =>
+                                    dispatchSelected({
+                                        type: "SET_PLAYLIST",
+                                        id: id,
+                                    }),
+                                ),
+                            )}
                         </SearchItemList>
                     </div>
                 ) : (
-                    <FilteredList />
+                    <div
+                        style={{
+                            overflowY: "scroll",
+                            ...HideScrollBar,
+                            margin: "2rem 0",
+                        }}
+                    >
+                        <SearchItemList full>
+                            {filter == filterOptions.FOLDERS ? (
+                                folderList
+                                    .filter((f) => filterFolder(f, query))
+                                    .map((f) =>
+                                        FolderBlock(f, selected, (id) =>
+                                            dispatchSelected({
+                                                type: "SET_FOLDER",
+                                                id: id,
+                                            }),
+                                        ),
+                                    )
+                            ) : filter == filterOptions.PLAYLISTS ? (
+                                playlists
+                                    .filter((p) => filterPlaylist(p, query))
+                                    .map((p) =>
+                                        PlaylistBlock(p, selected, (id) =>
+                                            dispatchSelected({
+                                                type: "SET_PLAYLIST",
+                                                id: id,
+                                            }),
+                                        ),
+                                    )
+                            ) : filter == filterOptions.PUBLIC ? (
+                                <p>TODO: Public spotify searching</p>
+                            ) : (
+                                <p>No filter selected</p>
+                            )}
+                            {filter == filterOptions.PLAYLISTS &&
+                            playlistsQuery.hasNextPage &&
+                            !playlistsQuery.isFetching ? (
+                                <button
+                                    onClick={() =>
+                                        playlistsQuery.fetchNextPage()
+                                    }
+                                >
+                                    load more
+                                </button>
+                            ) : null}
+                            {playlistsQuery.isFetchingNextPage ? (
+                                <p>loading your hearts desires.....</p>
+                            ) : null}
+                        </SearchItemList>
+                    </div>
                 )}
             </div>
             <div

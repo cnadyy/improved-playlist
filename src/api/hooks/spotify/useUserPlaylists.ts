@@ -1,85 +1,25 @@
-import UserPlaylistExplorer, {
-    UserPlaylistPages,
-} from "@/api/spotify/get/UserPlaylistExplorer";
-import { useEffect, useReducer, useState } from "react";
+import fetch from "@/api/spotify/fetch";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-type Action =
-    | { type: "SET_CONTROLLER"; controller: UserPlaylistPages }
-    | { type: "SET_NEXT"; next: boolean }
-    | { type: "SET_LOADING"; loading?: boolean };
-
-type controllerState = {
-    controller: UserPlaylistPages;
-    next: boolean;
-    isLoading: boolean;
-};
-
-function UpdateController(
-    state: controllerState,
-    action: Action,
-): controllerState {
-    switch (action.type) {
-        case "SET_CONTROLLER":
-            return {
-                ...state,
-                controller: action.controller,
-            };
-        case "SET_NEXT":
-            return {
-                ...state,
-                isLoading: false,
-                next: action.next,
-            };
-        case "SET_LOADING":
-            return {
-                ...state,
-                next:
-                    typeof action.loading == "undefined"
-                        ? true
-                        : action.loading,
-            };
-    }
+function uriToHref(uri: string): string {
+    let href = uri.split("https://api.spotify.com/v1/")[1];
+    // remove my bogus userid
+    href = href.replace("users/[-][-][-]/playlists", "me/playlists");
+    return href;
 }
 
-/**
- * @info manages list with a proxy UserPlaylistExplorer object
- * @returns userPlaylists, uPlaylists reducer
- */
-export default function useUserPlaylists(): [
-    Playlist[],
-    typeof playlistController,
-] {
-    const [userPlaylists, setUserPlaylists] = useState<Playlist[]>([]);
-    const [userPlaylistCtl, dispatchCtl] = useReducer(UpdateController, {
-        controller: UserPlaylistExplorer(),
-        next: false,
-        isLoading: false,
+export default function useUserPlaylists(): [Playlist[], typeof query] {
+    const query = useInfiniteQuery({
+        queryKey: ["userPlaylists"],
+        queryFn: ({ pageParam: href }) => fetch(href) as Promise<UserPlaylists>,
+        getNextPageParam: (lastPage) =>
+            lastPage.next ? uriToHref(lastPage.next) : null,
+        initialPageParam: "me/playlists?limit=1",
     });
 
-    useEffect(() => {
-        updatePlaylists();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const playlists = query.data
+        ? query.data.pages.flatMap((page) => page.items)
+        : [];
 
-    useEffect(() => {
-        dispatchCtl({ type: "SET_LOADING" });
-        userPlaylistCtl.controller
-            .hasNextPage()
-            .then((hasPage) =>
-                dispatchCtl({ type: "SET_NEXT", next: hasPage }),
-            );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userPlaylists]);
-
-    const updatePlaylists = () =>
-        userPlaylistCtl.controller.getItems().then(setUserPlaylists);
-
-    const loadNextPage = () => {
-        dispatchCtl({ type: "SET_LOADING" });
-        userPlaylistCtl.controller.nextPage().then(updatePlaylists);
-    };
-
-    const playlistController = { ...userPlaylistCtl, loadNext: loadNextPage };
-
-    return [userPlaylists, playlistController];
+    return [playlists, query];
 }

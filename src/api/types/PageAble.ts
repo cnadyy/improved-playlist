@@ -1,11 +1,11 @@
 /* eslint @typescript-eslint/no-unused-vars: 0 */
-interface Pages {
+interface Pages<item> {
     next: string | null;
     previous: string | null;
     total: number;
-    items: unknown[];
+    items: item[];
 }
 
-interface PageAble {
-    [key: string]: Pages;
+interface PageAble<item> {
+    [key: string]: Pages<item>;
 }

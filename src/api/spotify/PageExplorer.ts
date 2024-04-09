@@ -11,9 +11,9 @@ function shortenURL(url: string): string {
  * @generic0 is the API response object
  * @generic1 is the item in the returned paged list
  */
-export class PageExplorer<Response extends PageAble | Pages, Item> {
+export class PageExplorer<Response extends PageAble<Item> | Pages<Item>, Item> {
     private responses: NonEmptyArray<Promise<Response>>;
-    private pointToPages: (api: Response) => Pages;
+    private pointToPages: (api: Response) => Pages<Item>;
 
     /**
      * @param apiRequest apiRequest made to a PageAble endpoint
@@ -21,7 +21,7 @@ export class PageExplorer<Response extends PageAble | Pages, Item> {
      */
     constructor(
         apiRequest: Promise<Response>,
-        pointToPages: (api: Response) => Pages,
+        pointToPages: (api: Response) => Pages<Item>,
     ) {
         this.responses = [apiRequest];
         this.pointToPages = pointToPages;
