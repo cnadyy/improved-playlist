@@ -1,7 +1,6 @@
 "use client";
 
 import GlobalWraps from "@/components/GlobalWraps";
-import PlayerInfo from "@/components/player/PlayerInfo";
 import { Outfit } from "next/font/google";
 
 const outfit = Outfit({ subsets: ["latin"] });

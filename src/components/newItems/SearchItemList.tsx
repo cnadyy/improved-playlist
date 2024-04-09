@@ -1,6 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 /**
  *
@@ -31,6 +29,17 @@ export default function SearchItemList({
                             display: "inline-block",
                         }}
                     ></span>
+                    <p
+                        onClick={expandList}
+                        style={{
+                            display: "inline-block",
+                            marginLeft: "1rem",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                        }}
+                    >
+                        see all
+                    </p>
                 </>
             ) : null}
             <div
@@ -43,31 +52,6 @@ export default function SearchItemList({
                 }}
             >
                 {children}
-                {!full && expandList ? (
-                    <div
-                        style={{
-                            position: "absolute",
-                            right: "0",
-                            top: "0",
-                            height: "100%",
-                            width: "4rem",
-                            background:
-                                "linear-gradient(to right, transparent 0%, #9e9e9e 100%)",
-                            display: "flex",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faAngleRight}
-                            style={{
-                                width: "60%",
-                                height: "100%",
-                                cursor: "pointer",
-                            }}
-                            onClick={expandList}
-                        />
-                    </div>
-                ) : null}
             </div>
         </div>
     );

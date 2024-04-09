@@ -6,8 +6,6 @@ import {
     faAngleDown,
     faAngleUp,
     faRefresh,
-    faSquareCaretDown,
-    faSquareCaretUp,
 } from "@fortawesome/free-solid-svg-icons";
 
 function PlayerSelector({

@@ -11,17 +11,22 @@ import SearchBar from "../SearchBar";
 import SearchItemList from "./SearchItemList";
 import Folder from "@/api/types/Folder";
 import getFolderList from "@fb/get/userFolders";
-import lineClamp from "@/css/LineClamp";
-import UserPlaylistExplorer from "@/api/spotify/get/UserPlaylistExplorer";
 import HideScrollBar from "@/css/HideScrollBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+    faChevronLeft,
+    faFilter,
+    faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import FilterDialog from "./FilterDialog";
 import filterOptions from "@/api/types/FilterOptions";
 import filterPlaylist from "@/api/search-functions/filterPlaylists";
 import filterFolder from "@/api/search-functions/filterFolders";
-import UpdateSelectedItems, { SelectedItems } from "./UpdateSelectedItems";
+import UpdateSelectedItems from "./UpdateSelectedItems";
 import addItems from "@/api/side-effects/addItems";
+import { FolderBlock } from "./itemBlocks";
+import { PlaylistBlock } from "./itemBlocks";
+import useUserPlaylists from "@/api/hooks/spotify/useUserPlaylists";
 
 const AddItemStyles: CSSProperties = {
     maxWidth: "750px",
@@ -31,7 +36,7 @@ const AddItemStyles: CSSProperties = {
     overflow: "hidden",
 };
 
-const Selected: () => React.ReactNode = () => (
+export const Selected: () => React.ReactNode = () => (
     <div
         style={{
             position: "absolute",
@@ -46,54 +51,6 @@ const Selected: () => React.ReactNode = () => (
         }}
     >
         <p style={{ color: "white" }}>selected</p>
-    </div>
-);
-
-const FolderBlock: (
-    f: Folder,
-    selectedItems: SelectedItems,
-    sOnClick: (id: FolderId) => void,
-) => React.ReactElement = (f, selectedItems, sOnClick) => (
-    <div
-        style={{ minWidth: "8rem", maxWidth: "8rem", position: "relative" }}
-        key={f.id}
-        onClick={() => sOnClick(f.id)}
-    >
-        <div
-            style={{
-                width: "8rem",
-                aspectRatio: "1/1",
-                backgroundColor: f.color,
-            }}
-        />
-        <p style={lineClamp}>{f.name}</p>
-        {selectedItems.folders?.includes(f.id) ? <Selected /> : null}
-    </div>
-);
-
-const PlaylistBlock: (
-    p: Playlist,
-    selectedItems: SelectedItems,
-    sOnClick: (id: PlaylistId) => void,
-) => React.ReactNode = (p, selectedItems, sOnClick) => (
-    <div
-        style={{ minWidth: "8rem", maxWidth: "8rem", position: "relative" }}
-        key={p.id}
-        onClick={() => sOnClick(p.id)}
-    >
-        {p.images != undefined && p.images.length != 0 ? (
-            <img src={p.images[0]?.url} style={{ width: "8rem" }} />
-        ) : (
-            <div
-                style={{
-                    backgroundColor: "grey",
-                    width: "8rem",
-                    height: "8rem",
-                }}
-            />
-        )}
-        <p style={lineClamp}>{p.name}</p>
-        {selectedItems.playlists?.includes(p.id) ? <Selected /> : null}
     </div>
 );
 
@@ -119,16 +76,13 @@ export default function AddItem({
     const [filter, setFilter] = useState<filterOptions>(filterOptions.NONE);
     const [filtersOpen, setFiltersOpen] = useState<boolean>(false);
     const [folderList, setFolderList] = useState<Folder[]>([]);
-    const [playlists, setPlaylists] = useState<Playlist[]>([]);
-    const [controller, setController] = useState<UserPlaylistExplorer | null>(
-        null,
-    );
     const [submit, setSubmit] = useState("add");
 
     const [selected, dispatchSelected] = useReducer(UpdateSelectedItems, {
         folders: [],
         playlists: [],
     });
+    const [playlists, playlistController] = useUserPlaylists();
 
     const AwareFBlock: (f: Folder) => React.ReactNode = (f) =>
         FolderBlock(f, selected, (id) =>
@@ -157,6 +111,13 @@ export default function AddItem({
                 ) : (
                     <p>No filter selected</p>
                 )}
+                {filter == filterOptions.PLAYLISTS &&
+                playlistController.next &&
+                !playlistController.isLoading ? (
+                    <button onClick={playlistController.loadNext}>
+                        load more
+                    </button>
+                ) : null}
             </SearchItemList>
         </div>
     );
@@ -165,15 +126,6 @@ export default function AddItem({
         if (showModal) ref.current?.showModal();
         else ref.current?.close();
     }, [showModal]);
-
-    // playlist fetching
-    useEffect(() => {
-        setController(UserPlaylistExplorer());
-    }, []);
-
-    useEffect(() => {
-        if (controller) controller.getItems().then(setPlaylists);
-    }, [controller]);
 
     // folder fetching
     useEffect(() => {
@@ -196,28 +148,42 @@ export default function AddItem({
                 <div
                     style={{
                         width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        position: "relative",
-                        alignItems: "center",
+                        display: "grid",
+                        placeItems: "center",
+                        gridTemplateColumns:
+                            "5% [centerStart] auto [centerEnd] 5%",
+                        gridTemplateRows: "[start] auto [end]",
                     }}
                 >
+                    {filter != filterOptions.NONE ? (
+                        <FontAwesomeIcon
+                            icon={faChevronLeft}
+                            style={{
+                                height: "1.5rem",
+                                width: "100%",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => setFilter(filterOptions.NONE)}
+                        />
+                    ) : null}
                     <SearchBar
                         entry={query}
                         setEntry={setQuery}
                         style={{
-                            width: "90%",
+                            width: "100%",
                             boxSizing: "border-box",
                             height: "2.5rem",
+                            gridArea: "start / centerStart / end / centerEnd",
                         }}
                     />
                     <FontAwesomeIcon
                         icon={faFilter}
                         style={{
                             height: "1.5rem",
-                            position: "absolute",
-                            right: "3rem",
                             cursor: "pointer",
+                            gridArea: "start / centerStart / end / centerEnd",
+                            justifySelf: "end",
+                            marginRight: "3%",
                         }}
                         onClick={() => setFiltersOpen(!filtersOpen)}
                     />

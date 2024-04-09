@@ -29,6 +29,7 @@ export default function Test(): React.ReactNode {
             <button onClick={() => setDisplayItemModal(true)}>
                 Show the modal
             </button>
+            {/*@ts-expect-error doesnt need an id for testing*/}
             <AddItem
                 showModal={displayItemModal}
                 closeModal={() => setDisplayItemModal(false)}

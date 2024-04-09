@@ -4,11 +4,7 @@ import {
     faFolderOpen,
     faMusic,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-    FolderActionKind,
-    FolderExplorerContextType,
-    Trail,
-} from "./FolderContext";
+import { FolderActionKind, FolderExplorerContextType } from "./FolderContext";
 
 export function getIcon(kind: SubitemKind, opened: boolean) {
     return kind == SubitemKind.SpotifyURI
