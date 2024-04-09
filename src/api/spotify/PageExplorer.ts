@@ -1,5 +1,11 @@
 import fetch from "@api/spotify/fetch";
 
+function shortenURL(url: string): string {
+    let path = url.split("https://api.spotify.com/v1/")[1];
+    path = path.replace("users/[-][-][-]/playlists", "me/playlists");
+    return path;
+}
+
 /**
  * @info to be used with paged spotify endpoints
  * @generic0 is the API response object
@@ -28,8 +34,6 @@ export class PageExplorer<Response extends PageAble | Pages, Item> {
     }
 
     nextPage(): Promise<void> {
-        const shortenURL: (url: string) => string = (url) =>
-            url.split("https://api.spotify.com/v1/")[1];
         return new Promise((resolvePageAdd) =>
             (async () => {
                 const nPage = !(await this.hasNextPage());
