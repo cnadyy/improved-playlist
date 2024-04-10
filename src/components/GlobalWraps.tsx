@@ -36,7 +36,7 @@ export default function GlobalWraps({
             {authBool || exception ? children : <Unauthenticated />}
             {authBool && (
                 <>
-                    <div style={{ marginBottom: "4rem" }}></div>
+                    <div style={{ marginBottom: "6rem" }}></div>
                     <PlayerInfo />
                 </>
             )}
