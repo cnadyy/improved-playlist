@@ -18,7 +18,7 @@ export default function SearchItemList({
 }): React.ReactElement {
     return (
         <div>
-            {name ? (
+            {name && (
                 <>
                     <h2 style={{ display: "inline-block" }}>{name}</h2>
                     <span
@@ -41,7 +41,7 @@ export default function SearchItemList({
                         see all
                     </p>
                 </>
-            ) : null}
+            )}
             <div
                 style={{
                     display: "flex",

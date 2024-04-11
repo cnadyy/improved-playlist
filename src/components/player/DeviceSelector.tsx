@@ -75,7 +75,7 @@ function DeviceSelector({
                 display: inline-block;
             `}
         >
-            {show ? (
+            {show && (
                 <OtherDevices>
                     {devices
                         .map((dev, i) => {
@@ -101,7 +101,7 @@ function DeviceSelector({
                             );
                         })}
                 </OtherDevices>
-            ) : null}
+            )}
             <div
                 css={css`
                     display: flex;
