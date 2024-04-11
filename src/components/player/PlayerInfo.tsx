@@ -4,10 +4,11 @@ import {
     faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PlayerSelector from "./PlayerSelector";
+import DeviceSelector from "./DeviceSelector";
 import { useEffect, useState } from "react";
 import Device from "@api/types/Device";
 import getAvailableDevices from "@api/spotify/get/devices";
+import CurrentlyPlayingComponent from "./CurrentPlayingComponent";
 
 export default function PlayerInfo() {
     const [devices, setDevices] = useState<Device[]>([]);
@@ -36,7 +37,9 @@ export default function PlayerInfo() {
                 boxShadow: "#dddddd 0 -5px 30px 5px",
             }}
         >
-            <div style={{ marginLeft: "0.5rem" }}>Currently playing</div>
+            <div style={{ marginLeft: "0.5rem" }}>
+                <CurrentlyPlayingComponent />
+            </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
                 <FontAwesomeIcon
                     size="lg"
@@ -63,7 +66,7 @@ export default function PlayerInfo() {
                     marginRight: "0.5rem",
                 }}
             >
-                <PlayerSelector
+                <DeviceSelector
                     devices={devices}
                     currentPlayer={currentPlayer}
                     setCurrentPlayer={setCurrentPlayer}

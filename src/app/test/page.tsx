@@ -8,7 +8,7 @@ import queueTrack from "@api/spotify/set/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
 import startResumePlayback from "@api/spotify/set/playbackToggle";
 import getAvailableDevices from "@api/spotify/get/devices";
-import PlayerSelector from "@/components/player/PlayerSelector";
+import DeviceSelector from "@/components/player/DeviceSelector";
 import Device from "@/api/types/Device";
 
 function getDisplayName(setDisplayName: (display: string) => void) {
@@ -65,7 +65,7 @@ export default function Profile() {
             {/*<FolderExporer folders={folders} rootId={"xxx-xxx"} />*/}
             <h3>User playlists</h3>
             <UserPlaylists />
-            <PlayerSelector
+            <DeviceSelector
                 devices={devices}
                 currentPlayer={currentPlayer}
                 setCurrentPlayer={setCurrentPlayer}
