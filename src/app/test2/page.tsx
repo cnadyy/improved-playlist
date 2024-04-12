@@ -9,6 +9,7 @@ import getFolder from "@fb/get/folder";
 import Folder from "@/api/types/Folder";
 import getUserFolders from "@/api/firebase/get/userFolders";
 import fetch from "@api/spotify/fetch";
+import Header from "@/components/Header";
 
 export default function Test(): React.ReactNode {
     const [displayItemModal, setDisplayItemModal] = useState(false);
@@ -26,6 +27,7 @@ export default function Test(): React.ReactNode {
 
     return (
         <div>
+            <Header />
             <button onClick={() => setDisplayItemModal(true)}>
                 Show the modal
             </button>

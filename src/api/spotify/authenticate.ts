@@ -35,6 +35,12 @@ const generateAuthorisationURL = (
         ],
         ["playlist-read-private", "playlist-read-collaborative"],
         ["user-library-read"],
+        [
+            "app-remote-control",
+            "streaming",
+            "user-read-email",
+            "user-read-private",
+        ],
     ]
         .flat()
         .join(" ");

@@ -1,8 +1,11 @@
+import { usePlaybackState } from "@/api/hooks/spotify/usePlaybackSDK";
 import getQueue from "@/api/spotify/get/queue";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 
 export default function CurrentlyPlayingComponent() {
+    const playbackState = usePlaybackState();
+    if (playbackState) console.log(playbackState);
     const { data, isLoading } = useQuery({
         queryKey: ["queue"],
         queryFn: () => {

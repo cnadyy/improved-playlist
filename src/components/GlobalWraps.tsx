@@ -37,6 +37,10 @@ export default function GlobalWraps({
             {authBool && (
                 <>
                     <div style={{ marginBottom: "6rem" }}></div>
+                    <script
+                        src="https://sdk.scdn.co/spotify-player.js"
+                        async
+                    ></script>
                     <PlayerInfo />
                 </>
             )}
