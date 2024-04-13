@@ -8,8 +8,8 @@ import { PerpetualTimer } from "@/api/util";
 export default class Queuer extends PerpetualTimer {
     onFinish?: () => void;
     private id: FolderId;
-    private songs: { uri: ItemId; parent: ItemId; }[] = [];
-    private disabledItems?: { playlists: PlaylistId[]; folders: FolderId[]; };
+    private songs: { uri: ItemId; parent: ItemId }[] = [];
+    private disabledItems?: { playlists: PlaylistId[]; folders: FolderId[] };
 
     constructor(id: FolderId, onFinish?: () => void) {
         // set dummy and replace
@@ -43,7 +43,7 @@ export default class Queuer extends PerpetualTimer {
     /**
      * @info resolves a buffer of up to 20 songs
      */
-    async _resolveURIs() { }
+    async _resolveURIs() {}
 
     /**
      * @info calls out to spotify to queue the URIs in the queue
@@ -66,7 +66,7 @@ export default class Queuer extends PerpetualTimer {
         return ms;
     }
 
-    setDisabledItems() { }
+    setDisabledItems() {}
 }
 // resolve in firebase
 // check every x seconds for queue status

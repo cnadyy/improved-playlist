@@ -6,7 +6,7 @@
 import { useEffect, useState } from "react";
 
 // permits callback to be used in many contexts without recreating player
-export const onAuthenticated =
+const onAuthenticated =
     typeof window != "undefined"
         ? new Promise<Spotify.Player>(
               (resolve) =>
@@ -29,6 +29,8 @@ export const onAuthenticated =
                   }),
           )
         : null;
+
+export const playerReady = onAuthenticated!;
 
 type deviceReady = boolean;
 

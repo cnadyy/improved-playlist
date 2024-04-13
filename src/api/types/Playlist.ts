@@ -9,6 +9,7 @@ interface Playlist {
         href: string;
         total: number;
         items: TrackItem[];
+        limit: number;
     };
     uri: string;
     images: img[];

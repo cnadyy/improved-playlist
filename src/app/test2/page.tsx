@@ -8,7 +8,7 @@ import filterOptions from "@/api/types/FilterOptions";
 import getFolder from "@fb/get/folder";
 import Folder from "@/api/types/Folder";
 import getUserFolders from "@/api/firebase/get/userFolders";
-import fetch from "@api/spotify/fetch";
+import fetch, { webAPIFetch } from "@api/spotify/fetch";
 import Header from "@/components/Header";
 
 export default function Test(): React.ReactNode {
@@ -25,9 +25,29 @@ export default function Test(): React.ReactNode {
             .then(setFolderList)
             .catch((e) => console.log(e));
 
+    const f1 = () =>
+        webAPIFetch("me/player/play", {
+            method: "PUT",
+            body: JSON.stringify({
+                uris: [
+                    "spotify:track:38QnxZJMktnt96bxalqgEl",
+                    "spotify:track:064wRZsHDLuoCJYw65gh7N",
+                ],
+            }),
+        });
+    const f2 = () =>
+        webAPIFetch("me/player/play", {
+            method: "PUT",
+            body: JSON.stringify({
+                context_uri: "spotify:playlist:0duznHNAXz1yJ5nFEPN3ox",
+            }),
+        });
+
     return (
         <div>
             <Header />
+            <button onClick={f1}>f1</button>
+            <button onClick={f2}>f2</button>
             <button onClick={() => setDisplayItemModal(true)}>
                 Show the modal
             </button>

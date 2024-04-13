@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function CurrentlyPlayingComponent() {
     const playbackState = usePlaybackState();
     if (playbackState) console.log(playbackState);
-    const { data, isLoading } = useQuery({
+    const { data } = useQuery({
         queryKey: ["queue"],
         queryFn: () => {
             return getQueue();
