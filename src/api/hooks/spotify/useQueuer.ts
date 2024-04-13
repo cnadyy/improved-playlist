@@ -1,13 +1,10 @@
 import Queuer from "@/api/spotify/Queuer";
-import { Graph } from "@dagrejs/graphlib";
 
 class GraphDiscoverer extends Queuer {
-    session: Graph;
     cursor: TrailId;
 
     constructor(id: FolderId) {
         super(id);
-        this.session = new Graph();
         this.cursor = [];
     }
 

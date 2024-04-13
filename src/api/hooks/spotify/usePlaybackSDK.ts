@@ -6,7 +6,7 @@
 import { useEffect, useState } from "react";
 
 // permits callback to be used in many contexts without recreating player
-const onAuthenticated =
+export const onAuthenticated =
     typeof window != "undefined"
         ? new Promise<Spotify.Player>(
               (resolve) =>
@@ -80,8 +80,4 @@ export function usePlaybackState(): Spotify.PlaybackState | undefined {
     }, []);
 
     return playback;
-}
-
-export function disconnectDevice(): void {
-    onAuthenticated!.then((player) => player.disconnect());
 }
