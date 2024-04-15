@@ -29,7 +29,7 @@ import {
     restrictToVerticalAxis,
     restrictToParentElement,
 } from "@dnd-kit/modifiers";
-import FolderExplorerLabel from "@/components/explorer/FolderExplorerLabel";
+import FolderExplorerLabel from "./FolderExplorerLabel";
 import { getIcon, updateFolders } from "@/components/explorer/FolderUtils";
 
 // This only renders subitems,

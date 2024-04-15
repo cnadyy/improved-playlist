@@ -1,4 +1,4 @@
-import { SubitemKind } from "@/api/types/Folder";
+import Folder, { SubitemKind } from "@/api/types/Folder";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ItemName from "@/components/ItemName";
@@ -7,11 +7,15 @@ import {
     faBookmark,
     faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as farBookmark } from "@fortawesome/free-regular-svg-icons";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { css } from "@emotion/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import getCachedFolder from "@/api/firebase/get/folder-cached";
+import setFolder from "@/api/firebase/set/folder";
 
 const Label = styled.div`
     display: flex;
@@ -89,6 +93,15 @@ export default function FolderExplorerLabel({
     activatorListeners?: SyntheticListenerMap;
     activatorAttributes?: DraggableAttributes;
 }) {
+    // FIXME: Figure out if this is refactorable
+    const [localFolder, setLocalFolder] = useState<Folder | null>(null);
+    useEffect(() => {
+        if (item.kind == SubitemKind.Folder) {
+            getCachedFolder(item.itemID).then((folder) => {
+                setLocalFolder(folder);
+            });
+        }
+    }, [item.itemID, item.kind]);
     return (
         <>
             <FontAwesomeIcon
@@ -133,8 +146,19 @@ export default function FolderExplorerLabel({
                 </div>
 
                 <RightIcons className="labelHover">
+                    {item.kind == SubitemKind.Folder && localFolder && (
+                        <RightIcon
+                            icon={
+                                localFolder.isPinned ? faBookmark : farBookmark
+                            }
+                            onClick={() => {
+                                const f = { ...localFolder };
+                                f.isPinned = !f.isPinned;
+                                setFolder(f).then(() => setLocalFolder(f));
+                            }}
+                        />
+                    )}
                     <RightIcon icon={faBars} />
-                    <RightIcon icon={faBookmark} />
                     <RightIcon icon={faEllipsis} />
                 </RightIcons>
             </Label>
