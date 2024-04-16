@@ -1,5 +1,4 @@
 import Folder from "@/api/types/Folder";
-import playFolder from "@/app/utils/Player";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
@@ -112,9 +111,7 @@ export default function FolderDetailsComponent({
                         css={button}
                         icon={faPlayCircle}
                         size="2xl"
-                        onClick={() =>
-                            playFolder(folder.id, folders, disabledFolders)
-                        }
+                        onClick={() => console.error("todo...")}
                     />
                     {folder.owner == Auth.currentUser!.uid && (
                         <FontAwesomeIcon

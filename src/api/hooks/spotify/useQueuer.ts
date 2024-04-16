@@ -1,6 +1,7 @@
 import { playerReady } from "@/api/hooks/spotify/usePlaybackSDK";
 import webAPIFetchWithJSON, { webAPIFetch } from "@/api/spotify/fetch";
 import uriToId from "@/api/spotify/idFromUri";
+import { useEffect, useState } from "react";
 
 type context = {
     uri: playlistURI;
@@ -13,7 +14,7 @@ type context = {
  * @info note that the Queuer will cache a Context permantly and does not support changes while active.
  * Spotify provides no event for changes to a given resource and I refuse to add timers
  */
-class Queuer {
+export class Queuer {
     nextPlaylist: () => Promise<playlistURI>;
     active: boolean = false;
     onForcedStop: () => void;
@@ -32,10 +33,7 @@ class Queuer {
         // trigger queue checks on state change
         // this fires only when playing audio through the tab
         playerReady.then((player) => {
-            player.addListener(
-                "player_state_changed",
-                (s) => (this.playbackState = s),
-            );
+            player.addListener("player_state_changed", this.setPlaybackState);
         });
     }
 
@@ -81,7 +79,7 @@ class Queuer {
         this.onForcedStop();
     }
 
-    set playbackState(s: Spotify.PlaybackState) {
+    setPlaybackState(s: Spotify.PlaybackState) {
         if (!this.active) return;
         // exit if user has played another individual song. stop auto control
         if (s.context.uri == null) {
@@ -122,6 +120,15 @@ class Queuer {
         });
     }
 
+    unmount() {
+        playerReady.then((player) => {
+            player.removeListener(
+                "player_state_changed",
+                this.setPlaybackState,
+            );
+        });
+    }
+
     /**
      * a new context is played if all the following are met:
      * - previous two songs match the last two
@@ -132,7 +139,7 @@ class Queuer {
      * @param s current state to evaluate
      */
     static _shouldNext(s: Spotify.PlaybackState, c: TrackItem[]): boolean {
-        const trackURI = (t: any) => t.uri;
+        const trackURI = (t: Spotify.Track | TrackItem) => t.uri;
 
         return (
             JSON.stringify(c.slice(-2).map(trackURI)) ==
@@ -142,7 +149,7 @@ class Queuer {
 }
 
 // responsible for unpacking a folder into its individual playlist uris
-class FolderUnpacker {
+export class FolderUnpacker {
     cursor: TrailId;
     root: FolderId;
 
@@ -160,7 +167,7 @@ class FolderUnpacker {
     }
 }
 
-class PlayerControls {
+export class PlayerControls {
     private unpacker: FolderUnpacker;
     private queuer: Queuer;
 
@@ -179,14 +186,26 @@ class PlayerControls {
         playerReady.then((p) => p.pause());
         this.queuer.active = false;
     }
+
+    unmount() {
+        this.queuer.unmount();
+    }
 }
 
 /**
  * @info initates Player object
  * @returns uncontroled Player object with side effect utility methods
  */
-export default function useUserFolders(id: FolderId): PlayerControls {
-    const player = new PlayerControls(id);
+export default function useUserFolders(
+    id: FolderId,
+): PlayerControls | undefined {
+    const [player, setPlayer] = useState<PlayerControls>();
+
+    useEffect(() => {
+        const p = new PlayerControls(id);
+        setPlayer(p);
+        return p.unmount;
+    }, [id]);
 
     return player;
 }
