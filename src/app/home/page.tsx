@@ -8,6 +8,9 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import filterFolder from "@/api/search-functions/filterFolders";
 import getUserFolders from "@/api/firebase/get/userFolders";
+import useUser, { getUser } from "@/api/firebase/get/user";
+import { Auth } from "@/api/firebase/createApp";
+import Loading from "@/components/Loading";
 
 const folderListStyle: CSSProperties = {
     display: "flex",
@@ -20,13 +23,18 @@ const folderListStyle: CSSProperties = {
 export default function Folders() {
     const [folderList, setFolderList] = useState<Folder[]>([]);
     const [searchEntry, setSearchEntry] = useState<string>("");
+    const user = useUser(Auth.currentUser!.uid);
 
     useEffect(() => {
         getUserFolders().then(setFolderList);
     }, []);
 
+    if (!user) {
+        return <Loading />;
+    }
+
     const filteredFolders = folderList.filter((f) =>
-        filterFolder(f, searchEntry),
+        filterFolder(f, searchEntry, user.pinned),
     );
 
     return (

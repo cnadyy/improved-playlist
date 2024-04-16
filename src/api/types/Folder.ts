@@ -3,7 +3,6 @@ interface Folder {
     id: string;
     name: string;
     color: string;
-    isPinned: boolean;
     public: boolean;
     owner: string;
 }
