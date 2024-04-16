@@ -41,7 +41,7 @@ export default function GlobalWraps({
                         pinned: [],
                     });
                 }
-            })
+            });
         }
     }, [authBool]);
 

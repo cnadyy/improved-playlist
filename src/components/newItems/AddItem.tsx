@@ -27,6 +27,9 @@ import addItems from "@/api/side-effects/addItems";
 import { FolderBlock } from "./itemBlocks";
 import { PlaylistBlock } from "./itemBlocks";
 import useUserPlaylists from "@/api/hooks/spotify/useUserPlaylists";
+import useUser from "@/api/firebase/get/user";
+import { Auth } from "@/api/firebase/createApp";
+import Loading from "@/components/Loading";
 
 const AddItemStyles: CSSProperties = {
     maxWidth: "750px",
@@ -83,6 +86,7 @@ export default function AddItem({
         playlists: [],
     });
     const [playlists, playlistsQuery] = useUserPlaylists();
+    const user = useUser(Auth.currentUser!.uid);
 
     useEffect(() => {
         if (showModal) ref.current?.showModal();
@@ -93,6 +97,10 @@ export default function AddItem({
     useEffect(() => {
         getFolderList().then(setFolderList);
     }, []);
+
+    if (!user) {
+        return <Loading />;
+    }
 
     return (
         <dialog ref={ref} onCancel={closeModal} style={AddItemStyles}>
@@ -198,7 +206,9 @@ export default function AddItem({
                         <SearchItemList full>
                             {filter == filterOptions.FOLDERS ? (
                                 folderList
-                                    .filter((f) => filterFolder(f, query))
+                                    .filter((f) =>
+                                        filterFolder(f, query, user.pinned),
+                                    )
                                     .map((f) =>
                                         FolderBlock(f, selected, (id) =>
                                             dispatchSelected({
