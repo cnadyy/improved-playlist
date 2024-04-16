@@ -3,9 +3,9 @@ import { moveTrails } from "@/components/explorer/FolderUtils";
 import { createContext } from "react";
 
 export type FolderExplorerContextType = {
-    disabledFolders: number[][];
+    disabledFolders: TrailId[];
     updateDisabledFolders: (action: FolderAction) => void;
-    openedFolders: number[][];
+    openedFolders: TrailId[];
     updateOpenedFolders: (action: FolderAction) => void;
     setFolder: (folder: Folder) => void;
     trails: Trail[];
@@ -37,7 +37,7 @@ export enum FolderActionKind {
     UpdateTrail,
 }
 
-export function updateFoldersTrail(state: number[][], action: FolderAction) {
+export function updateFoldersTrail(state: TrailId[], action: FolderAction) {
     let newState = [...state];
     switch (action.kind) {
         case FolderActionKind.Toggle:

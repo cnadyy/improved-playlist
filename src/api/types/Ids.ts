@@ -3,3 +3,5 @@ type PlaylistId = string;
 type SpotifyURI = string;
 type playlistURI = SpotifyURI;
 type ItemId = PlaylistId | SpotifyURI;
+type FolderId = string;
+type UserId = string;

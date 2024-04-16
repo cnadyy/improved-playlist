@@ -4,7 +4,6 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
     faAdd,
-    faPencil,
     faPlayCircle,
     faShare,
 } from "@fortawesome/free-solid-svg-icons";
@@ -13,6 +12,9 @@ import { CSSProperties, useContext, useState } from "react";
 import { FolderExplorerContext } from "./explorer/FolderContext";
 import AddItem from "./newItems/AddItem";
 import ShareItem from "./ShareItem";
+import getUser from "@/api/firebase/get/user";
+import useUser from "@/api/firebase/get/user";
+import { Auth } from "@/api/firebase/createApp";
 
 const folderIconStyle: CSSProperties = {
     minWidth: "13rem",
@@ -65,6 +67,8 @@ export default function FolderDetailsComponent({
     const [editModal, setEditModal] = useState<boolean>(false);
     const [shareModal, setShareModal] = useState<boolean>(false);
 
+    const owner = useUser(folder.owner);
+
     return (
         <div
             css={css`
@@ -85,6 +89,7 @@ export default function FolderDetailsComponent({
                 <div style={{ position: "relative" }}>
                     <FolderName content={folder.name}>{folder.name}</FolderName>
                 </div>
+                <div>Owned by {owner ? owner.name : "Ummm"}</div>
                 {/**
           <h3
           css={css`
@@ -111,12 +116,14 @@ export default function FolderDetailsComponent({
                             playFolder(folder.id, folders, disabledFolders)
                         }
                     />
-                    <FontAwesomeIcon
-                        onClick={() => setEditModal(true)}
-                        css={button}
-                        icon={faAdd}
-                        size="2xl"
-                    />
+                    {folder.owner == Auth.currentUser!.uid && (
+                        <FontAwesomeIcon
+                            onClick={() => setEditModal(true)}
+                            css={button}
+                            icon={faAdd}
+                            size="2xl"
+                        />
+                    )}
                     {folder.public && (
                         <FontAwesomeIcon
                             onClick={() => setShareModal(true)}

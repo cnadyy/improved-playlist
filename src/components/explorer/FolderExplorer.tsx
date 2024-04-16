@@ -31,6 +31,7 @@ import {
 } from "@dnd-kit/modifiers";
 import FolderExplorerLabel from "./FolderExplorerLabel";
 import { getIcon, updateFolders } from "@/components/explorer/FolderUtils";
+import { Auth } from "@/api/firebase/createApp";
 
 // This only renders subitems,
 // it is not responseible for rendering the original folder.
@@ -141,6 +142,7 @@ function DrawFolderList({
                 <SortableContext
                     strategy={verticalListSortingStrategy}
                     items={itemKeys}
+                    disabled={folder.owner != Auth.currentUser!.uid}
                 >
                     <div style={{ display: "grid" }}>
                         {folder.items.map((value, index) => {
