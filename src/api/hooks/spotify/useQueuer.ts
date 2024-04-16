@@ -3,11 +3,11 @@ import webAPIFetchWithJSON, { webAPIFetch } from "@/api/spotify/fetch";
 import uriToId from "@/api/spotify/idFromUri";
 
 type context = {
-        uri: playlistURI,
-        lastPage: {
-            tracks: TrackItem[];
-        };
+    uri: playlistURI;
+    lastPage: {
+        tracks: TrackItem[];
     };
+};
 
 /**
  * @info note that the Queuer will cache a Context permantly and does not support changes while active.
@@ -40,28 +40,38 @@ class Queuer {
     }
 
     async _setActiveContext(uri: playlistURI): Promise<context> {
-        let playlistPage: Playlist = await webAPIFetchWithJSON("playlists/" + uriToId(uri));
-        
+        let playlistPage: Playlist = await webAPIFetchWithJSON(
+            "playlists/" + uriToId(uri),
+        );
+
         // get last possible page
         if (playlistPage.tracks.total > playlistPage.tracks.limit) {
-            playlistPage = await webAPIFetchWithJSON("playlists/" + uriToId(uri) + "?offset=" + (playlistPage.tracks.total - playlistPage.tracks.limit))
+            playlistPage = await webAPIFetchWithJSON(
+                "playlists/" +
+                    uriToId(uri) +
+                    "?offset=" +
+                    (playlistPage.tracks.total - playlistPage.tracks.limit),
+            );
         }
 
         this.playerContext = {
             uri: uri,
             lastPage: {
                 tracks: playlistPage.tracks.items,
-            }
-        }
+            },
+        };
 
         return this.playerContext;
     }
-    
+
     // debounced activeContext controller
     _getActiveContext(uri: playlistURI): Promise<context> {
-        if(typeof this.playerContext != "undefined") return new Promise((r) => r(this.playerContext!));
-        if(typeof this.settingContext == undefined)
-            this.settingContext = new Promise((resolve) => this._setActiveContext(uri).then(resolve));
+        if (typeof this.playerContext != "undefined")
+            return new Promise((r) => r(this.playerContext!));
+        if (typeof this.settingContext == "undefined")
+            this.settingContext = new Promise((resolve) =>
+                this._setActiveContext(uri).then(resolve),
+            );
 
         return this.settingContext!;
     }
@@ -79,15 +89,18 @@ class Queuer {
             return;
         }
         // automatically resolves the initial context if none is set
-        this._getActiveContext(s.context.uri).then(async context => {
+        this._getActiveContext(s.context.uri).then(async (context) => {
             // exit if the user plays something else manually and context is ready to be referenced
-            if(s.context.uri != context.uri) {
+            if (s.context.uri != context.uri) {
                 this._userExit();
                 return;
             }
 
             // with debouncing determine if the next context is ready to be set
-            if (!this.settingSpotify && Queuer._shouldNext(s, context.lastPage.tracks)) {
+            if (
+                !this.settingSpotify &&
+                Queuer._shouldNext(s, context.lastPage.tracks)
+            ) {
                 try {
                     this.settingSpotify = true;
                     const id = await this.nextPlaylist();
@@ -98,13 +111,11 @@ class Queuer {
                         }),
                     });
                     await this._setActiveContext(id);
-                }
-                catch {
-                   // if there are no songs left to play, forceStop
+                } catch {
+                    // if there are no songs left to play, forceStop
                     this.active = false;
                     this.onForcedStop();
-                }
-                finally {
+                } finally {
                     this.settingSpotify = false;
                 }
             }
@@ -116,14 +127,17 @@ class Queuer {
      * - previous two songs match the last two
      * this leaves peculiar setups like two songs played over and over in a playlist as broken
      * but mostly there is no concern. More conditions could be added.
-     * 
+     *
      * @param c array of the last tracks in a context
      * @param s current state to evaluate
      */
     static _shouldNext(s: Spotify.PlaybackState, c: TrackItem[]): boolean {
         const trackURI = (t: any) => t.uri;
 
-        return JSON.stringify(c.slice(-2).map(trackURI)) == JSON.stringify(s.track_window.previous_tracks.map(trackURI));
+        return (
+            JSON.stringify(c.slice(-2).map(trackURI)) ==
+            JSON.stringify(s.track_window.previous_tracks.map(trackURI))
+        );
     }
 }
 
@@ -158,11 +172,11 @@ class PlayerControls {
     start(cursor?: TrailId) {
         if (cursor) this.unpacker.setCursor(cursor);
         this.queuer.active = true;
-        playerReady.then(p => p.resume());
+        playerReady.then((p) => p.resume());
     }
 
     stop() {
-        playerReady.then(p => p.pause());
+        playerReady.then((p) => p.pause());
         this.queuer.active = false;
     }
 }

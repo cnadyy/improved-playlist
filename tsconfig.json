@@ -27,6 +27,7 @@
         "name": "@styled/typescript-styled-plugin"
       }
     ],
+    "baseUrl": "./",
     "paths": {
       "@/*": [
         "./src/*"
@@ -34,14 +35,8 @@
       "@api/*": [
         "./src/api/*"
       ],
-      "@api": [
-        "./src/api"
-      ],
       "@css/*": [
         "./src/css/*"
-      ],
-      "@css": [
-        "./src/css"
       ],
       "@mock/*": [
         "./mock-data/*"
