@@ -8,7 +8,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import filterFolder from "@/api/search-functions/filterFolders";
 import getUserFolders from "@/api/firebase/get/userFolders";
-import useUser, { getUser } from "@/api/firebase/get/user";
+import useUser from "@/api/firebase/get/user";
 import { Auth } from "@/api/firebase/createApp";
 import Loading from "@/components/Loading";
 

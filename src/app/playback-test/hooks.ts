@@ -16,12 +16,22 @@ export function useIsDisabled(
     return [isDisabled, toggleDisabled];
 }
 
-export function useIsOpen(id: PositionId): [typeof isOpen, typeof toggleOpen] {
-    const [listState, dispatch] = useContext(listContext);
+interface openedFolder {
+    open: boolean;
+    openedBefore: boolean;
+}
 
-    const isOpen = Boolean(listState.openedFolders.find((oId) => oId == id));
+export function useIsOpen(): [typeof open, typeof toggleOpen] {
+    const [open, setOpen] = useState<openedFolder>({
+        open: false,
+        openedBefore: false,
+    });
 
-    const toggleOpen = () => dispatch({ type: "TOGGLE_OPEN", id: id });
+    const toggleOpen = () => {
+        if (open.openedBefore)
+            setOpen({ open: !open.open, openedBefore: true });
+        else setOpen({ open: true, openedBefore: true });
+    };
 
-    return [isOpen, toggleOpen];
+    return [open, toggleOpen];
 }

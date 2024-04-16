@@ -9,20 +9,31 @@ import { Item } from "./Item";
  */
 export default function ItemList({
     folder,
+    hide,
+    disabled,
 }: {
     folder: Folder;
+    hide?: boolean;
+    disabled?: boolean;
 }): React.ReactNode {
     return (
         <ol
             style={{
                 display: "flex",
                 flexDirection: "column",
+                ...(hide ? { display: "none" } : {}),
             }}
         >
             {folder.items.map((item, index) => {
                 // the key need only be unique within its own list, and as items are
                 // in a user determined order the index is a safe identifier
-                return <Item key={index} item={item} />;
+                return (
+                    <Item
+                        disabled={Boolean(disabled)}
+                        key={index}
+                        item={item}
+                    />
+                );
             })}
         </ol>
     );

@@ -7,11 +7,9 @@ import {
     faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CSSProperties, useContext, useState } from "react";
-import { FolderExplorerContext } from "./explorer/FolderContext";
+import { CSSProperties, useState } from "react";
 import AddItem from "./newItems/AddItem";
 import ShareItem from "./ShareItem";
-import getUser from "@/api/firebase/get/user";
 import useUser from "@/api/firebase/get/user";
 import { Auth } from "@/api/firebase/createApp";
 
@@ -55,14 +53,10 @@ const FolderName = styled.h1`
 
 export default function FolderDetailsComponent({
     folder,
-    folders,
 }: {
     folder: Folder;
     folders: Folder[];
 }) {
-    const { disabledFolders } = useContext(FolderExplorerContext);
-    // const [folders, setFolders] = useFolderList();
-
     const [editModal, setEditModal] = useState<boolean>(false);
     const [shareModal, setShareModal] = useState<boolean>(false);
 

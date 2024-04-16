@@ -7,7 +7,13 @@ import useFolder, { useFolderStatus } from "@/api/hooks/useFolder";
 import { useIsDisabled, useIsOpen } from "./hooks";
 import { PositionId } from "@/api/types/itemsReducer";
 
-export function Item({ item }: { item: Subitem }): React.ReactNode {
+export function Item({
+    item,
+    disabled,
+}: {
+    item: Subitem;
+    disabled: boolean;
+}): React.ReactNode {
     const [posId, setPosId] = useState<PositionId | undefined>();
 
     // create positionID that lives for lifetime of component
@@ -21,9 +27,17 @@ export function Item({ item }: { item: Subitem }): React.ReactNode {
         );
 
     return item.kind == SubitemKind.SpotifyURI ? (
-        <PlaylistAsItem positionId={posId} URI={item.itemID} />
+        <PlaylistAsItem
+            parentDisabled={disabled}
+            positionId={posId}
+            URI={item.itemID}
+        />
     ) : (
-        <FolderAsItem positionId={posId} id={item.itemID} />
+        <FolderAsItem
+            parentDisabled={disabled}
+            positionId={posId}
+            id={item.itemID}
+        />
     );
 }
 
@@ -35,14 +49,29 @@ export function Item({ item }: { item: Subitem }): React.ReactNode {
 export function PlaylistAsItem({
     URI,
     positionId,
+    parentDisabled,
 }: {
     URI: SpotifyURI;
     positionId: PositionId;
+    parentDisabled: boolean;
 }) {
+    const [disabled, toggleDisabled] = useIsDisabled(positionId);
     return (
         <li>
-            <div style={{ backgroundColor: "#f4c8b3" }}>
-                <p>this is a playlist. heres the uri: {URI}</p>
+            <div
+                style={{ backgroundColor: "#f4c8b3" }}
+                onClick={toggleDisabled}
+            >
+                <p
+                    style={
+                        disabled || parentDisabled
+                            ? { textDecoration: "line-through" }
+                            : {}
+                    }
+                >
+                    this is a playlist. heres the uri: {URI}
+                </p>
+                {parentDisabled || disabled ? "im disabled" : "im not"}
             </div>
         </li>
     );
@@ -64,7 +93,7 @@ export function FolderAsItem({
 }): React.ReactNode {
     const [folder, status] = useFolder(id);
     const [disabled, toggleDisabled] = useIsDisabled(positionId);
-    const [open, toggleOpen] = useIsOpen(positionId);
+    const [open, toggleOpen] = useIsOpen();
 
     if (status == useFolderStatus.failed) return null;
 
@@ -85,7 +114,9 @@ export function FolderAsItem({
                 >
                     <p
                         style={
-                            disabled ? { textDecoration: "line-through" } : {}
+                            disabled || parentDisabled
+                                ? { textDecoration: "line-through" }
+                                : {}
                         }
                     >
                         {folder.name}, {folder.id}, {folder.color}
@@ -100,7 +131,20 @@ export function FolderAsItem({
                     </button>
                 </div>
                 {/* Display its items */}
-                {open ? <ItemList folder={folder} /> : null}
+                {open.openedBefore ? (
+                    open.open ? (
+                        <ItemList
+                            disabled={Boolean(disabled) || parentDisabled}
+                            folder={folder}
+                        />
+                    ) : (
+                        <ItemList
+                            hide
+                            disabled={Boolean(disabled) || parentDisabled}
+                            folder={folder}
+                        />
+                    )
+                ) : null}
             </li>
         );
 }
