@@ -2,7 +2,6 @@
 import Folder from "@/api/types/Folder";
 import React from "react";
 import { Item } from "./Item";
-import { PositionId } from "@/api/types/itemsReducer";
 
 /**
  * @param folder is folder that has already succeeeded in being fetched with useFolder()
@@ -20,12 +19,10 @@ export default function ItemList({
                 flexDirection: "column",
             }}
         >
-            {folder.items.map((i) => {
-                // every item has a unique position id for the lifetime of the element used to uniquely identify it in the tree
-                const positionId = crypto.randomUUID() as PositionId;
-                return (
-                    <Item positionId={positionId} key={positionId} item={i} />
-                );
+            {folder.items.map((item, index) => {
+                // the key need only be unique within its own list, and as items are
+                // in a user determined order the index is a safe identifier
+                return <Item key={index} item={item} />;
             })}
         </ol>
     );

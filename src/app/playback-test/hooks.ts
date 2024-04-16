@@ -18,13 +18,8 @@ export function useIsDisabled(
 
 export function useIsOpen(id: PositionId): [typeof isOpen, typeof toggleOpen] {
     const [listState, dispatch] = useContext(listContext);
-    const [isOpen, setOpen] = useState<boolean>(false);
 
-    const shouldBeOpen = Boolean(
-        listState.openedFolders.find((oId) => oId == id),
-    );
-
-    if (shouldBeOpen != isOpen) setOpen(shouldBeOpen);
+    const isOpen = Boolean(listState.openedFolders.find((oId) => oId == id));
 
     const toggleOpen = () => dispatch({ type: "TOGGLE_OPEN", id: id });
 

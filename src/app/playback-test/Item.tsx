@@ -1,22 +1,29 @@
 "use client";
 
 import { Subitem, SubitemKind } from "@/api/types/Folder";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ItemList from "./ItemList";
 import useFolder, { useFolderStatus } from "@/api/hooks/useFolder";
 import { useIsDisabled, useIsOpen } from "./hooks";
+import { PositionId } from "@/api/types/itemsReducer";
 
-export function Item({
-    item,
-    positionId,
-}: {
-    item: Subitem;
-    positionId: string;
-}): React.ReactNode {
+export function Item({ item }: { item: Subitem }): React.ReactNode {
+    const [posId, setPosId] = useState<PositionId | undefined>();
+
+    // create positionID that lives for lifetime of component
+    useEffect(() => setPosId(crypto.randomUUID()), []);
+
+    if (typeof posId == "undefined")
+        return (
+            <li>
+                <p>loading....</p>
+            </li>
+        );
+
     return item.kind == SubitemKind.SpotifyURI ? (
-        <PlaylistAsItem positionId={positionId} URI={item.itemID} />
+        <PlaylistAsItem positionId={posId} URI={item.itemID} />
     ) : (
-        <FolderAsItem positionId={positionId} id={item.itemID} />
+        <FolderAsItem positionId={posId} id={item.itemID} />
     );
 }
 
@@ -30,7 +37,7 @@ export function PlaylistAsItem({
     positionId,
 }: {
     URI: SpotifyURI;
-    positionId: string;
+    positionId: PositionId;
 }) {
     return (
         <li>
@@ -53,7 +60,7 @@ export function FolderAsItem({
 }: {
     id: FolderId;
     parentDisabled?: boolean;
-    positionId: string;
+    positionId: PositionId;
 }): React.ReactNode {
     const [folder, status] = useFolder(id);
     const [disabled, toggleDisabled] = useIsDisabled(positionId);
