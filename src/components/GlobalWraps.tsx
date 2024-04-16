@@ -1,12 +1,7 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { usePathname } from "next/navigation";
-import {
-    QueryClient,
-    QueryClientProvider,
-    useQuery,
-    useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Unauthenticated from "@/app/@unauthenticated/default";
 import { isAuthenticated } from "@/api/util";
 import PlayerInfo from "@/components/player/PlayerInfo";

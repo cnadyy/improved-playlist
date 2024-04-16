@@ -2,11 +2,17 @@ import Folder from "@/api/types/Folder";
 import playFolder from "@/app/utils/Player";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { faPencil, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+    faAdd,
+    faPencil,
+    faPlayCircle,
+    faShare,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSSProperties, useContext, useState } from "react";
 import { FolderExplorerContext } from "./explorer/FolderContext";
 import AddItem from "./newItems/AddItem";
+import ShareItem from "./ShareItem";
 
 const folderIconStyle: CSSProperties = {
     minWidth: "13rem",
@@ -57,6 +63,7 @@ export default function FolderDetailsComponent({
     // const [folders, setFolders] = useFolderList();
 
     const [editModal, setEditModal] = useState<boolean>(false);
+    const [shareModal, setShareModal] = useState<boolean>(false);
 
     return (
         <div
@@ -107,9 +114,17 @@ export default function FolderDetailsComponent({
                     <FontAwesomeIcon
                         onClick={() => setEditModal(true)}
                         css={button}
-                        icon={faPencil}
+                        icon={faAdd}
                         size="2xl"
                     />
+                    {folder.public && (
+                        <FontAwesomeIcon
+                            onClick={() => setShareModal(true)}
+                            css={button}
+                            icon={faShare}
+                            size="2xl"
+                        />
+                    )}
                 </div>
             </div>
             {editModal ? (
@@ -119,6 +134,12 @@ export default function FolderDetailsComponent({
                     folderID={folder.id}
                 />
             ) : null}
+            {shareModal && folder.public && (
+                <ShareItem
+                    showModal={shareModal}
+                    closeModal={() => setShareModal(false)}
+                />
+            )}
         </div>
     );
 }

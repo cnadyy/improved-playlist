@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "dev-emulators": "firebase emulators:exec --import ./mock-data/firebase --ui \"yarn dev\"",
+    "start-emulators": "firebase emulators:exec --import ./mock-data/firebase --ui \"yarn start\"",
     "lint": "next lint",
     "sync-rules": "firebase deploy",
     "test": "jest"
