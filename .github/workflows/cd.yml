@@ -1,0 +1,22 @@
+name: Continous deployment
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - run: |
+        git config --global user.name 'CI Bot'
+        git config --global user.email 'liamwatcheshentai@gmail.com'
+        git fetch
+        git checkout origin/deployment
+        git merge origin/main
+        git push --force

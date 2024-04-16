@@ -1,0 +1,56 @@
+name: Continous integration
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        # cache: 'yarn'
+    - name: Install yarn and dependencies
+      run: corepack enable && yarn install --immutable
+    - name: Test
+      run: yarn test
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        # cache: 'yarn'
+    - name: Install yarn and dependencies
+      run: corepack enable && yarn install --immutable
+    - name: Lint
+      run: yarn lint .
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        # cache: 'yarn'
+    - name: Install yarn and dependencies
+      run: corepack enable && yarn install --immutable
+    - name: Build
+      run: yarn build
+  types:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        # cache: 'yarn'
+    - name: Install yarn and dependencies
+      run: corepack enable && yarn install --immutable
+    - name: Types
+      run: yarn tsc
