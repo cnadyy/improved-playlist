@@ -40,7 +40,7 @@ export default function Redirect() {
     useEffect(() => {
         if (code) {
             getToken(code)
-                .then(() => (window.location.href = "/"))
+                .then(() => (window.location.href = "/home"))
                 .catch(() => setNoError(false));
         } else setNoError(false);
     }, [code]);

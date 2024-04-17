@@ -27,7 +27,7 @@ export default function Redirect() {
                         localStorage.removeItem("firebaseAuthEmail");
                         setIsSuccessful(progress.success);
                     } else {
-                        router.push("/");
+                        router.push("/home");
                     }
                 })
                 .catch((e) => {
