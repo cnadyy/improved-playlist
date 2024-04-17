@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - "*"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,5 +19,5 @@ jobs:
         git config --global user.email 'liamwatcheshentai@gmail.com'
         git fetch
         git checkout -b deployment
-        git merge main
+        git merge origin/main
         git push --force --set-upstream origin deployment
