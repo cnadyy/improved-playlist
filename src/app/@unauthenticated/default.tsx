@@ -36,7 +36,7 @@ export default function Unauthenticated() {
         localStorage.setItem("firebaseAuthentication", "");
         localStorage.setItem("firebaseAuthEmail", userEmail);
         sendSignInLinkToEmail(Auth, userEmail, {
-            url: "http://localhost:3000/redirectFirebase",
+            url: `${window.location.origin}/redirectFirebase`,
             handleCodeInApp: true,
         }).then(() => setEmailSending(sending.sent));
     };

@@ -4,7 +4,7 @@ const nextConfig = {
     experimental: {
         missingSuspenseWithCSRBailout: false,
     },
-    //output: "export",
+    output: "export",
     distDir: "build-files",
 };
 

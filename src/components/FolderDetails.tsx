@@ -109,7 +109,10 @@ export default function FolderDetailsComponent({
                     />
                     {folder.owner == Auth.currentUser!.uid && (
                         <FontAwesomeIcon
-                            onClick={() => setEditModal(true)}
+                            onClick={() => {
+                                setEditModal(true);
+                                console.log("ok");
+                            }}
                             css={button}
                             icon={faAdd}
                             size="2xl"
@@ -117,7 +120,9 @@ export default function FolderDetailsComponent({
                     )}
                     {folder.public && (
                         <FontAwesomeIcon
-                            onClick={() => setShareModal(true)}
+                            onClick={() => {
+                                setShareModal(true);
+                            }}
                             css={button}
                             icon={faShare}
                             size="2xl"

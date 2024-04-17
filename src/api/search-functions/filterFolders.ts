@@ -9,10 +9,9 @@ const nameMatch = (folder: Folder, query: string) =>
 export default function filterFolder(
     folder: Folder,
     searchEntry: string,
-    pinned: FolderId[],
+    pinned?: FolderId[],
 ): boolean {
-    return (
-        pinned.includes(folder.id) &&
-        (searchEntry ? nameMatch(folder, searchEntry) : true)
-    );
+    return (pinned ? pinned.includes(folder.id) : true) && searchEntry
+        ? nameMatch(folder, searchEntry)
+        : true;
 }

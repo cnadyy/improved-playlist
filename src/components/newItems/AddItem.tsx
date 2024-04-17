@@ -98,10 +98,6 @@ export default function AddItem({
         getFolderList().then(setFolderList);
     }, []);
 
-    if (!user) {
-        return <Loading />;
-    }
-
     return (
         <dialog ref={ref} onCancel={closeModal} style={AddItemStyles}>
             <div
@@ -206,9 +202,7 @@ export default function AddItem({
                         <SearchItemList full>
                             {filter == filterOptions.FOLDERS ? (
                                 folderList
-                                    .filter((f) =>
-                                        filterFolder(f, query, user.pinned),
-                                    )
+                                    .filter((f) => filterFolder(f, query))
                                     .map((f) =>
                                         FolderBlock(f, selected, (id) =>
                                             dispatchSelected({

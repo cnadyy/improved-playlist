@@ -18,7 +18,7 @@ async function getToken(code: string) {
             client_id: CLIENT_ID,
             grant_type: "authorization_code",
             code: code,
-            redirect_uri: "http://localhost:3000/redirect",
+            redirect_uri: `${window.location.origin}/redirect`,
             code_verifier: codeVerifier,
         }),
     };

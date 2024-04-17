@@ -25,7 +25,7 @@ const generateAuthorisationURL = (
     codeVerifier: string,
 ): string => {
     const clientId = CLIENT_ID;
-    const redirectUri = "http://localhost:3000/redirect";
+    const redirectUri = `${window.location.origin}/redirect`;
 
     const scope = [
         [
