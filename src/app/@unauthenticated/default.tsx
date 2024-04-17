@@ -29,42 +29,24 @@ export default function Unauthenticated() {
     const [firebase, setFirebase] = useState(false);
     const [userEmail, setUserEmail] = useState("");
     const [emailSending, setEmailSending] = useState(sending.notSent);
-    const [error, setError] = useState("");
 
     const sendLink = () => {
         setEmailSending(sending.sending);
-        localStorage.setItem("firebaseAuthentication", "");
         localStorage.setItem("firebaseAuthEmail", userEmail);
+        Auth.onAuthStateChanged((a) => {
+            console.log(a);
+        });
         sendSignInLinkToEmail(Auth, userEmail, {
             url: `${window.location.origin}/redirectFirebase`,
             handleCodeInApp: true,
-        }).then(() => setEmailSending(sending.sent));
+        })
+            .then(() => setEmailSending(sending.sent))
+            .catch((e) => console.error(e));
     };
 
     useEffect(() => {
         setSpotify(isSpotifyAuthenticated());
         isFirebaseAuthenticated().then(setFirebase);
-    }, []);
-
-    // listen for authentication changes in other windows
-    useEffect(() => {
-        const handleChange = () => {
-            const key = localStorage.getItem(
-                "firebaseAuthentication",
-            ) as string;
-            const email = localStorage.getItem("firebaseAuthEmail") as string;
-            if (key && email)
-                signInWithEmailLink(Auth, email, key)
-                    .then(() => isFirebaseAuthenticated().then(setFirebase))
-                    .then(() => {
-                        localStorage.setItem("firebaseAuthentication", "");
-                        localStorage.setItem("firebaseAuthEmail", "");
-                    })
-                    .catch((e) => setError(e));
-        };
-
-        window.addEventListener("storage", handleChange);
-        return () => window.removeEventListener("storage", handleChange);
     }, []);
 
     const emailState: () => string = () => {
@@ -102,7 +84,6 @@ export default function Unauthenticated() {
                     <p>{emailState()}</p>
                 </div>
             )}
-            <p>{error ? error + ". Refresh to try again." : ""}</p>
         </div>
     );
 }

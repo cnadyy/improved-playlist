@@ -11,7 +11,8 @@ export default function filterFolder(
     searchEntry: string,
     pinned?: FolderId[],
 ): boolean {
-    return (pinned ? pinned.includes(folder.id) : true) && searchEntry
-        ? nameMatch(folder, searchEntry)
-        : true;
+    return (
+        (pinned ? pinned.includes(folder.id) : true) &&
+        (searchEntry ? nameMatch(folder, searchEntry) : true)
+    );
 }
