@@ -17,6 +17,6 @@ jobs:
         git config --global user.name 'CI Bot'
         git config --global user.email 'liamwatcheshentai@gmail.com'
         git fetch
-        git checkout origin/deployment
+        git checkout -b origin/deployment
         git merge origin/main
         git push --force
