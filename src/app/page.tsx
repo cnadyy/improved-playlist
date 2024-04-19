@@ -11,7 +11,7 @@ export default function Home() {
                 style={{
                     height: "100vh",
                     width: "100%",
-                    backgroundImage: `url(${bg.src})`,
+                    backgroundImage: `url(niklas-tidbury-groundhog.jpg)`,
                     backgroundPosition: "center",
                     backgroundSize: "cover",
                     overflow: "hidden",

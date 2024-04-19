@@ -25,8 +25,9 @@ export default function ItemName({
     id: string;
     kind: SubitemKind;
 }) {
+    const queryKey = kind == SubitemKind.SpotifyURI ? [id] : [kind, id];
     const item = useQuery({
-        queryKey: [kind, id],
+        queryKey,
         queryFn: () => resolve(id, kind),
         staleTime: 1000 * 60 * 12,
     });
