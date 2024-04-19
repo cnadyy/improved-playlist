@@ -4,6 +4,7 @@ import GlobalWraps from "@/components/GlobalWraps";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outfit } from "next/font/google";
 import { useState } from "react";
+import "../css/global.css";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
