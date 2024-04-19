@@ -1,18 +1,21 @@
 "use client";
 
-import { Subitem, SubitemKind } from "@/api/types/Folder";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ItemList from "./ItemList";
 import useFolder, { useFolderStatus } from "@/api/hooks/useFolder";
 import { useIsDisabled, useIsOpen } from "./hooks";
 import { PositionId } from "@/api/types/itemsReducer";
+import { useNestedPlayback, usePlayback } from "./usePlayback";
+import { Subitem, SubitemKind } from "@/api/types/Folder";
 
 export function Item({
     item,
     disabled,
+    playEvent,
 }: {
     item: Subitem;
     disabled: boolean;
+    playEvent: PlayEvent;
 }): React.ReactNode {
     const [posId, setPosId] = useState<PositionId | undefined>();
 
@@ -30,12 +33,14 @@ export function Item({
         <PlaylistAsItem
             parentDisabled={disabled}
             positionId={posId}
+            playEvent={playEvent}
             URI={item.itemID}
         />
     ) : (
         <FolderAsItem
             parentDisabled={disabled}
             positionId={posId}
+            playEvent={playEvent}
             id={item.itemID}
         />
     );
@@ -50,12 +55,18 @@ export function PlaylistAsItem({
     URI,
     positionId,
     parentDisabled,
+    playEvent,
 }: {
     URI: SpotifyURI;
     positionId: PositionId;
     parentDisabled: boolean;
+    playEvent: PlayEvent;
 }) {
-    const [disabled, toggleDisabled] = useIsDisabled(positionId);
+    const [locallyDisabled, toggleDisabled] = useIsDisabled(positionId);
+    const disabled = Boolean(locallyDisabled) || parentDisabled;
+
+    usePlayback(URI, playEvent, disabled);
+
     return (
         <li>
             <div
@@ -64,14 +75,12 @@ export function PlaylistAsItem({
             >
                 <p
                     style={
-                        disabled || parentDisabled
-                            ? { textDecoration: "line-through" }
-                            : {}
+                        parentDisabled ? { textDecoration: "line-through" } : {}
                     }
                 >
                     this is a playlist. heres the uri: {URI}
                 </p>
-                {parentDisabled || disabled ? "im disabled" : "im not"}
+                {disabled ? "im disabled" : "im not"}
             </div>
         </li>
     );
@@ -86,14 +95,26 @@ export function FolderAsItem({
     id,
     parentDisabled,
     positionId,
+    playEvent,
 }: {
     id: FolderId;
     parentDisabled?: boolean;
     positionId: PositionId;
+    playEvent: PlayEvent;
 }): React.ReactNode {
     const [folder, status] = useFolder(id);
-    const [disabled, toggleDisabled] = useIsDisabled(positionId);
+    const [locallyDisabled, toggleDisabled] = useIsDisabled(positionId);
     const [open, toggleOpen] = useIsOpen();
+    const safePlayEvent = useNestedPlayback(playEvent, () => toggleOpen(true));
+
+    const disabled = locallyDisabled || parentDisabled;
+
+    useEffect(() => {
+        if (status == useFolderStatus.failed) {
+            // instantly resolve playback on failure
+            playEvent.then((resolve) => resolve());
+        }
+    }, [status, playEvent]);
 
     if (status == useFolderStatus.failed) return null;
 
@@ -110,13 +131,11 @@ export function FolderAsItem({
                 {/* Should display the info for this specifc folder*/}
                 <div
                     style={{ backgroundColor: "#786990", display: "flex" }}
-                    onClick={toggleOpen}
+                    onClick={() => toggleOpen()}
                 >
                     <p
                         style={
-                            disabled || parentDisabled
-                                ? { textDecoration: "line-through" }
-                                : {}
+                            disabled ? { textDecoration: "line-through" } : {}
                         }
                     >
                         {folder.name}, {folder.id}, {folder.color}
@@ -131,17 +150,19 @@ export function FolderAsItem({
                     </button>
                 </div>
                 {/* Display its items */}
-                {open.openedBefore ? (
+                {open.loaded ? (
                     open.open ? (
                         <ItemList
-                            disabled={Boolean(disabled) || parentDisabled}
+                            disabled={Boolean(disabled)}
                             folder={folder}
+                            playEvent={safePlayEvent}
                         />
                     ) : (
                         <ItemList
                             hide
-                            disabled={Boolean(disabled) || parentDisabled}
+                            disabled={Boolean(disabled)}
                             folder={folder}
+                            playEvent={safePlayEvent}
                         />
                     )
                 ) : null}

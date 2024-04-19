@@ -18,19 +18,19 @@ export function useIsDisabled(
 
 interface openedFolder {
     open: boolean;
-    openedBefore: boolean;
+    loaded: boolean;
 }
 
 export function useIsOpen(): [typeof open, typeof toggleOpen] {
     const [open, setOpen] = useState<openedFolder>({
         open: false,
-        openedBefore: false,
+        loaded: false,
     });
 
-    const toggleOpen = () => {
-        if (open.openedBefore)
-            setOpen({ open: !open.open, openedBefore: true });
-        else setOpen({ open: true, openedBefore: true });
+    const toggleOpen = (silent?: boolean) => {
+        if (silent) setOpen({ open: open.open, loaded: true });
+        else if (open.loaded) setOpen({ open: !open.open, loaded: true });
+        else setOpen({ open: true, loaded: true });
     };
 
     return [open, toggleOpen];

@@ -11,7 +11,9 @@ export default function NewFolder({ style = {} }: { style?: CSSProperties }) {
         setIsLoading(true);
         setTimeout(
             () =>
-                newFolder(true).then((id) => router.push("/playback?id=" + id)),
+                newFolder(true).then((id) =>
+                    router.push("/playback-test?id=" + id),
+                ),
             1000,
         );
     };

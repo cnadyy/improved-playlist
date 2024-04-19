@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+// include file in build
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import bg from "@/../public/niklas-tidbury-groundhog.jpg";
 
 export default function Home() {

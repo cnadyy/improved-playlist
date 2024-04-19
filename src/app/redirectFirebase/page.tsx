@@ -39,6 +39,7 @@ export default function Redirect() {
 
     useEffect(() => {
         handleSignIn(localStorage.getItem("firebaseAuthEmail") as string);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const userMessage: (state: progress) => string = (state) => {

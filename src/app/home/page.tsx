@@ -1,13 +1,11 @@
 "use client";
 
 import FolderComponent from "@/components/FolderComponent";
-import Folder from "@/api/types/Folder";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useState } from "react";
 import NewFolder from "@/components/NewFolderComponent";
 import Link from "next/link";
 import Header from "@/components/Header";
 import filterFolder from "@/api/search-functions/filterFolders";
-import getUserFolders from "@/api/firebase/get/userFolders";
 import useUser from "@/api/firebase/get/user";
 import { Auth } from "@/api/firebase/createApp";
 import Loading from "@/components/Loading";

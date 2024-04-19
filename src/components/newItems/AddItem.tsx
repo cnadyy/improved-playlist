@@ -27,9 +27,6 @@ import addItems from "@/api/side-effects/addItems";
 import { FolderBlock } from "./itemBlocks";
 import { PlaylistBlock } from "./itemBlocks";
 import useUserPlaylists from "@/api/hooks/spotify/useUserPlaylists";
-import useUser from "@/api/firebase/get/user";
-import { Auth } from "@/api/firebase/createApp";
-import Loading from "@/components/Loading";
 
 const AddItemStyles: CSSProperties = {
     maxWidth: "750px",
@@ -86,7 +83,6 @@ export default function AddItem({
         playlists: [],
     });
     const [playlists, playlistsQuery] = useUserPlaylists();
-    const user = useUser(Auth.currentUser!.uid);
 
     useEffect(() => {
         if (showModal) ref.current?.showModal();
