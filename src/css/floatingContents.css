@@ -8,7 +8,8 @@
     padding: 10px 10px;
 }
 
-.contentsList p, .contentsList h4 {
+.contentsList p,
+.contentsList h4 {
     margin: 3px;
 }
 

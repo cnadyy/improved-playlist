@@ -1,6 +1,3 @@
 {
-    "recommendations": [
-        "toba.vsfire",
-        "esbenp.prettier-vscode"
-    ]
+    "recommendations": ["toba.vsfire", "esbenp.prettier-vscode"]
 }

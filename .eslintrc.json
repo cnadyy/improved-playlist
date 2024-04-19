@@ -1,16 +1,16 @@
 {
-  "extends": [
-    "eslint:recommended",
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
-  "rules": {
-    "@typescript-eslint/no-explicit-any": ["warn"],
-    "@typescript-eslint/no-unused-vars": ["warn"],
-    "prettier/prettier": ["warn"],
-    "no-var": ["off"]
-  },
-  "plugins": ["prettier"],
-  "root": true
+    "extends": [
+        "eslint:recommended",
+        "next/core-web-vitals",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
+    ],
+    "rules": {
+        "@typescript-eslint/no-explicit-any": ["warn"],
+        "@typescript-eslint/no-unused-vars": ["warn"],
+        "prettier/prettier": ["warn"],
+        "no-var": ["off"]
+    },
+    "plugins": ["prettier"],
+    "root": true
 }

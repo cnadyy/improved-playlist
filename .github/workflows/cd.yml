@@ -1,23 +1,23 @@
 name: Continous deployment
 on:
-  push:
-    tags:
-      - "*"
-  workflow_dispatch:
+    push:
+        tags:
+            - "*"
+    workflow_dispatch:
 
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
+    publish:
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@master
-    - run: |
-        git config --global user.name 'CI Bot'
-        git config --global user.email 'liamwatcheshentai@gmail.com'
-        git fetch
-        git checkout -b deployment
-        git merge origin/main
-        git push --force --set-upstream origin deployment
+        steps:
+            - uses: actions/checkout@master
+            - run: |
+                  git config --global user.name 'CI Bot'
+                  git config --global user.email 'liamwatcheshentai@gmail.com'
+                  git fetch
+                  git checkout -b deployment
+                  git merge origin/main
+                  git push --force --set-upstream origin deployment
