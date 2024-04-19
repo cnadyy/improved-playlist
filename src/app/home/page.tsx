@@ -11,6 +11,7 @@ import getUserFolders from "@/api/firebase/get/userFolders";
 import useUser from "@/api/firebase/get/user";
 import { Auth } from "@/api/firebase/createApp";
 import Loading from "@/components/Loading";
+import usePinnedUserFolders from "@/api/hooks/usePinnedUserFolders";
 
 const folderListStyle: CSSProperties = {
     display: "flex",
@@ -21,19 +22,15 @@ const folderListStyle: CSSProperties = {
 };
 
 export default function Folders() {
-    const [folderList, setFolderList] = useState<Folder[]>([]);
+    const folders = usePinnedUserFolders();
     const [searchEntry, setSearchEntry] = useState<string>("");
     const user = useUser(Auth.currentUser!.uid);
-
-    useEffect(() => {
-        getUserFolders().then(setFolderList);
-    }, []);
 
     if (!user) {
         return <Loading />;
     }
 
-    const filteredFolders = folderList.filter((f) =>
+    const filteredFolders = folders.filter((f) =>
         filterFolder(f, searchEntry, user.pinned),
     );
 
@@ -52,7 +49,7 @@ export default function Folders() {
                         {filteredFolders.map((folder) => (
                             <li key={folder.id} style={{ listStyle: "none" }}>
                                 <Link
-                                    href={"/playback?id=" + folder.id}
+                                    href={"/playback-test?id=" + folder.id}
                                     style={{ all: "unset" }}
                                 >
                                     <FolderComponent data={folder} />
