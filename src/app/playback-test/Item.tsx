@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ItemList from "./ItemList";
 import useFolder, { useFolderStatus } from "@/api/hooks/useFolder";
 import { useIsDisabled, useIsOpen } from "./hooks";
 import { PositionId } from "@/api/types/itemsReducer";
-import { useNestedPlayback, usePlayback } from "./usePlayback";
+import { useFolderLoader, usePlayback } from "./usePlayback";
 import { Subitem, SubitemKind } from "@/api/types/Folder";
 
 export function Item({
@@ -105,7 +105,7 @@ export function FolderAsItem({
     const [folder, status] = useFolder(id);
     const [locallyDisabled, toggleDisabled] = useIsDisabled(positionId);
     const [open, toggleOpen] = useIsOpen();
-    const safePlayEvent = useNestedPlayback(playEvent, () => toggleOpen(true));
+    useFolderLoader(playEvent, () => toggleOpen(true));
 
     const disabled = locallyDisabled || parentDisabled;
 
@@ -155,14 +155,14 @@ export function FolderAsItem({
                         <ItemList
                             disabled={Boolean(disabled)}
                             folder={folder}
-                            playEvent={safePlayEvent}
+                            playEvent={playEvent}
                         />
                     ) : (
                         <ItemList
                             hide
                             disabled={Boolean(disabled)}
                             folder={folder}
-                            playEvent={safePlayEvent}
+                            playEvent={playEvent}
                         />
                     )
                 ) : null}

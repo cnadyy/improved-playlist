@@ -15,22 +15,19 @@ export function usePlayback(
             //     setTimeout(() => {console.log("done"); resolvePlayback()}, 5000);
             // }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 }
 
 /**
  * @info ensures the folder is accessible before rebuilding the PlayEvent promise
  */
-export function useNestedPlayback(
+export function useFolderLoader(
     playbackEvent: PlayEvent,
     openFolder: () => void,
-): PlayEvent {
-    return useRef(
-        new Promise<resolvePlayback>((resolve) => {
-            playbackEvent.then((resolvePlayback) => {
-                openFolder();
-                resolve(resolvePlayback);
-            });
-        }),
-    ).current;
+): void {
+    useEffect(() => {
+        playbackEvent.then(() => openFolder());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [playbackEvent]);
 }
