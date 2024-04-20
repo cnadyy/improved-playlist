@@ -42,15 +42,15 @@ const ProgressContainer = styled.div`
     justify-content: space-around;
 `;
 
-const Title = styled.h1`
+const Title = styled.a`
     margin: 0px;
-    font-size: 2rem;
     font-weight: 500;
 `;
 
-const TitleContainer = styled.h1`
+const TitleContainer = styled.div`
     display: flex;
     align-items: center;
+    font-size: 2rem;
     margin: 0px;
 `;
 
@@ -101,6 +101,190 @@ function Dialog({
         >
             <div
                 style={{
+                    position: "absolute",
+                    top: 0,
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0.7,
+                    zIndex: 0,
+                    userSelect: "none",
+                }}
+            >
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path id="wavepath1" d="M80,-10 L110,20"></path>
+                    <path id="wavepath2" d="M70,-10 L110,30"></path>
+                    <path id="wavepath3" d="M60,-10 L110,40"></path>
+                    <path id="wavepath4" d="M50,-10 L110,50"></path>
+                    <text
+                        textAnchor="start"
+                        alignmentBaseline="middle"
+                        fill="white"
+                        fontSize={5}
+                    >
+                        <textPath href="#wavepath1" startOffset="-100%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-100%"
+                                to="80%"
+                                begin="0s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            <animate
+                                attributeName="opacity"
+                                from={0}
+                                to={1}
+                                begin={"0s"}
+                                dur={"0.1s"}
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                        <textPath href="#wavepath1" startOffset="-100%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-100%"
+                                to="80%"
+                                begin="6s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            <animate
+                                attributeName="opacity"
+                                from={0}
+                                to={1}
+                                begin={"0s"}
+                                dur={"0.1s"}
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                    </text>
+                    <text
+                        textAnchor="start"
+                        alignmentBaseline="middle"
+                        r="5"
+                        fill="white"
+                        fontSize={5}
+                    >
+                        <textPath href="#wavepath2" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-120%"
+                                to="80%"
+                                begin="0s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                        <textPath href="#wavepath2" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-120%"
+                                to="80%"
+                                begin="8s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                        <textPath href="#wavepath2" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-120%"
+                                to="80%"
+                                begin="4s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                    </text>
+                    <text
+                        textAnchor="start"
+                        alignmentBaseline="middle"
+                        r="5"
+                        fill="white"
+                        fontSize={5}
+                    >
+                        <textPath href="#wavepath3" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-90%"
+                                to="80%"
+                                begin="0s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                        <textPath href="#wavepath3" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-90%"
+                                to="80%"
+                                begin="8s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                        <textPath href="#wavepath3" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-90%"
+                                to="80%"
+                                begin="4s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                    </text>
+                    <text
+                        textAnchor="start"
+                        alignmentBaseline="middle"
+                        r="5"
+                        fill="white"
+                        fontSize={5}
+                    >
+                        <textPath href="#wavepath4" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-90%"
+                                to="80%"
+                                begin="0s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                        <textPath href="#wavepath4" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-90%"
+                                to="80%"
+                                begin="4s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                        <textPath href="#wavepath4" startOffset="-120%">
+                            <animate
+                                attributeName="startOffset"
+                                from="-90%"
+                                to="80%"
+                                begin="8s"
+                                dur="12s"
+                                repeatCount="indefinite"
+                            ></animate>
+                            improved spotify
+                        </textPath>
+                    </text>
+                </svg>
+            </div>
+            <div
+                style={{
                     backgroundColor: "#F0EFF4",
                     padding: "1.5rem",
                     width: "30rem",
@@ -109,6 +293,7 @@ function Dialog({
                     flexDirection: "column",
                     justifyContent: "space-between",
                     borderRadius: 6,
+                    zIndex: 10,
                 }}
             >
                 {children}
