@@ -5,4 +5,5 @@ type PlayEvent = Promise<resolvePlayback>;
 
 interface HasPlayEvent {
     playEvent: PlayEvent;
+    triggerEvent: (arg0: unknown) => void;
 }

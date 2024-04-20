@@ -10,7 +10,7 @@ import { usePlayer } from "@/app/playback-test/usePlayer";
 export default function Page(): React.ReactNode {
     const id = useParamId() as FolderId;
     const [rootFolder, status] = useFolder(id);
-    const player = usePlayer();
+    const [player, event] = usePlayer();
 
     switch (status) {
         case useFolderStatus.failed:
@@ -34,10 +34,7 @@ export default function Page(): React.ReactNode {
                     <button onClick={() => player.start()}>
                         Start player (check console for events)
                     </button>
-                    <ItemList
-                        folder={rootFolder!}
-                        playEvent={player.startEvent}
-                    />
+                    <ItemList folder={rootFolder!} playEvent={event} />
                 </ListStateContext>
             );
     }

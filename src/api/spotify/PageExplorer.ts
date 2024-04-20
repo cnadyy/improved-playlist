@@ -40,8 +40,6 @@ export class PageExplorer<Response extends PageAble<Item> | Pages<Item>, Item> {
                 if (nPage) throw new Error("No next page");
                 else {
                     const lRes = await this.getLastResponse();
-                    console.log(lRes);
-                    console.log(shortenURL(this.pointToPages(lRes).next!));
                     this.responses.push(
                         fetch(shortenURL(this.pointToPages(lRes).next!), {
                             method: "get",

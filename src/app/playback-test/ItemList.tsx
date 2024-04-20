@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Item } from "./Item";
 import { useChildPlayer } from "@/app/playback-test/usePlayer";
 import Folder from "@/api/types/Folder";

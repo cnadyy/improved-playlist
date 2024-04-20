@@ -1,5 +1,14 @@
 import { Subitem } from "@/api/types/Folder";
-import { useCallback, useEffect, useRef } from "react";
+import {
+    Dispatch,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+
+type playEventSetter = Dispatch<SetStateAction<PlayEvent>>;
 
 /**
  * To be used in conjunction with usePlayer at the root and useChildPlayer on children
@@ -7,33 +16,55 @@ import { useCallback, useEffect, useRef } from "react";
 class Player {
     startEvent: PlayEvent;
     private startPlayback: (onChildOver: resolvePlayback) => void;
+    setEvent?: playEventSetter;
 
     constructor() {
-        console.log("the constructor")
         const rootPromise = Promise.withResolvers();
         this.startPlayback = rootPromise.resolve;
         this.startEvent = rootPromise.promise as PlayEvent;
     }
 
     start() {
-        console.log("maybe its start")
-        this.startPlayback(this._onChildrenFinished);
+        // yes, that bind is required.
+        this.startPlayback(this._onChildrenFinished.bind(this));
+    }
+
+    _initPromise() {
+        const rootPromise = Promise.withResolvers();
+        this.startPlayback = rootPromise.resolve;
+        this.startEvent = rootPromise.promise as PlayEvent;
+        if (this.setEvent) this.setEvent(this.startEvent);
     }
 
     _onChildrenFinished() {
         console.log("All children have resolved");
+        // reset promise state
+        this._initPromise();
     }
 }
 
 /**
  * Used only at the root of playback to control the root promise
  * @returns mutable player ref that persists for lifetime of component
+ * @returns root playEvent as state
  */
-export function usePlayer(): typeof player {
-    console.log("new player")
+export function usePlayer(): [typeof player, PlayEvent] {
     const player = useRef(new Player()).current;
+    const [playEvent, setEvent] = useState<PlayEvent>(player.startEvent);
+    if (typeof player.setEvent == "undefined") player.setEvent = setEvent;
 
-    return player;
+    return [player, playEvent];
+}
+
+function generateEvents(items: Subitem[]): (Subitem & HasPlayEvent)[] {
+    return items.map((child) => {
+        const event = Promise.withResolvers();
+        return {
+            playEvent: event.promise as PlayEvent,
+            triggerEvent: event.resolve,
+            ...child,
+        };
+    });
 }
 
 /**
@@ -45,50 +76,41 @@ export function useChildPlayer(
     playEvent: PlayEvent,
 ): (Subitem & HasPlayEvent)[] {
     // maintain the same promise references across the life of the component
-    const playableItems = useRef(
-        items.map((child) => {
-            console.log("we")
-            const event = Promise.withResolvers();
-            return {
-                playEvent: event.promise as PlayEvent,
-                triggerEvent: event.resolve,
-                ...child,
-            };
-        }),
-    ).current;
+    // also rendering children depends on this ref so you cant ever mutate it.
+    // quite a mistake FIXME.
+    const playableItems = useRef(generateEvents(items));
 
     // starts as -1 as each iteration increments by 1
-    let playingIndex = useRef(-1).current;
+    const playingIndex = useRef(-1);
+    const playEventAttached = useRef(false);
 
     // recursively called to dig down the playback tree
     const playNext = useCallback((): Promise<void> => {
-        console.log("next")
-        return new Promise((resolve) => {
-            playingIndex++;
+        return new Promise((itemFinished) => {
+            playingIndex.current++;
             try {
-                playableItems[playingIndex].triggerEvent(() => {
-                    console.log(
-                        `child of id ${playableItems[playingIndex]} finished playback`,
-                    );
-                    playNext().then(() => resolve());
+                const item = playableItems.current[playingIndex.current];
+                item.triggerEvent(() => {
+                    console.log(`child of id ${item.itemID} finished playback`);
+                    playNext().then(() => itemFinished());
                 });
             } catch (e) {
-                console.log("resolving children. here is status:")
-                console.log(items)
-                resolve();
+                itemFinished();
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // mount only a single .then event to tell the parent that its children have finished playing
     useEffect(() => {
-        console.log("effect")
-        playEvent.then((resolveComponentPlaying): void => {
-            console.log("a series of children has been invoked")
-            playNext();
-        });
-    }, []);
+        if (!playEventAttached.current) {
+            playEventAttached.current = true;
+            playEvent.then((resolveComponentPlaying): void => {
+                playNext().then(() => resolveComponentPlaying());
+            });
+        }
+    }, [playEvent, playNext]);
 
     // itemIDs and types to typically be rendered in ItemList
-    return playableItems;
+    return playableItems.current;
 }

@@ -27,8 +27,9 @@ export function useIsOpen(): [typeof open, typeof toggleOpen] {
         loaded: false,
     });
 
-    const toggleOpen = (silent?: boolean) => {
-        if (silent) setOpen({ open: open.open, loaded: true });
+    const toggleOpen = (forceOpen: boolean = false) => {
+        // open.open always evaluates to false? gave up and forced open
+        if (forceOpen) setOpen({ open: true, loaded: true });
         else if (open.loaded) setOpen({ open: !open.open, loaded: true });
         else setOpen({ open: true, loaded: true });
     };

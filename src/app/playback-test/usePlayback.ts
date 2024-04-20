@@ -5,16 +5,25 @@ export function usePlayback(
     playbackEvent: PlayEvent,
     disabled: boolean,
 ) {
+    const playEventAttached = useRef(false);
     useEffect(() => {
-        playbackEvent.then((resolvePlayback) => {
-            console.log("track attempted: " + uri + " " + disabled + "and this means" + Boolean(disabled));
-            // if (disabled) resolvePlayback();
-            // // TODO: play the playlist on spotify and detect when complete
-            // else {
-            //     console.log("startd timeout")
-            //     setTimeout(() => {console.log("done"); resolvePlayback()}, 5000);
-            // }
-        });
+        if (!playEventAttached.current) {
+            playbackEvent.then((resolvePlayback) => {
+                console.log("PLAYLIST STARTED: " + uri + " (" + disabled + ")");
+                if (disabled) {
+                    console.log("TRACK WAS DISABLED NOW RESOLVING " + uri);
+                    resolvePlayback();
+                }
+                // // TODO: play the playlist on spotify and detect when complete
+                else {
+                    setTimeout(() => {
+                        console.log("RESOLVED TIMER 1500 for " + uri);
+                        resolvePlayback();
+                    }, 1500);
+                }
+            });
+            playEventAttached.current = true;
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 }

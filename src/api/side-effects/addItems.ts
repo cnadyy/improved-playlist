@@ -9,8 +9,6 @@ export default async function addItems(
     // add items to a fresh fetch of the folder
     const f = await getFolder(folderID);
 
-    console.log(additional);
-
     f.items = [
         ...f.items,
         ...additional.folders.map((f) => ({
@@ -22,8 +20,6 @@ export default async function addItems(
             itemID: "spotify:playlist:" + p,
         })),
     ];
-
-    console.log(f);
 
     return setFolder(f);
 }
