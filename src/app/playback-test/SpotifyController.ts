@@ -17,8 +17,9 @@ export class SpotifyController {
     private onNaturalFinish: () => void;
     private onForcedStop: () => void;
     private deviceID: string;
-    private active: boolean = true;
     private playerContext?: context;
+    // debouncer
+    private unmounted?: boolean;
 
     constructor(
         uri: SpotifyURI,
@@ -34,7 +35,10 @@ export class SpotifyController {
         // this fires only when playing audio through the tab
         playerReady.then(async (player) => {
             await this.play(uri);
-            player.addListener("player_state_changed", this._setPlaybackState.bind(this));
+            player.addListener(
+                "player_state_changed",
+                this._setPlaybackState.bind(this),
+            );
         });
     }
 
@@ -73,23 +77,19 @@ export class SpotifyController {
         return this.playerContext;
     }
 
-    _userExit() {
-        this.onForcedStop();
-    }
-
     _setPlaybackState(s: Spotify.PlaybackState) {
-        console.log("here")
-        console.log(this);
+        // debounce late calls due to unsynchronous behaviour
+        if (this.unmounted) return;
 
         // exit if user has played another individual song. stop auto control
         if (s.context.uri == null) {
-            this._userExit();
+            this.unmount(this.onForcedStop);
             return;
         }
 
         // exit if the user plays something else manually and context is ready to be referenced
         if (s.context.uri != this.playerContext!.uri) {
-            this._userExit();
+            this.unmount(this.onForcedStop);
             return;
         }
 
@@ -100,15 +100,17 @@ export class SpotifyController {
                 this.playerContext!.lastPage.tracks,
             )
         )
-            this.onNaturalFinish();
+            this.unmount(this.onNaturalFinish);
     }
 
-    unmount() {
+    unmount(after?: () => void) {
+        this.unmounted = true;
         playerReady.then((player) => {
             player.removeListener(
                 "player_state_changed",
                 this._setPlaybackState,
             );
+            if (after) after();
         });
     }
 
@@ -122,11 +124,11 @@ export class SpotifyController {
      * @param s current state to evaluate
      */
     static _shouldNext(s: Spotify.PlaybackState, c: TrackItem[]): boolean {
-        const trackURI = (t: Spotify.Track | TrackItem) => t.uri;
-
         return (
-            JSON.stringify(c.slice(-2).map(trackURI)) ==
-            JSON.stringify(s.track_window.previous_tracks.map(trackURI))
+            JSON.stringify(c.slice(-2).map((track) => track.track.uri)) ==
+            JSON.stringify(
+                s.track_window.previous_tracks.map((track) => track.uri),
+            )
         );
     }
 }

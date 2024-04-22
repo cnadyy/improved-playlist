@@ -15,7 +15,9 @@ interface Playlist {
     images: img[];
 }
 
-type TrackItem = Track;
+interface TrackItem {
+    track: Track;
+}
 
 interface img {
     url: string;

@@ -34,35 +34,29 @@ export const playerReady = onAuthenticated!;
 
 type deviceID = string;
 
+const device = new Promise<{ player: Spotify.Player; id: deviceID }>(
+    (resolve, reject) => {
+        onAuthenticated!.then((player) => {
+            player.addListener("ready", ({ device_id }) => {
+                resolve({ player, id: device_id });
+            });
+            player.addListener("autoplay_failed", () =>
+                reject(
+                    "Autoplay of player failed. Try player.activateElement()",
+                ),
+            );
+        });
+    },
+);
+
 /**
  * @info it is important to use player.activateElement(); on a click somewhere for browser compat
  */
-export function useSpotifyDevice(): [Promise<Spotify.Player>, deviceID | undefined] {
-    const [ready, setReady] = useState<deviceID | undefined>();
-
-    useEffect(() => {
-        const setReadyTrue = ({ device_id }) => setReady(device_id);
-        const setReadyFalse = (/*deviceId*/) => setReady();
-        const logAutoPlayFail = () =>
-            console.error(
-                "Autoplay failed to initate the song. Try player.activateElement()",
-            );
-
-        onAuthenticated!.then((player) => {
-            player.addListener("ready", setReadyTrue);
-            player.addListener("not_ready", setReadyFalse);
-            player.addListener("autoplay_failed", logAutoPlayFail);
-        });
-        return () => {
-            onAuthenticated!.then((player) => {
-                player.removeListener("ready", setReadyTrue);
-                player.removeListener("not_ready", setReadyFalse);
-                player.disconnect();
-            });
-        };
-    }, []);
-
-    return [onAuthenticated!, ready];
+export function useSpotifyDevice(): Promise<{
+    player: Spotify.Player;
+    id: deviceID;
+}> {
+    return device;
 }
 
 export function usePlaybackState(): Spotify.PlaybackState | undefined {

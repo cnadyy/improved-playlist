@@ -53,33 +53,13 @@ export default function Profile() {
         getAvailableDevices().then((res) => setDevices(res.devices));
     }
 
-    let hasPlayed = useRef(false);
-    const [player, deviceID] = useSpotifyDevice();
-    useEffect(() => {
-        (async () => {
-    })()
-    }, [deviceID])
-
     return (
         <>
             <a>{displayName}</a>
             <a
                 style={{ color: "blue", cursor: "pointer" }}
                 onClick={async () => {
-        if (deviceID && !hasPlayed.current) {
-            hasPlayed.current = true;
-            await (await player).activateElement();
-            const controller = new SpotifyController(
-                "spotify:playlist:5hbLc8CcNsaUK19PvtRTca",
-                deviceID,
-                () => {
-                    console.log("WE DONE!");
-                },
-                () => {
-                    console.log("We did not do it");
-                },
-            );
-        }
+                    alert("celeste.... play it...... the celeste.......");
                 }}
             >
                 {" "}

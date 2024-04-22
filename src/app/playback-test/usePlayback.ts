@@ -1,3 +1,5 @@
+import { useSpotifyDevice } from "@/api/hooks/spotify/usePlaybackSDK";
+import { SpotifyController } from "@/app/playback-test/SpotifyController";
 import { useEffect, useRef } from "react";
 
 export function usePlayback(
@@ -5,6 +7,7 @@ export function usePlayback(
     playbackEvent: PlayEvent,
     disabled: boolean,
 ) {
+    const device = useSpotifyDevice();
     const playEventAttached = useRef(false);
     useEffect(() => {
         if (!playEventAttached.current) {
@@ -13,13 +16,13 @@ export function usePlayback(
                 if (disabled) {
                     console.log("TRACK WAS DISABLED NOW RESOLVING " + uri);
                     resolvePlayback();
-                }
-                // // TODO: play the playlist on spotify and detect when complete
-                else {
-                    setTimeout(() => {
-                        console.log("RESOLVED TIMER 1500 for " + uri);
-                        resolvePlayback();
-                    }, 1500);
+                } else {
+                    console.log("PLAYING PLAYLIST URI " + uri);
+                    device.then(({ id }) => {
+                        new SpotifyController(uri, id, resolvePlayback, () =>
+                            console.log("abandoned playback"),
+                        );
+                    });
                 }
             });
             playEventAttached.current = true;

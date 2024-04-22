@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ItemList from "./ItemList";
 import useFolder, { useFolderStatus } from "@/api/hooks/useFolder";
 import { useIsDisabled, useIsOpen } from "./hooks";
