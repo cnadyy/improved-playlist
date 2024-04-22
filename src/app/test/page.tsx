@@ -2,7 +2,7 @@
 
 /* eslint @typescript-eslint/no-unused-vars: 0 */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import getUserData from "@api/spotify/get/me";
 import queueTrack from "@api/spotify/set/queueTrack";
 import UserPlaylists from "@/components/UserPlaylists";
@@ -10,6 +10,8 @@ import startResumePlayback from "@api/spotify/set/playbackToggle";
 import getAvailableDevices from "@api/spotify/get/devices";
 import DeviceSelector from "@/components/player/DeviceSelector";
 import Device from "@/api/types/Device";
+import { SpotifyController } from "../playback-test/SpotifyController";
+import { useSpotifyDevice } from "@/api/hooks/spotify/usePlaybackSDK";
 
 function getDisplayName(setDisplayName: (display: string) => void) {
     getUserData().then((res) => setDisplayName(res.display_name));
@@ -51,12 +53,34 @@ export default function Profile() {
         getAvailableDevices().then((res) => setDevices(res.devices));
     }
 
+    let hasPlayed = useRef(false);
+    const [player, deviceID] = useSpotifyDevice();
+    useEffect(() => {
+        (async () => {
+    })()
+    }, [deviceID])
+
     return (
         <>
             <a>{displayName}</a>
             <a
                 style={{ color: "blue", cursor: "pointer" }}
-                onClick={playPlaylist}
+                onClick={async () => {
+        if (deviceID && !hasPlayed.current) {
+            hasPlayed.current = true;
+            await (await player).activateElement();
+            const controller = new SpotifyController(
+                "spotify:playlist:5hbLc8CcNsaUK19PvtRTca",
+                deviceID,
+                () => {
+                    console.log("WE DONE!");
+                },
+                () => {
+                    console.log("We did not do it");
+                },
+            );
+        }
+                }}
             >
                 {" "}
                 play the celesete

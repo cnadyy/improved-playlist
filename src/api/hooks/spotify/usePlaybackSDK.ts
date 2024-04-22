@@ -32,17 +32,17 @@ const onAuthenticated =
 
 export const playerReady = onAuthenticated!;
 
-type deviceReady = boolean;
+type deviceID = string;
 
 /**
  * @info it is important to use player.activateElement(); on a click somewhere for browser compat
  */
-export function useSpotifyDevice(): [Promise<Spotify.Player>, deviceReady] {
-    const [ready, setReady] = useState<deviceReady>(false);
+export function useSpotifyDevice(): [Promise<Spotify.Player>, deviceID | undefined] {
+    const [ready, setReady] = useState<deviceID | undefined>();
 
     useEffect(() => {
-        const setReadyTrue = (/*deviceId*/) => setReady(true);
-        const setReadyFalse = (/*deviceId*/) => setReady(false);
+        const setReadyTrue = ({ device_id }) => setReady(device_id);
+        const setReadyFalse = (/*deviceId*/) => setReady();
         const logAutoPlayFail = () =>
             console.error(
                 "Autoplay failed to initate the song. Try player.activateElement()",

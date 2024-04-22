@@ -16,28 +16,31 @@ type context = {
 export class SpotifyController {
     private onNaturalFinish: () => void;
     private onForcedStop: () => void;
+    private deviceID: string;
     private active: boolean = true;
     private playerContext?: context;
 
     constructor(
         uri: SpotifyURI,
+        deviceID: string,
         onNaturalFinish: () => void,
         onForcedStop: () => void,
     ) {
         this.onNaturalFinish = onNaturalFinish;
         this.onForcedStop = onForcedStop;
+        this.deviceID = deviceID;
 
         // trigger queue checks on state change
         // this fires only when playing audio through the tab
         playerReady.then(async (player) => {
             await this.play(uri);
-            player.addListener("player_state_changed", this._setPlaybackState);
+            player.addListener("player_state_changed", this._setPlaybackState.bind(this));
         });
     }
 
     async play(uri: SpotifyURI) {
         await this._setActiveContext(uri);
-        await webAPIFetch("me/player/play", {
+        await webAPIFetch(`me/player/play?device_id=${this.deviceID}`, {
             method: "PUT",
             body: JSON.stringify({
                 context_uri: uri,
@@ -71,12 +74,12 @@ export class SpotifyController {
     }
 
     _userExit() {
-        this.active = false;
         this.onForcedStop();
     }
 
     _setPlaybackState(s: Spotify.PlaybackState) {
-        if (!this.active) return;
+        console.log("here")
+        console.log(this);
 
         // exit if user has played another individual song. stop auto control
         if (s.context.uri == null) {
