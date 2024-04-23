@@ -12,12 +12,15 @@ type context = {
 /**
  * @info note that the Queuer will cache a Context permantly and does not support changes while active.
  * Spotify provides no event for changes to a given resource and I refuse to add timers
+ * @info the expected lifetime for the controller is the playback of a single context
  */
 export class SpotifyController {
     private onNaturalFinish: () => void;
     private onForcedStop: () => void;
     private deviceID: string;
     private playerContext?: context;
+    // used for contexts where no tracks play after the last trcak
+    private isLastSong?: SpotifyURI;
     // debouncer
     private unmounted?: boolean;
 
@@ -59,20 +62,28 @@ export class SpotifyController {
 
         // get last possible page
         if (playlistPage.tracks.total > playlistPage.tracks.limit) {
-            playlistPage = await webAPIFetchWithJSON(
+            const tracksPage = await webAPIFetchWithJSON(
                 "playlists/" +
                     uriToId(uri) +
+                    "/tracks" +
                     "?offset=" +
-                    (playlistPage.tracks.total - playlistPage.tracks.limit),
+                    (playlistPage.tracks.total - playlistPage.tracks.limit) +
+                    "&limit=" +
+                    playlistPage.tracks.limit,
             );
-        }
-
-        this.playerContext = {
-            uri: uri,
-            lastPage: {
-                tracks: playlistPage.tracks.items,
-            },
-        };
+            this.playerContext = {
+                uri: uri,
+                lastPage: {
+                    tracks: tracksPage.items,
+                },
+            };
+        } else
+            this.playerContext = {
+                uri: uri,
+                lastPage: {
+                    tracks: playlistPage.tracks.items,
+                },
+            };
 
         return this.playerContext;
     }
@@ -87,7 +98,7 @@ export class SpotifyController {
             return;
         }
 
-        // exit if the user plays something else manually and context is ready to be referenced
+        // exit if the user plays something else manually
         if (s.context.uri != this.playerContext!.uri) {
             this.unmount(this.onForcedStop);
             return;
@@ -95,10 +106,11 @@ export class SpotifyController {
 
         // determine if the context has finished playback
         if (
-            SpotifyController._shouldNext(
-                s,
-                this.playerContext!.lastPage.tracks,
-            )
+            // check if context with no further auto play has finished
+            (typeof this.isLastSong != "undefined" &&
+                this.isLastSong != s.track_window.current_track.uri) ||
+            // check if a context with autoplay has finished
+            this._shouldNext(s, this.playerContext!.lastPage.tracks)
         )
             this.unmount(this.onNaturalFinish);
     }
@@ -110,7 +122,8 @@ export class SpotifyController {
                 "player_state_changed",
                 this._setPlaybackState,
             );
-            if (after) after();
+            // a hack but it seems to behave better if given an event loop of delay
+            if (after) setTimeout(after, 0);
         });
     }
 
@@ -123,7 +136,17 @@ export class SpotifyController {
      * @param c array of the last tracks in a context
      * @param s current state to evaluate
      */
-    static _shouldNext(s: Spotify.PlaybackState, c: TrackItem[]): boolean {
+    _shouldNext(s: Spotify.PlaybackState, c: TrackItem[]): boolean {
+        console.log(
+            JSON.stringify(c.slice(-2).map((track) => track.track.uri)) +
+                ":" +
+                JSON.stringify(
+                    s.track_window.previous_tracks.map((track) => track.uri),
+                ),
+        );
+        if (s.track_window.next_tracks.length == 0)
+            this.isLastSong = s.track_window.current_track.uri;
+
         return (
             JSON.stringify(c.slice(-2).map((track) => track.track.uri)) ==
             JSON.stringify(
